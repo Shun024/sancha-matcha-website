@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sancha Matcha — Ceremonial Matcha, London</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --matcha:#7a8b5a;
+    --matcha-deep:#55643b;
+    --cream:#f5f2e9;
+    --paper:#faf8f2;
+    --charcoal:#2b2b26;
+    --stone:#b6a892;
+    --line:#d9d3c4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Jost',sans-serif;
+    background:var(--paper);
+    color:var(--charcoal);
+    line-height:1.7;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:500;line-height:1.1}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+  .label{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--matcha-deep);font-weight:400}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(250,248,242,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:76px}
+  .brand{font-family:'Cormorant Garamond',serif;font-size:26px;letter-spacing:.06em;font-weight:600}
+  .brand span{color:var(--matcha)}
+  .nav-links{display:flex;gap:38px;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--charcoal);font-size:13px;letter-spacing:.14em;text-transform:uppercase;transition:color .3s}
+  .nav-links a:hover{color:var(--matcha)}
+  .nav-cta{border:1px solid var(--charcoal);padding:10px 22px;border-radius:40px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--charcoal);transition:.3s}
+  .nav-cta:hover{background:var(--charcoal);color:var(--cream)}
+  .burger{display:none}
+
+  /* HERO */
+  header.hero{padding:170px 0 90px;position:relative;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+  .hero h1{font-size:clamp(52px,8vw,104px);letter-spacing:-.01em}
+  .hero h1 em{font-style:italic;color:var(--matcha)}
+  .hero p.lead{font-size:19px;max-width:440px;margin:28px 0 40px;color:#54544c}
+  .hero-actions{display:flex;gap:18px;align-items:center}
+  .btn{display:inline-block;text-decoration:none;padding:15px 34px;border-radius:40px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;transition:.3s}
+  .btn-solid{background:var(--matcha-deep);color:var(--cream)}
+  .btn-solid:hover{background:var(--charcoal)}
+  .btn-line{color:var(--charcoal);border-bottom:1px solid var(--charcoal);padding:6px 2px;border-radius:0}
+  .hero-tags{display:flex;gap:26px;margin-top:52px;flex-wrap:wrap}
+  .hero-tags div{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#7a7a70;display:flex;align-items:center;gap:9px}
+  .hero-tags i{width:5px;height:5px;border-radius:50%;background:var(--matcha)}
+
+  /* Matcha bowl visual */
+  .bowl-stage{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
+  .bowl-ring{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 40%,#e8e6d6,#dcd7c4);box-shadow:inset 0 4px 30px rgba(0,0,0,.05)}
+  .bowl-ring::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--line)}
+  .bowl-svg{position:relative;width:78%}
+  .steam{position:absolute;top:8%;left:50%;transform:translateX(-50%);opacity:.5}
+
+  /* MARQUEE */
+  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;overflow:hidden;white-space:nowrap;background:var(--cream)}
+  .marquee-track{display:inline-block;animation:scroll 26s linear infinite}
+  .marquee-track span{font-family:'Cormorant Garamond',serif;font-size:26px;font-style:italic;color:var(--matcha-deep);margin:0 40px}
+  .marquee-track span::after{content:"◦";margin-left:44px;color:var(--stone);font-style:normal}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* SECTION base */
+  section{padding:110px 0}
+  .sec-head{max-width:640px;margin-bottom:64px}
+  .sec-head h2{font-size:clamp(38px,5vw,60px);margin:16px 0 20px}
+  .sec-head p{color:#5c5c53;font-size:17px}
+
+  /* STORY */
+  .story{background:var(--cream)}
+  .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+  .story-visual{aspect-ratio:4/5;border-radius:180px 180px 12px 12px;background:linear-gradient(160deg,#8a9a68,#55643b);position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding:34px;box-shadow:0 30px 60px -30px rgba(85,100,59,.5)}
+  .story-visual .leaf{position:absolute;opacity:.16}
+  .story-visual .quote{color:#f3f0e4;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:26px;line-height:1.35;position:relative;z-index:2}
+  .story-copy h2{font-size:clamp(34px,4.5vw,54px);margin:18px 0 24px}
+  .story-copy p{color:#54544c;margin-bottom:20px;font-size:17px}
+  .story-stats{display:flex;gap:44px;margin-top:38px}
+  .story-stats .n{font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--matcha-deep)}
+  .story-stats .t{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7a7a70}
+
+  /* MENU */
+  .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:34px 30px;transition:.4s;position:relative}
+  .card:hover{transform:translateY(-6px);box-shadow:0 24px 50px -30px rgba(43,43,38,.28);border-color:var(--matcha)}
+  .card .disc{width:74px;height:74px;border-radius:50%;margin-bottom:24px;display:flex;align-items:center;justify-content:center}
+  .card h3{font-size:26px;margin-bottom:8px}
+  .card p{font-size:14.5px;color:#6a6a60;margin-bottom:20px;min-height:44px}
+  .card .price{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--matcha-deep)}
+  .card .tag{position:absolute;top:22px;right:22px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stone)}
+
+  /* MENU LIST */
+  .menu2{background:var(--cream)}
+  .menu-list{display:grid;grid-template-columns:1fr 1fr;gap:8px 70px}
+  .m-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:18px 0;border-bottom:1px dashed var(--line)}
+  .m-row .nm{font-family:'Cormorant Garamond',serif;font-size:22px}
+  .m-row .de{font-size:13px;color:#7a7a70;flex:1;margin-left:6px}
+  .m-row .pr{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--matcha-deep);white-space:nowrap}
+
+  /* LOCATIONS */
+  .loc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .loc{border-top:2px solid var(--matcha);padding-top:22px}
+  .loc h3{font-size:26px;margin-bottom:6px}
+  .loc p{font-size:14px;color:#6a6a60}
+  .loc .hrs{margin-top:14px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stone)}
+  .loc .date{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--matcha-deep);margin-bottom:8px}
+
+  /* EVENTS / BOOK BAND */
+  .ev-band{margin-top:72px;background:var(--cream);border:1px solid var(--line);border-radius:22px;padding:56px;display:grid;grid-template-columns:1.35fr 1fr;gap:44px;align-items:center}
+  .ev-band h2{font-size:clamp(30px,3.4vw,44px);margin:14px 0 14px}
+  .ev-band p{color:#5c5c53;font-size:16px;max-width:460px}
+  .ev-types{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+  .ev-types span{border:1px solid var(--line);border-radius:30px;padding:7px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--matcha-deep)}
+  .ev-band .side{text-align:center;border-left:1px solid var(--line);padding-left:40px}
+  .ev-band .side .big{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--charcoal);margin-bottom:20px;font-style:italic}
+
+  /* NEWSLETTER */
+  .cta{background:var(--matcha-deep);color:var(--cream);text-align:center}
+  .cta h2{font-size:clamp(38px,6vw,72px);margin-bottom:20px;color:#f3f0e4}
+  .cta p{max-width:480px;margin:0 auto 38px;opacity:.85;font-size:17px}
+  .subscribe{display:flex;max-width:460px;margin:0 auto;gap:0;border:1px solid rgba(245,242,233,.4);border-radius:40px;overflow:hidden}
+  .subscribe input{flex:1;background:transparent;border:0;padding:16px 24px;color:var(--cream);font-family:'Jost';font-size:15px;outline:none}
+  .subscribe input::placeholder{color:rgba(245,242,233,.6)}
+  .subscribe button{background:var(--cream);color:var(--matcha-deep);border:0;padding:0 30px;font-family:'Jost';font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s}
+  .subscribe button:hover{background:var(--charcoal);color:var(--cream)}
+
+  /* FOOTER */
+  footer{background:var(--charcoal);color:#d7d3c8;padding:70px 0 34px}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
+  footer .brand{color:var(--cream);margin-bottom:16px}
+  footer p{font-size:14px;color:#9d998d;max-width:300px}
+  .fcol h4{font-family:'Jost';font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px;color:var(--stone)}
+  .fcol a{display:block;color:#c3bfb3;text-decoration:none;font-size:14px;margin-bottom:11px;transition:.3s}
+  .fcol a:hover{color:var(--matcha)}
+  .foot-bottom{border-top:1px solid #43433c;padding-top:26px;display:flex;justify-content:space-between;font-size:12px;color:#83806f;letter-spacing:.08em}
+
+  @media(max-width:900px){
+    .nav-links,.nav-cta{display:none}
+    .hero-grid,.story-grid{grid-template-columns:1fr}
+    .bowl-stage{max-width:380px;margin:0 auto}
+    .menu-grid{grid-template-columns:1fr}
+    .menu-list{grid-template-columns:1fr}
+    .loc-grid{grid-template-columns:1fr 1fr}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .ev-band{grid-template-columns:1fr;padding:36px}
+    .ev-band .side{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:30px;text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <div class="brand">SANcha<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#story">Our Story</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#events">Find Us</a></li>
+      <li><a href="#book">Book Us</a></li>
+    </ul>
+    <a href="#book" class="nav-cta">Book an Event</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="label">Ceremonial Grade · A Roaming London Matcha Bar</span>
+      <h1>Stillness in <em>every</em> whisk.</h1>
+      <p class="lead">Single-origin matcha stone-milled in Uji, Japan — whisked to order at pop-ups, private parties and corporate events across London. A quiet ritual, wherever you are.</p>
+      <div class="hero-actions">
+        <a href="#menu" class="btn btn-solid">Explore the Menu</a>
+        <a href="#story" class="btn btn-line">Our Story</a>
+      </div>
+      <div class="hero-tags">
+        <div><i></i>100% Japanese Origin</div>
+        <div><i></i>No Artificial Anything</div>
+        <div><i></i>Whisked to Order</div>
+      </div>
+    </div>
+    <div class="bowl-stage">
+      <div class="bowl-ring"></div>
+      <svg class="steam" width="90" height="120" viewBox="0 0 90 120">
+        <path d="M30 110 C10 80 50 70 30 40 C20 20 40 12 34 0" fill="none" stroke="#8a9a68" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M58 110 C78 80 40 66 60 38 C70 20 52 12 58 2" fill="none" stroke="#8a9a68" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <svg class="bowl-svg" viewBox="0 0 320 260">
+        <ellipse cx="160" cy="150" rx="120" ry="30" fill="#55643b"/>
+        <path d="M40 150 C40 210 90 240 160 240 C230 240 280 210 280 150 Z" fill="#6d7d4c"/>
+        <path d="M40 150 C40 155 90 178 160 178 C230 178 280 155 280 150" fill="none" stroke="#4a5733" stroke-width="3"/>
+        <ellipse cx="160" cy="150" rx="112" ry="26" fill="#8fa062"/>
+        <ellipse cx="160" cy="150" rx="112" ry="26" fill="url(#foam)"/>
+        <ellipse cx="160" cy="146" rx="80" ry="15" fill="#a7b878" opacity=".7"/>
+        <defs>
+          <radialGradient id="foam" cx="45%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#b8c78d"/>
+            <stop offset="100%" stop-color="#7f9256"/>
+          </radialGradient>
+        </defs>
+        <!-- whisk -->
+        <rect x="205" y="40" width="14" height="86" rx="7" fill="#e7dcc4"/>
+        <path d="M205 118 q7 26 -6 40 M212 120 v46 M219 118 q-7 26 6 40" stroke="#efe7d3" stroke-width="2.5" fill="none"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Uji Single-Origin</span><span>Stone-Milled Daily</span><span>Calm Energy</span><span>Small-Batch Sweets</span><span>Uji Single-Origin</span><span>Stone-Milled Daily</span><span>Calm Energy</span><span>Small-Batch Sweets</span>
+  </div>
+</div>
+
+<section class="story" id="story">
+  <div class="wrap story-grid">
+    <div class="story-visual">
+      <svg class="leaf" width="260" height="260" viewBox="0 0 100 100" style="top:-20px;right:-30px"><path d="M50 5 C20 20 15 60 50 95 C85 60 80 20 50 5Z M50 12 V88" fill="none" stroke="#fff" stroke-width="1.5"/></svg>
+      <p class="quote">“We source one farm, one cultivar, one harvest — so every cup tastes of a single quiet hillside.”</p>
+    </div>
+    <div class="story-copy">
+      <span class="label">Our Story</span>
+      <h2>From a hillside in Uji to a corner of London.</h2>
+      <p>Sancha began with a simple obsession: matcha that tastes the way it should — vivid, grassy-sweet, never bitter. We work directly with a family tea garden in Uji, the birthplace of Japanese matcha, stone-milling small batches so the leaf never sits, never dulls.</p>
+      <p>No powders bulked with sugar. No neon colouring. Just shade-grown tencha, whisked by hand and served with the calm the ritual deserves.</p>
+      <div class="story-stats">
+        <div><div class="n">1</div><div class="t">Family Farm</div></div>
+        <div><div class="n">20+</div><div class="t">Pop-Ups a Year</div></div>
+        <div><div class="n">∞</div><div class="t">Whisked Fresh</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Signatures</span>
+      <h2>The whisked few.</h2>
+      <p>A short menu, made properly. Every drink starts with the same ceremonial-grade matcha — the milk and moment change.</p>
+    </div>
+    <div class="menu-grid">
+      <div class="card">
+        <span class="tag">Bestseller</span>
+        <div class="disc" style="background:linear-gradient(150deg,#a7b878,#6d7d4c)"></div>
+        <h3>Iced Matcha Latte</h3>
+        <p>Ceremonial matcha over your milk of choice and slow ice. Clean, creamy, no bitterness.</p>
+        <span class="price">£4.80</span>
+      </div>
+      <div class="card">
+        <div class="disc" style="background:linear-gradient(150deg,#8fa062,#55643b)"></div>
+        <h3>Usucha (Straight)</h3>
+        <p>Thin ceremonial matcha, whisked in the bowl. The purest expression of the leaf.</p>
+        <span class="price">£4.20</span>
+      </div>
+      <div class="card">
+        <span class="tag">Seasonal</span>
+        <div class="disc" style="background:linear-gradient(150deg,#e6d3a3,#c9a24b)"></div>
+        <h3>Yuzu Matcha Tonic</h3>
+        <p>Sparkling matcha with cold-pressed yuzu. Bright, effervescent, wide awake.</p>
+        <span class="price">£5.40</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="menu2" id="shop">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Full Menu &amp; Pantry</span>
+      <h2>Take a little calm home.</h2>
+    </div>
+    <div class="menu-list">
+      <div class="m-row"><span class="nm">Hot Matcha Latte</span><span class="de">oat · whole · almond</span><span class="pr">£4.60</span></div>
+      <div class="m-row"><span class="nm">Matcha Espresso</span><span class="de">dirty matcha, double shot</span><span class="pr">£5.20</span></div>
+      <div class="m-row"><span class="nm">Hojicha Latte</span><span class="de">roasted, caffeine-light</span><span class="pr">£4.60</span></div>
+      <div class="m-row"><span class="nm">Yame Yabukita Tin</span><span class="de">30g ceremonial, retail</span><span class="pr">£28.00</span></div>
+      <div class="m-row"><span class="nm">Matcha Canelé</span><span class="de">box of three</span><span class="pr">£7.00</span></div>
+      <div class="m-row"><span class="nm">Bamboo Whisk (Chasen)</span><span class="de">80-prong, handmade</span><span class="pr">£24.00</span></div>
+      <div class="m-row"><span class="nm">Vegan Matcha Loaf</span><span class="de">per slice</span><span class="pr">£4.70</span></div>
+      <div class="m-row"><span class="nm">Starter Ritual Kit</span><span class="de">tin · whisk · bowl · scoop</span><span class="pr">£55.00</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="events">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Catch Us Next</span>
+      <h2>A roaming matcha bar.</h2>
+      <p>No fixed walls — you'll find our little matcha bar at these London markets each week. Swing by.</p>
+    </div>
+    <div class="loc-grid">
+      <div class="loc"><div class="date">Daily</div><h3>Westfield White City</h3><p>Shepherd's Bush · W12 7GF</p><div class="hrs">Mon–Sat 10–9 · Sun 12–6</div></div>
+      <div class="loc"><div class="date">Weekends</div><h3>Backyard Market</h3><p>Brick Lane · E1 6QL</p><div class="hrs">Sat 11–6 · Sun 10–6</div></div>
+      <div class="loc"><div class="date">Sundays</div><h3>Battersea River Walk</h3><p>Battersea · SW11 8DD</p><div class="hrs">Sun 11–5</div></div>
+      <div class="loc"><div class="date">Any day</div><h3>Your Event</h3><p>We come to you — see below</p><div class="hrs">By arrangement ↓</div></div>
+    </div>
+
+    <div class="ev-band" id="book">
+      <div>
+        <span class="label">Private &amp; Corporate Events</span>
+        <h2>Bring the ritual to your room.</h2>
+        <p>Weddings, launches, office away-days and photo shoots — a live ceremonial matcha bar, whisked to order for your guests. Bespoke menus, branded cups and a calm that people remember.</p>
+        <div class="ev-types"><span>Private Parties</span><span>Corporate</span><span>Weddings</span><span>Brand Activations</span></div>
+      </div>
+      <div class="side">
+        <div class="big">“The calmest queue at any party.”</div>
+        <a href="mailto:hello@sanchamatcha.co.uk?subject=Event%20Enquiry" class="btn btn-solid">Enquire →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <span class="label" style="color:#cdd6b5">The Slow List</span>
+    <h2>Whisked into your inbox.</h2>
+    <p>New harvests, seasonal drinks and quiet café hours — a gentle note, never a loud one.</p>
+    <form class="subscribe" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('button').textContent='Welcome ✓'">
+      <input type="email" placeholder="you@example.com" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="font-size:28px">SANcha<span style="color:var(--matcha)">.</span></div>
+        <p>A roaming ceremonial matcha bar — single-origin, stone-milled in Uji and whisked to order at pop-ups and events across London.</p>
+      </div>
+      <div class="fcol"><h4>Events</h4><a href="#events">Pop-Up Schedule</a><a href="#book">Private Events</a><a href="#book">Corporate</a></div>
+      <div class="fcol"><h4>Shop</h4><a href="#shop">Matcha Tins</a><a href="#shop">Tools</a><a href="#shop">Gift Kits</a></div>
+      <div class="fcol"><h4>Follow</h4><a href="https://www.instagram.com/sanchamatchaa">Instagram</a><a href="#">TikTok</a><a href="#">Newsletter</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Sancha Matcha Ltd. London.</span>
+      <span>Concept design · Style 01 — Zen Minimal</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

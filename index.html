@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sancha Matcha — 3 Website Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Work Sans',sans-serif;background:#f4f1e8;color:#2b2b26;line-height:1.7;font-weight:300}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:400;line-height:1.1}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+  header{text-align:center;padding:90px 0 50px}
+  header .ey{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#7a8b5a}
+  header h1{font-size:clamp(40px,7vw,72px);margin:16px 0}
+  header h1 em{font-style:italic;color:#7a8b5a}
+  header p{max-width:560px;margin:0 auto;color:#5c5c53;font-size:17px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;padding:30px 0 90px}
+  .card{border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid #ddd6c6;background:#fff;transition:.35s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-8px);box-shadow:0 30px 60px -34px rgba(0,0,0,.3)}
+  .swatch{height:170px;display:flex;align-items:flex-end;padding:16px;gap:8px}
+  .swatch i{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.6)}
+  .c1{background:linear-gradient(135deg,#7a8b5a,#55643b)}
+  .c2{background:linear-gradient(135deg,#9ede3f,#0f2e1d)}
+  .c3{background:linear-gradient(135deg,#c07a4c,#6b4a34)}
+  .body{padding:26px}
+  .body .n{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#a89a82}
+  .body h3{font-size:27px;margin:6px 0 10px}
+  .body p{font-size:14.5px;color:#5c5c53;min-height:66px}
+  .body .go{margin-top:14px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid #2b2b26;display:inline-block;padding-bottom:2px}
+  footer{text-align:center;padding:30px 0 60px;color:#8a8578;font-size:13px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="ey">Concept Deck · London</div>
+    <h1>SANcha <em>Matcha</em> — three directions.</h1>
+    <p>London's roaming pop-up &amp; private-events matcha bar, in three complete website concepts. Each is a full working homepage — pop-up schedule, event booking, menu &amp; all — with its own palette, typography and personality. Open any one, then pick a favourite (or mix).</p>
+  </div>
+</header>
+<div class="wrap">
+  <div class="grid">
+    <a class="card" href="style-1-zen/index.html">
+      <div class="swatch c1"><i style="background:#f5f2e9"></i><i style="background:#b6a892"></i><i style="background:#2b2b26"></i></div>
+      <div class="body"><div class="n">Style 01</div><h3>Zen Minimal</h3><p>Elegant, ceremonial, calm. Sage green &amp; cream, serif display type, generous whitespace. Premium and quiet.</p><span class="go">View concept →</span></div>
+    </a>
+    <a class="card" href="style-2-vibrant/index.html">
+      <div class="swatch c2"><i style="background:#b6f24d"></i><i style="background:#ff9d7a"></i><i style="background:#fdfbef"></i></div>
+      <div class="body"><div class="n">Style 02</div><h3>Vibrant Modern</h3><p>Bold, playful, Gen-Z. Electric lime on deep forest with peach accents, oversized type and motion. High-energy.</p><span class="go">View concept →</span></div>
+    </a>
+    <a class="card" href="style-3-earthy/index.html">
+      <div class="swatch c3"><i style="background:#f3e9db"></i><i style="background:#c9a24b"></i><i style="background:#7c8034"></i></div>
+      <div class="body"><div class="n">Style 03</div><h3>Warm Earthy Artisan</h3><p>Cosy, editorial, hand-made. Clay, umber &amp; olive with gold accents. A travelling matcha bar with soul.</p><span class="go">View concept →</span></div>
+    </a>
+  </div>
+</div>
+<footer>Concept deck for Sancha Matcha · Based on research of Matchado, SMATCHA, Jenki &amp; How Matcha · 2026</footer>
+</body>
+</html>
