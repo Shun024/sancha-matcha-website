@@ -63,12 +63,24 @@ design trends, Lummi/Envato/Vistaprint 2026 colour trends, matcha-branding guide
 
 ## The three directions
 
-### 01 · Zen Minimal
-- **Palette:** sage matcha `#7a8b5a`, deep matcha `#55643b`, cream `#f5f2e9`, stone
-  `#b6a892`, charcoal `#2b2b26`.
+### 01 · Zen Minimal — ★ SELECTED & BUILT WITH REAL CONTENT
+- **Palette:** olive matcha `#6c7a55`, deep olive `#4c5541`, forest `#28331a` (both
+  sampled from the real logo), cream `#f5f2e9`, stone `#b6a892`, charcoal `#26271f`.
 - **Type:** Cormorant Garamond (serif display) + Jost (sans body).
-- **Feel:** ceremonial, premium, quiet. Whisked-bowl SVG hero, italic pull-quote, thin
-  rules. Best if the brand wants to read "high-end single-origin ritual."
+- **Feel:** ceremonial, premium, quiet.
+- **Now includes the real brand** (from the supplied PDFs):
+  - Hand-drawn SANcha logo — transparent PNGs in `style-1-zen/assets/` (dark for light
+    sections, cream for dark, olive emblem for the hero, + favicon), converted from the
+    supplied logo PDFs.
+  - Real founder story (three friends, coffee → matcha) + the **三茶 / "three teas"** name
+    meaning + **Zhejiang, China** sourcing.
+  - **Tinned matcha as hero product: IKI (粋)** signature blend (Longjing 43 + Yabukita)
+    and **YUAN (源)** single-cultivar Yabukita, with tasting notes. 30g now, 500g flagged
+    as coming.
+  - Matcha-vs-coffee **benefits**, a **Shop** (tins / merch / gift cards), **B2B wholesale**
+    (500g & 1kg online, 10kg+ enquiry), and the **Westfield Shepherd's Bush flagship** +
+    weekend pop-ups.
+  - **No drinks menu** (per the brief). Prices shown as "coming soon" until confirmed.
 
 ### 02 · Vibrant Modern
 - **Palette:** electric lime `#9ede3f`, deep forest `#0f2e1d`, cream `#fdfbef`, peach
