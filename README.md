@@ -72,7 +72,7 @@ design trends, Lummi/Envato/Vistaprint 2026 colour trends, matcha-branding guide
   - Hand-drawn SANcha logo — transparent PNGs in `style-1-zen/assets/` (dark for light
     sections, cream for dark, olive emblem for the hero, + favicon), converted from the
     supplied logo PDFs.
-  - Real founder story (three friends, coffee → matcha) + the **三茶 / "three teas"** name
+  - Real founder story (three friends, coffee → matcha) + the **"three teas"** name
     meaning + **Zhejiang, China** sourcing.
   - **Tinned matcha as hero product: IKI (粋)** signature blend (Longjing 43 + Yabukita)
     and **YUAN (源)** single-cultivar Yabukita, with tasting notes. 30g now, 500g flagged
