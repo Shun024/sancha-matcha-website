@@ -334,7 +334,10 @@
       <h2>Matcha should tell a story.</h2>
       <p>Two distinct expressions of tea craftsmanship — one born from innovation and harmony, the other from purity and origin.</p>
     </div>
-    <div class="tins">
+    <!-- Products below can be edited from a Google Sheet (see SHEET-SETUP.md).
+         When the sheet loads, these hard-coded cards are replaced automatically.
+         If the sheet is empty/unreachable, these stay as a safe fallback. -->
+    <div class="tins" id="tins-grid" data-sheet-products>
       <div class="tin-card">
         <div class="tin-top">
           <div class="tin tin-iki"><div class="kanji">粋</div><div class="rom">IKI</div></div>
@@ -380,7 +383,8 @@
       <span class="label">The Shop</span>
       <h2>More ways to bring SANcha home.</h2>
     </div>
-    <div class="cats">
+    <!-- Editable from a Google Sheet — see SHEET-SETUP.md (Shop tab). -->
+    <div class="cats" id="shop-grid" data-sheet-products>
       <div class="cat">
         <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="14" y="12" width="20" height="28" rx="3"/><path d="M17 12v-2h14v2"/><path d="M18 22h12"/></svg>
         <h3>Tinned Matcha</h3>
@@ -414,7 +418,8 @@
         <a href="mailto:trade@sanchamatcha.co.uk?subject=Bulk%20enquiry%20(10kg%2B)" class="btn btn-outline">Bulk Enquiry (10kg+)</a>
       </div>
     </div>
-    <div class="b2b-opts">
+    <!-- Editable from a Google Sheet — see SHEET-SETUP.md (Wholesale tab). -->
+    <div class="b2b-opts" id="wholesale-grid" data-sheet-products>
       <div class="b2b-opt"><div class="lft"><h4>500g Packet</h4><p>Perfect for smaller cafés &amp; trials</p></div><div class="rgt">Order online</div></div>
       <div class="b2b-opt"><div class="lft"><h4>1kg Packet</h4><p>For steady, high-volume service</p></div><div class="rgt">Order online</div></div>
       <div class="b2b-opt"><div class="lft"><h4>10kg &amp; above</h4><p>Bulk pricing &amp; discounts</p></div><div class="rgt">Enquiry form</div></div>
@@ -477,6 +482,138 @@
     </div>
   </div>
 </footer>
+
+<!-- ==========================================================================
+     LIGHTWEIGHT SHEET-DRIVEN CONTENT
+     Lets non-technical people edit the Tins, Shop and Wholesale sections from a
+     Google Sheet — no code changes, no deploy. Full guide: SHEET-SETUP.md
+     Local preview: serve the folder and open index.html?demo=1 to render every
+     section from the sample CSVs in assets/ (see "Local test" in SHEET-SETUP.md).
+     ========================================================================== -->
+<script>
+(function () {
+  // 1) Paste each tab's published-to-web CSV link between the quotes below.
+  //    (Google Sheet › File › Share › Publish to web › pick the tab › CSV.)
+  //    Leave any blank to keep that section's built-in cards. See SHEET-SETUP.md.
+  var SHEET = {
+    tins:      "",   // Tins tab
+    shop:      "",   // Shop tab
+    wholesale: ""    // Wholesale tab
+  };
+
+  // ---- shared helpers -------------------------------------------------------
+  function parseCSV(text) { // handles quoted fields, commas & newlines in quotes
+    var rows = [], row = [], field = "", i = 0, c, inQ = false;
+    text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    for (; i < text.length; i++) {
+      c = text[i];
+      if (inQ) {
+        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQ = false; }
+        else field += c;
+      } else if (c === '"') inQ = true;
+      else if (c === ",") { row.push(field); field = ""; }
+      else if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; }
+      else field += c;
+    }
+    if (field !== "" || row.length) { row.push(field); rows.push(row); }
+    return rows;
+  }
+  function rowsToObjects(rows) {
+    if (!rows.length) return [];
+    var headers = rows[0].map(function (h) { return h.trim().toLowerCase(); });
+    return rows.slice(1).map(function (r) {
+      var o = {};
+      headers.forEach(function (h, idx) { o[h] = (r[idx] || "").trim(); });
+      return o;
+    });
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (m) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m];
+    });
+  }
+  function visible(p) { // default TRUE; hide on false/no/0/hide
+    var v = (p.visible == null ? "true" : p.visible).trim();
+    return v !== "" && !/^(false|no|0|hide|hidden)$/i.test(v);
+  }
+  function pipes(s) {
+    return (s || "").split("|").map(function (x) { return x.trim(); }).filter(Boolean);
+  }
+
+  // ---- per-section renderers ------------------------------------------------
+  function renderTin(p) {
+    var from = p.tin_from || "#7c8a63", to = p.tin_to || "#4c5541";
+    var cultivars = pipes(p.cultivars).map(function (s) { return "<span>" + esc(s) + "</span>"; }).join("");
+    return '<div class="tin-card">' +
+        '<div class="tin-top">' +
+          '<div class="tin" style="background:linear-gradient(160deg,' + esc(from) + ',' + esc(to) + ')">' +
+            '<div class="kanji">' + esc(p.kanji) + '</div>' +
+            '<div class="rom">' + esc(p.roman || p.name) + '</div>' +
+          '</div>' +
+          '<div><h3>' + esc(p.name) + '</h3>' +
+            (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : '') + '</div>' +
+        '</div>' +
+        (p.description ? '<p>' + esc(p.description) + '</p>' : '') +
+        (cultivars ? '<div class="cultivars">' + cultivars + '</div>' : '') +
+        (p.for_who ? '<div class="forwho">' + esc(p.for_who) + '</div>' : '') +
+        '<div class="tin-foot"><span class="sizes">' + esc(p.sizes) + '</span>' +
+          '<span class="price">' + esc(p.price) + '</span></div>' +
+      '</div>';
+  }
+
+  var SHOP_ICONS = { // named presets so the sheet just picks one by name
+    tin:  '<rect x="14" y="12" width="20" height="28" rx="3"/><path d="M17 12v-2h14v2"/><path d="M18 22h12"/>',
+    merch:'<path d="M12 18h24l-2 22H14z"/><path d="M18 18a6 6 0 0 1 12 0"/>',
+    gift: '<rect x="10" y="16" width="28" height="20" rx="2"/><path d="M10 24h28M24 16v20"/><path d="M24 16c-3-6-9-4-9 0M24 16c3-6 9-4 9 0"/>'
+  };
+  function renderShop(p) {
+    var paths = SHOP_ICONS[(p.icon || "tin").toLowerCase()] || SHOP_ICONS.tin;
+    return '<div class="cat">' +
+        '<svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">' + paths + '</svg>' +
+        '<h3>' + esc(p.title) + '</h3>' +
+        (p.description ? '<p>' + esc(p.description) + '</p>' : '') +
+        (p.note ? '<span class="soon">' + esc(p.note) + '</span>' : '') +
+      '</div>';
+  }
+
+  function renderWholesale(p) {
+    return '<div class="b2b-opt"><div class="lft"><h4>' + esc(p.title) + '</h4>' +
+        (p.description ? '<p>' + esc(p.description) + '</p>' : '') + '</div>' +
+        '<div class="rgt">' + esc(p.action) + '</div></div>';
+  }
+
+  // ---- loader ---------------------------------------------------------------
+  // ?demo=1 renders every section from the local sample CSVs so you can preview
+  // the sheet-driven layout before wiring up Google Sheets.
+  var params = new URLSearchParams(location.search);
+  var demo = params.get("demo") === "1";
+  var FEEDS = [
+    { grid: "tins-grid",      key: "tins",      demoCsv: "assets/product-sheet-template.csv",   render: renderTin,   needs: "name" },
+    { grid: "shop-grid",      key: "shop",      demoCsv: "assets/shop-sheet-template.csv",       render: renderShop,  needs: "title" },
+    { grid: "wholesale-grid", key: "wholesale", demoCsv: "assets/wholesale-sheet-template.csv",  render: renderWholesale, needs: "title" }
+  ];
+
+  FEEDS.forEach(function (feed) {
+    var grid = document.getElementById(feed.grid);
+    if (!grid) return;
+    var url = params.get(feed.key + "_csv") || (demo ? feed.demoCsv : SHEET[feed.key]);
+    if (!url) return; // not configured → keep this section's static fallback
+
+    fetch(url, { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then(function (text) {
+        var rows = rowsToObjects(parseCSV(text)).filter(function (p) {
+          return p[feed.needs] && visible(p);
+        });
+        if (!rows.length) return; // nothing usable → keep the static fallback
+        grid.innerHTML = rows.map(feed.render).join("");
+      })
+      .catch(function (err) { // offline / bad link / private sheet → keep fallback
+        console.warn("[SANcha] '" + feed.key + "' sheet not loaded; showing built-in content.", err);
+      });
+  });
+})();
+</script>
 
 </body>
 </html>
