@@ -109,7 +109,7 @@
 
   /* TINS (hero product) */
   .tins-sec{background:var(--cream)}
-  .tins{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  .tins{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:32px}
   .tin-card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:40px;transition:.4s;display:flex;flex-direction:column}
   .tin-card:hover{box-shadow:0 30px 60px -34px rgba(40,51,26,.34);border-color:var(--matcha)}
   .tin-top{display:flex;gap:30px;align-items:center;margin-bottom:26px}
@@ -496,7 +496,7 @@
   //    (Google Sheet › File › Share › Publish to web › pick the tab › CSV.)
   //    Leave any blank to keep that section's built-in cards. See SHEET-SETUP.md.
   var SHEET = {
-    tins:      "",   // Tins tab
+    tins:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=2006886247&single=true&output=csv",   // Tins tab
     shop:      "",   // Shop tab
     wholesale: ""    // Wholesale tab
   };
