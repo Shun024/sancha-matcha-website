@@ -130,7 +130,12 @@ Notes & alternatives:
 | `description` | One line of copy | `Whisks, bowls and essentials.` |
 | `note` | Small caption at the bottom | `Prices coming soon` |
 | `icon` | Icon preset: `tin`, `merch`, or `gift` | `merch` |
+| `image` | *(optional)* photo — a Google Drive link or URL; overrides the icon | Google Drive link |
 | `visible` | `TRUE` / `FALSE` | `TRUE` |
+
+Shop cards support photos the **same way as Tins**: add an `image` column, paste a Google
+Drive link (shared "Anyone with the link") or any direct image URL, and it replaces the
+icon. Leave `image` blank to keep the icon. See the “Adding a product photo” steps above.
 
 ### Wholesale
 | Column | Meaning | Example |

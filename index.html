@@ -143,6 +143,9 @@
   .cat h3{font-size:26px;margin-bottom:8px}
   .cat p{font-size:14px;color:#6a6a60;margin-bottom:16px}
   .cat .soon{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--stone)}
+  /* optional photo on a shop card (from the sheet's `image` column) */
+  .cat-img{margin:-40px -32px 22px;border-radius:18px 18px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--cream)}
+  .cat-img img{width:100%;height:100%;object-fit:cover;display:block}
 
   /* B2B */
   .b2b{background:var(--matcha-deep);color:var(--cream)}
@@ -605,12 +608,21 @@
     gift: '<rect x="10" y="16" width="28" height="20" rx="2"/><path d="M10 24h28M24 16v20"/><path d="M24 16c-3-6-9-4-9 0M24 16c3-6 9-4 9 0"/>'
   };
   function renderShop(p) {
+    var head = '<h3>' + esc(p.title) + '</h3>' +
+        (p.description ? '<p>' + esc(p.description) + '</p>' : '') +
+        (p.note ? '<span class="soon">' + esc(p.note) + '</span>' : '');
+    // `image` column (photo or Google Drive link) takes priority; else the icon preset.
+    var img = imageUrl(p.image);
+    if (img) {
+      return '<div class="cat">' +
+          '<div class="cat-img"><img src="' + esc(img) + '" alt="' + esc(p.title) + '" loading="lazy"></div>' +
+          head +
+        '</div>';
+    }
     var paths = SHOP_ICONS[(p.icon || "tin").toLowerCase()] || SHOP_ICONS.tin;
     return '<div class="cat">' +
         '<svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">' + paths + '</svg>' +
-        '<h3>' + esc(p.title) + '</h3>' +
-        (p.description ? '<p>' + esc(p.description) + '</p>' : '') +
-        (p.note ? '<span class="soon">' + esc(p.note) + '</span>' : '') +
+        head +
       '</div>';
   }
 
