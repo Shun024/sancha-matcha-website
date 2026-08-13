@@ -91,9 +91,34 @@ watch the cards change — that’s the same mechanism the live sheet uses.
 | `sizes` | Sizes line (bottom-left) | `30g tin · 500g coming soon` |
 | `price` | Price (bottom-right) — free text | `£28` or `Price coming soon` |
 | `tin_from` / `tin_to` | *(optional)* tin gradient colours (hex) | `#7c8a63` / `#4c5541` |
+| `image` | *(optional)* product photo/logo — see below | Google Drive link, or `assets/x.png` |
 | `visible` | `TRUE` shows, `FALSE` hides | `TRUE` |
 
-The tin is drawn from the kanji + colours, so **no image upload is needed**.
+**A tin needs no photo** — if `image` is blank it's drawn from the kanji + colours (that's
+what SAN and LIN do). Add a photo only if you want one.
+
+#### Adding a product photo — straight from the sheet (no code)
+
+You can give any product a photo without touching the code, using **Google Drive**:
+
+1. Put the photo in a Google Drive folder.
+2. Share it so it's viewable: right-click the file → **Share** → under *General access*
+   choose **“Anyone with the link”** (Viewer). *(This step matters — a private file won’t show.)*
+3. Right-click → **Copy link**, and paste that link into the **`image`** column next to
+   the product’s row.
+4. Refresh the site — the photo appears as the card image, cropped to a 4:3 banner. The
+   site converts the Drive link automatically; you just paste and go.
+
+That’s the whole workflow: **photo + product details, all added in the sheet.**
+
+Notes & alternatives:
+- Square-ish images look best (they’re cropped to 4:3 at the top of the card).
+- Google’s Drive image endpoint is informal and can occasionally be slow; for a small
+  product list it’s fine. For bulletproof hosting, a free image host (**ImgBB**,
+  **Cloudinary**, **Imgur**) works the same way — upload, copy the *direct image link*,
+  paste it in `image`.
+- You can also reference an image kept in the site itself, e.g. `assets/product-iki.png`
+  (that’s how IKI & YUAN are set up).
 
 ### Shop
 | Column | Meaning | Example |

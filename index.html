@@ -547,6 +547,19 @@
   function pipes(s) {
     return (s || "").split("|").map(function (x) { return x.trim(); }).filter(Boolean);
   }
+  // Turn a value from an `image` column into a usable <img> URL. A Google Drive
+  // share link (or any Drive URL with a file id) is rewritten to Drive's image
+  // endpoint so photos can be added straight from the sheet. Anything else
+  // (a repo path like assets/x.png, or a direct image URL) is used as-is.
+  function imageUrl(v) {
+    v = (v || "").trim();
+    if (!v) return "";
+    if (/drive\.google\.com/.test(v)) {
+      var m = v.match(/\/d\/([-\w]{20,})/) || v.match(/[?&]id=([-\w]{20,})/);
+      if (m) return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1000";
+    }
+    return v;
+  }
 
   // ---- per-section renderers ------------------------------------------------
   // Products with hand-drawn logo artwork. Auto-matched by name so IKI/YUAN show
@@ -562,7 +575,7 @@
         '<div class="tin-foot"><span class="sizes">' + esc(p.sizes) + '</span>' +
           '<span class="price">' + esc(p.price) + '</span></div>';
 
-    var logo = p.image || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
+    var logo = imageUrl(p.image) || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
     if (logo) {
       return '<div class="tin-card">' +
           '<div class="tin-logo"><img src="' + esc(logo) + '" alt="' + esc(p.name) + ' matcha" loading="lazy"></div>' +
