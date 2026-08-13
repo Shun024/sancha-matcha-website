@@ -123,6 +123,31 @@ Notes & alternatives:
 - You can also reference an image kept in the site itself, e.g. `assets/product-iki.png`
   (that’s how IKI & YUAN are set up).
 
+#### Image files: what format, and where to keep them
+
+This applies to **all three sections** (Tins & Shop show a banner; Wholesale shows a small
+left-hand thumbnail). You never touch the code or the website files — you just need an
+image somewhere with a public link.
+
+**Format** — use **JPG or PNG** (these always work; WebP and GIF also work; SVG only if
+hosted directly, not via Drive).
+- ⚠️ **iPhone photos are often HEIC**, which won’t display. Either set the camera to
+  **Settings → Camera → Formats → “Most Compatible”** (shoots JPG), or export/save the
+  photo as **JPG** before uploading.
+
+**Size** — no strict limit, but ideal is:
+- **Square-ish** framing with the subject centred (Tins/Shop crop to 4:3, Wholesale to a
+  square), so nothing important is cut off.
+- Roughly **800–1600px** on the long side and **under ~1–2 MB**. Images are shown at about
+  1000px wide, so there’s no benefit to uploading huge files — they’re just slower.
+
+**Where to keep them** — pick one; both give a public link to paste into the `image` cell:
+1. **Google Drive (recommended).** Keep one dedicated folder (e.g. “SANcha product photos”).
+   Upload → right-click → **Share → “Anyone with the link” (Viewer)** → **Copy link** →
+   paste into `image`. ⚠️ Don’t delete or move the file afterwards, or the link breaks.
+2. **A free image host** (**ImgBB**, **Cloudinary**, **Imgur**) — upload, copy the *direct
+   image link*, paste it in `image`. No Google account needed.
+
 ### Shop
 | Column | Meaning | Example |
 |---|---|---|
