@@ -99,7 +99,10 @@ what SAN and LIN do). Add a photo only if you want one.
 
 #### Adding a product photo — straight from the sheet (no code)
 
-You can give any product a photo without touching the code, using **Google Drive**:
+**First, make sure the Tins tab has an `image` column.** If your sheet was set up before
+this feature, it won't yet — add it once: click the header row, **Insert → Column**, and
+type **`image`** as the header (position doesn't matter; leave the cell blank for any
+product that should keep its kanji tin). Then, for each product you want a photo on:
 
 1. Put the photo in a Google Drive folder.
 2. Share it so it's viewable: right-click the file → **Share** → under *General access*
