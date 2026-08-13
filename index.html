@@ -158,6 +158,8 @@
   .b2b-opt .lft h4{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:2px}
   .b2b-opt .lft p{font-size:13.5px;color:#c3c9b3;margin:0}
   .b2b-opt .rgt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#cdd6b5;white-space:nowrap}
+  .b2b-opt .wl-main{display:flex;align-items:center;gap:18px;min-width:0}
+  .b2b-opt .thumb{width:58px;height:58px;border-radius:10px;object-fit:cover;flex:none;display:block}
   .b2b-actions{display:flex;gap:16px;margin-top:26px;flex-wrap:wrap}
   .b2b .btn-cream{background:var(--cream);color:var(--matcha-deep)}
   .b2b .btn-cream:hover{background:#fff}
@@ -627,8 +629,13 @@
   }
 
   function renderWholesale(p) {
-    return '<div class="b2b-opt"><div class="lft"><h4>' + esc(p.title) + '</h4>' +
-        (p.description ? '<p>' + esc(p.description) + '</p>' : '') + '</div>' +
+    var img = imageUrl(p.image);
+    var thumb = img ? '<img class="thumb" src="' + esc(img) + '" alt="' + esc(p.title) + '" loading="lazy">' : '';
+    return '<div class="b2b-opt">' +
+        '<div class="wl-main">' + thumb +
+          '<div class="lft"><h4>' + esc(p.title) + '</h4>' +
+            (p.description ? '<p>' + esc(p.description) + '</p>' : '') + '</div>' +
+        '</div>' +
         '<div class="rgt">' + esc(p.action) + '</div></div>';
   }
 

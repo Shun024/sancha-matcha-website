@@ -143,7 +143,12 @@ icon. Leave `image` blank to keep the icon. See the “Adding a product photo”
 | `title` | Option name | `1kg Packet` |
 | `description` | Small line under the title | `For steady, high-volume service` |
 | `action` | Right-hand label | `Order online` |
+| `image` | *(optional)* small thumbnail — Google Drive link or URL | Google Drive link |
 | `visible` | `TRUE` / `FALSE` | `TRUE` |
+
+Wholesale rows also take an optional `image` — it shows as a small thumbnail on the left
+of the row (not a full banner, since these are compact list rows). Leave blank for no
+thumbnail. Same Drive-link / URL rules as above.
 
 ---
 
