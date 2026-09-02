@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redeem — SANcha Loyalty</title>
+<meta name="description" content="Collected all six SANcha stickers? Redeem your free tin of ceremonial matcha here.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- ===================================================================== -->
+<!--  LOYALTY REDEMPTION REDIRECT                                           -->
+<!--                                                                        -->
+<!--  This page lives permanently at:  sanchamatcha.co.uk/redeem            -->
+<!--  The QR code on the sticker cards points here and NEVER changes.       -->
+<!--                                                                        -->
+<!--  TO SEND CUSTOMERS TO YOUR REDEMPTION SYSTEM:                          -->
+<!--  put the destination URL between the quotes on the REDIRECT_TO line    -->
+<!--  below, then save. Leave it empty ("") to show the "coming soon" page. -->
+<!--                                                                        -->
+<!--  Example:                                                              -->
+<!--    var REDIRECT_TO = "https://forms.gle/abc123";                       -->
+<!-- ===================================================================== -->
+<script>
+  var REDIRECT_TO = "";   // <-- paste your redemption link here, keep the quotes
+
+  if (REDIRECT_TO) {
+    // Preserve any ?code=... the QR/link carries, so it reaches the destination.
+    var qs = window.location.search || "";
+    var sep = REDIRECT_TO.indexOf("?") > -1 ? "&" : "?";
+    window.location.replace(REDIRECT_TO + (qs ? sep + qs.slice(1) : ""));
+  }
+</script>
+
+<style>
+  :root{
+    --matcha:#6c7a55; --matcha-deep:#4c5541; --forest:#28331a;
+    --cream:#f5f2e9; --paper:#faf8f2; --charcoal:#26271f;
+    --stone:#b6a892; --line:#ddd6c6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Jost',sans-serif;background:var(--paper);color:var(--charcoal);
+    line-height:1.7;font-weight:300;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:40px 24px}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:500;line-height:1.08;
+    font-size:clamp(38px,7vw,64px);letter-spacing:-.01em;margin:22px 0 0}
+  h1 em{font-style:italic;color:var(--matcha-deep)}
+  .logo{height:60px;width:auto;display:block;margin:0 auto}
+  .label{font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--matcha-deep);font-weight:400;margin-bottom:6px}
+  p.lead{font-size:18px;max-width:440px;margin:22px auto 0;color:#54544c}
+  .stamps{display:flex;gap:12px;justify-content:center;margin:38px 0 4px;flex-wrap:wrap}
+  .stamp{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--stone);
+    display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--matcha-deep)}
+  .stamp.on{background:var(--matcha-deep);border-color:var(--matcha-deep);color:var(--cream)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:22px;
+    padding:52px 40px;max-width:560px;width:100%;box-shadow:0 30px 60px rgba(40,51,26,.07)}
+  .note{margin-top:30px;font-size:13px;letter-spacing:.04em;color:#8a8a80}
+  a.home{display:inline-block;margin-top:34px;text-decoration:none;color:var(--charcoal);
+    border-bottom:1px solid var(--charcoal);padding:6px 2px;font-size:13px;
+    letter-spacing:.16em;text-transform:uppercase;transition:.3s}
+  a.home:hover{color:var(--matcha-deep);border-color:var(--matcha-deep)}
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="../assets/logo-dark.png" alt="SANcha">
+    <div class="stamps" aria-hidden="true">
+      <span class="stamp on">✓</span><span class="stamp on">✓</span>
+      <span class="stamp on">✓</span><span class="stamp on">✓</span>
+      <span class="stamp on">✓</span><span class="stamp on">✓</span>
+    </div>
+    <p class="label">Six stickers · one free tin</p>
+    <h1>Redemption <em>opening soon</em></h1>
+    <p class="lead">
+      You've found the right place. Our loyalty redemption is being set up —
+      check back shortly to claim your free tin of ceremonial matcha.
+    </p>
+    <p class="note">Thank you for collecting with SANcha 🍵</p>
+    <a class="home" href="/">Back to sanchamatcha.co.uk</a>
+  </div>
+</body>
+</html>
