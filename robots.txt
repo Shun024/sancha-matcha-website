@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /redeem/
+Disallow: /concepts/
+Disallow: /style-2-vibrant/
+Disallow: /style-3-earthy/
+
+Sitemap: https://sanchamatcha.co.uk/sitemap.xml
