@@ -29,9 +29,12 @@
 <meta name="twitter:image:alt" content="SANcha — hand-drawn ceremonial matcha bowl logo">
 
 <link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preload" as="image" href="assets/logo-dark.png" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Load fonts without blocking first paint; swap in when ready -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
 <style>
   :root{
     --matcha:#6c7a55;
@@ -41,6 +44,7 @@
     --paper:#faf8f2;
     --charcoal:#26271f;
     --stone:#b6a892;
+    --muted:#786a4d;
     --line:#ddd6c6;
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -75,7 +79,7 @@
   .hero p.lead{font-size:19px;max-width:470px;margin:26px 0 38px;color:#54544c}
   .hero-actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
   .hero-tags{display:flex;gap:26px;margin-top:50px;flex-wrap:wrap}
-  .hero-tags div{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7a7a70;display:flex;align-items:center;gap:9px}
+  .hero-tags div{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5f5f57;display:flex;align-items:center;gap:9px}
   .hero-tags i{width:5px;height:5px;border-radius:50%;background:var(--matcha)}
   .emblem-stage{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1}
   .emblem{width:90%;max-width:460px;animation:float 7s ease-in-out infinite;filter:drop-shadow(0 30px 50px rgba(40,51,26,.28))}
@@ -119,6 +123,7 @@
   .meaning .k .c{font-family:'Cormorant Garamond',serif;font-size:74px;line-height:1;color:#cdd6b5}
   .meaning .k .t{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#9aa585}
   .meaning .plus{font-size:40px;color:#6f7d54;font-family:'Cormorant Garamond',serif}
+  .meaning .label{color:#c9d3ad}
   .meaning h2{font-size:clamp(32px,4.6vw,52px);color:var(--cream);margin-bottom:16px}
   .meaning p{max-width:600px;margin:0 auto;color:#d4d8c6;font-size:17px}
 
@@ -143,20 +148,20 @@
   .tin-iki{background:linear-gradient(160deg,#7c8a63,#4c5541)}
   .tin-yuan{background:linear-gradient(160deg,#9aac66,#586a2c)}
   .tin-top h3{font-size:32px;margin-bottom:4px}
-  .tin-top .sub{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--stone)}
+  .tin-top .sub{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
   .tin-card>p{color:#5c5c53;font-size:15.5px;margin-bottom:18px}
   .cultivars{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
   .cultivars span{border:1px solid var(--line);border-radius:30px;padding:6px 14px;font-size:12px;letter-spacing:.06em;color:var(--matcha-deep)}
   .tin-card .forwho{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--matcha-deep);margin-bottom:22px}
   .tin-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:20px;border-top:1px solid var(--line)}
   .tin-foot .sizes{font-size:13px;color:#6a6a60}
-  .tin-foot .price{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--stone)}
+  .tin-foot .price{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--muted)}
   /* product-logo variant of the tin card (real hand-drawn IKI/YUAN artwork) */
   .tin-logo{margin:-40px -40px 24px;border-radius:22px 22px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--cream)}
   .tin-logo img{width:100%;height:100%;object-fit:cover;display:block}
   .tin-head{margin-bottom:18px}
   .tin-head h3{font-size:32px;margin-bottom:4px}
-  .tin-head .sub{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--stone)}
+  .tin-head .sub{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 
   /* SHOP CATEGORIES */
   .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
@@ -165,7 +170,7 @@
   .cat .ic{width:56px;height:56px;margin:0 auto 20px;color:var(--matcha-deep)}
   .cat h3{font-size:26px;margin-bottom:8px}
   .cat p{font-size:14px;color:#6a6a60;margin-bottom:16px}
-  .cat .soon{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--stone)}
+  .cat .soon{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
   /* optional photo on a shop card (from the sheet's `image` column) */
   .cat-img{margin:-40px -32px 22px;border-radius:18px 18px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--cream)}
   .cat-img img{width:100%;height:100%;object-fit:cover;display:block}
@@ -178,9 +183,9 @@
   .b2b p{color:#dfe3d3;font-size:17px;margin-bottom:26px;max-width:460px}
   .b2b-opts{display:flex;flex-direction:column;gap:14px}
   .b2b-opt{background:rgba(245,242,233,.08);border:1px solid rgba(245,242,233,.18);border-radius:14px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-  .b2b-opt .lft h4{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:2px}
-  .b2b-opt .lft p{font-size:13.5px;color:#c3c9b3;margin:0}
-  .b2b-opt .rgt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#cdd6b5;white-space:nowrap}
+  .b2b-opt .lft h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:2px}
+  .b2b-opt .lft p{font-size:13.5px;color:#e2e6d5;margin:0}
+  .b2b-opt .rgt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#e6ead9;white-space:nowrap}
   .b2b-opt .wl-main{display:flex;align-items:center;gap:18px;min-width:0}
   .b2b-opt .thumb{width:58px;height:58px;border-radius:10px;object-fit:cover;flex:none;display:block}
   .b2b-actions{display:flex;gap:16px;margin-top:26px;flex-wrap:wrap}
@@ -197,12 +202,12 @@
   .flagship h3{font-size:34px;margin-bottom:8px}
   .flagship .addr{color:#5c5c53;font-size:16px;margin-bottom:20px}
   .hours{display:flex;gap:40px;flex-wrap:wrap}
-  .hours .h .d{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-bottom:4px}
+  .hours .h .d{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
   .hours .h .v{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--matcha-deep)}
   .popups h3{font-size:26px;margin-bottom:18px}
   .pop{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:16px 0;border-bottom:1px dashed var(--line)}
   .pop .nm{font-family:'Cormorant Garamond',serif;font-size:20px}
-  .pop .de{font-size:13px;color:#7a7a70;flex:1;margin-left:6px}
+  .pop .de{font-size:13px;color:#5f5f57;flex:1;margin-left:6px}
   .pop .hr{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--matcha-deep);white-space:nowrap}
 
   /* NEWSLETTER */
@@ -221,10 +226,10 @@
   .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
   .foot-logo{height:88px;width:auto;margin-bottom:18px}
   footer .lead{font-size:14px;color:#9d998d;max-width:290px}
-  .fcol h4{font-family:'Jost';font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px;color:var(--stone)}
+  .fcol h3{font-family:'Jost';font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px;color:var(--stone)}
   .fcol a{display:block;color:#c3bfb3;text-decoration:none;font-size:14px;margin-bottom:11px;transition:.3s}
   .fcol a:hover{color:var(--matcha)}
-  .foot-bottom{border-top:1px solid #43433c;padding-top:26px;display:flex;justify-content:space-between;font-size:12px;color:#83806f;letter-spacing:.06em;flex-wrap:wrap;gap:8px}
+  .foot-bottom{border-top:1px solid #43433c;padding-top:26px;display:flex;justify-content:space-between;font-size:12px;color:#a3a08d;letter-spacing:.06em;flex-wrap:wrap;gap:8px}
 
   @media(max-width:900px){
     .nav-links,.nav-cta{display:none}
@@ -276,6 +281,7 @@
   </div>
 </nav>
 
+<main>
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
@@ -293,7 +299,7 @@
       </div>
     </div>
     <div class="emblem-stage">
-      <img src="assets/logo-dark.png" alt="SANcha matcha emblem" class="emblem">
+      <img src="assets/logo-dark.png" alt="SANcha matcha emblem" class="emblem" fetchpriority="high">
     </div>
   </div>
 </header>
@@ -477,9 +483,9 @@
     </div>
     <!-- Editable from a Google Sheet — see SHEET-SETUP.md (Wholesale tab). -->
     <div class="b2b-opts" id="wholesale-grid" data-sheet-products>
-      <div class="b2b-opt"><div class="lft"><h4>500g Packet</h4><p>Perfect for smaller cafés &amp; trials</p></div><div class="rgt">Order online</div></div>
-      <div class="b2b-opt"><div class="lft"><h4>1kg Packet</h4><p>For steady, high-volume service</p></div><div class="rgt">Order online</div></div>
-      <div class="b2b-opt"><div class="lft"><h4>10kg &amp; above</h4><p>Bulk pricing &amp; discounts</p></div><div class="rgt">Enquiry form</div></div>
+      <div class="b2b-opt"><div class="lft"><h3>500g Packet</h3><p>Perfect for smaller cafés &amp; trials</p></div><div class="rgt">Order online</div></div>
+      <div class="b2b-opt"><div class="lft"><h3>1kg Packet</h3><p>For steady, high-volume service</p></div><div class="rgt">Order online</div></div>
+      <div class="b2b-opt"><div class="lft"><h3>10kg &amp; above</h3><p>Bulk pricing &amp; discounts</p></div><div class="rgt">Enquiry form</div></div>
     </div>
   </div>
 </section>
@@ -504,7 +510,7 @@
         <h3>Also catch us at</h3>
         <div class="pop"><span class="nm">Backyard Market</span><span class="de">Brick Lane · E1 6QL</span><span class="hr">Sat 11–6 · Sun 10–6</span></div>
         <div class="pop"><span class="nm">Battersea River Walk</span><span class="de">Battersea · SW11 8DD</span><span class="hr">Sun 11–5</span></div>
-        <p style="margin-top:18px;font-size:14px;color:#7a7a70">Pop-up dates move around — follow <a href="https://www.instagram.com/sanchamatchaa" style="color:var(--matcha-deep)">@sanchamatchaa</a> for the latest.</p>
+        <p style="margin-top:18px;font-size:14px;color:#5f5f57">Pop-up dates move around — follow <a href="https://www.instagram.com/sanchamatchaa" style="color:var(--matcha-deep)">@sanchamatchaa</a> for the latest.</p>
       </div>
     </div>
   </div>
@@ -522,6 +528,7 @@
     </form>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="wrap">
@@ -530,9 +537,9 @@
         <img src="assets/logo-cream.png" alt="SANcha" class="foot-logo">
         <p class="lead">Ceremonial-grade matcha for clean, steady energy. Three friends, one better cup — London.</p>
       </div>
-      <div class="fcol"><h4>Shop</h4><a href="#tins">IKI &amp; YUAN Tins</a><a href="#tins">Merchandise</a><a href="#tins">Gift Cards</a></div>
-      <div class="fcol"><h4>Trade</h4><a href="#b2b">Wholesale Supply</a><a href="mailto:contact@sanchamatcha.co.uk">Bulk Enquiry</a><a href="#why">Why Matcha</a></div>
-      <div class="fcol"><h4>Visit &amp; Follow</h4><a href="#visit">Westfield Store</a><a href="https://www.instagram.com/sanchamatchaa">Instagram</a><a href="https://sanchamatcha.co.uk">sanchamatcha.co.uk</a></div>
+      <div class="fcol"><h3>Shop</h3><a href="#tins">IKI &amp; YUAN Tins</a><a href="#tins">Merchandise</a><a href="#tins">Gift Cards</a></div>
+      <div class="fcol"><h3>Trade</h3><a href="#b2b">Wholesale Supply</a><a href="mailto:contact@sanchamatcha.co.uk">Bulk Enquiry</a><a href="#why">Why Matcha</a></div>
+      <div class="fcol"><h3>Visit &amp; Follow</h3><a href="#visit">Westfield Store</a><a href="https://www.instagram.com/sanchamatchaa">Instagram</a><a href="https://sanchamatcha.co.uk">sanchamatcha.co.uk</a></div>
     </div>
     <div class="foot-bottom">
       <span>© 2026 SANcha · London</span>
@@ -678,7 +685,7 @@
     var thumb = img ? '<img class="thumb" src="' + esc(img) + '" alt="' + esc(p.title) + '" loading="lazy">' : '';
     return '<div class="b2b-opt">' +
         '<div class="wl-main">' + thumb +
-          '<div class="lft"><h4>' + esc(p.title) + '</h4>' +
+          '<div class="lft"><h3>' + esc(p.title) + '</h3>' +
             (p.description ? '<p>' + esc(p.description) + '</p>' : '') + '</div>' +
         '</div>' +
         '<div class="rgt">' + esc(p.action) + '</div></div>';
