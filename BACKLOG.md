@@ -45,6 +45,17 @@ Still open:
 - **Newsletter form** validates client-side but isn't wired to storage yet (see below /
   the newsletter→Google Sheet plan in memory).
 
+## Newsletter form → storage (not wired yet)
+The subscribe form (`#cta` section) now validates the email and has a honeypot spam trap,
+but `handleSubscribe()` does not send anywhere yet (marked with a `TODO` in the code).
+To make it capture emails:
+- Recommended: Google Apps Script web app (`doPost`) that appends `[timestamp, email]` to a
+  Google Sheet (fits the existing Sheets-as-CMS setup). Front-end POSTs the email to the
+  deploy URL; keep the honeypot check server-side too.
+- Needs from client: create the Sheet + Apps Script and give us the deployment URL.
+- Then update `handleSubscribe()` to POST instead of just clearing the field, and update the
+  Privacy Policy if the storage/provider changes what data is held.
+
 ---
 
 ## Decisions on record
