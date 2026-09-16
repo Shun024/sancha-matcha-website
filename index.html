@@ -30,12 +30,16 @@
 
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preload" as="image" href="assets/logo-dark.webp" type="image/webp" fetchpriority="high">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Load fonts without blocking first paint; swap in when ready -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+<!-- Self-hosted fonts (same-origin, no external requests); preload the two above-the-fold weights -->
+<link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* Brand fonts, self-hosted. font-display:optional = use the real font if it's
+     ready at first paint (preloaded, so usually yes), otherwise the metric-matched
+     fallback for that load with NO later swap — keeps CLS at ~0. */
+  @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 700;font-display:optional;src:url(assets/fonts/cormorant-garamond-latin.woff2) format('woff2')}
+  @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 700;font-display:optional;src:url(assets/fonts/cormorant-garamond-latin-italic.woff2) format('woff2')}
+  @font-face{font-family:'Jost';font-style:normal;font-weight:300 500;font-display:optional;src:url(assets/fonts/jost-latin.woff2) format('woff2')}
   /* Size-adjusted fallback fonts — match metrics so text doesn't reflow
      when the web fonts swap in (keeps CLS ~0 with non-blocking font loading) */
   @font-face{
@@ -100,7 +104,7 @@
   .hero-tags div{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5f5f57;display:flex;align-items:center;gap:9px}
   .hero-tags i{width:5px;height:5px;border-radius:50%;background:var(--matcha)}
   .emblem-stage{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1}
-  .emblem{width:90%;max-width:460px;animation:float 7s ease-in-out infinite;filter:drop-shadow(0 30px 50px rgba(40,51,26,.28))}
+  .emblem{width:90%;max-width:460px;aspect-ratio:714/666;animation:float 7s ease-in-out infinite;filter:drop-shadow(0 30px 50px rgba(40,51,26,.28))}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
 
   /* MARQUEE */
@@ -129,7 +133,7 @@
   .story{background:var(--paper)}
   .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
   .story-visual{aspect-ratio:4/5;border-radius:180px 180px 14px 14px;background:linear-gradient(160deg,var(--matcha),var(--forest));position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:40px;box-shadow:0 30px 60px -30px rgba(40,51,26,.5)}
-  .story-visual img{width:78%;opacity:.96}
+  .story-visual img{width:78%;aspect-ratio:556/520;opacity:.96}
   .story-copy h2{font-size:clamp(34px,4.5vw,54px);margin:18px 0 22px}
   .story-copy p{color:#54544c;margin-bottom:18px;font-size:16.5px}
   .story-copy .sig{font-family:'Cormorant Garamond','Cormorant Garamond Fallback',serif;font-style:italic;font-size:23px;color:var(--matcha-deep);margin-top:12px}
