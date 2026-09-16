@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SANcha — Ceremonial Matcha · London</title>
-<meta name="description" content="SANcha — ceremonial-grade matcha for clean, steady energy. Founded by three friends in London. Shop IKI & YUAN tinned matcha, and wholesale supply.">
+<title>SANcha — Ceremonial Matcha for Clean Energy · London</title>
+<meta name="description" content="Ceremonial-grade matcha for clean, steady energy — no jitters, no 3pm slump. Founded by three friends in London. Shop IKI &amp; YUAN tins &amp; wholesale.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#28331a">
 <link rel="canonical" href="https://sanchamatcha.co.uk/">
@@ -263,6 +263,18 @@
     .meaning .k .c{font-size:48px}
   }
   @media(max-width:540px){.ben-grid{grid-template-columns:1fr}.hero-tags{gap:14px}}
+
+  /* FAQ */
+  .faq{background:var(--cream)}
+  .faq .head{text-align:center;max-width:640px;margin:0 auto}
+  .faq h2{font-size:clamp(30px,4.4vw,46px);color:var(--forest);margin:14px 0 0}
+  .faq-list{max-width:820px;margin:44px auto 0}
+  .faq-item{border-bottom:1px solid var(--line)}
+  .faq-item summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:24px 0;font-family:'Cormorant Garamond','Cormorant Garamond Fallback',serif;font-size:23px;color:var(--forest)}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary::after{content:"+";font-family:'Jost','Jost Fallback',sans-serif;font-size:26px;line-height:1;color:var(--matcha-deep);transition:transform .25s}
+  .faq-item[open] summary::after{content:"–"}
+  .faq-item p{margin:0;padding:0 0 26px;max-width:68ch;color:var(--charcoal);font-size:16px}
 </style>
 <script type="application/ld+json">
 {
@@ -537,6 +549,55 @@
     </div>
   </div>
 </section>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Good to know</span>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>What is ceremonial-grade matcha?</summary>
+        <p>Ceremonial grade is the highest quality of matcha — made from the youngest, shade-grown tea leaves, stone-milled into an ultra-fine powder. It's smooth enough to whisk with just hot water, with no bitterness and nothing added.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Will matcha give me the caffeine jitters?</summary>
+        <p>No. Matcha gives clean, steady energy: its caffeine is balanced by an amino acid called L-theanine, so you get calm focus without the spike and crash of coffee — no jitters, no 3pm slump.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How do I prepare matcha?</summary>
+        <p>Sift about half a teaspoon (1–2g) into a bowl, add a little hot — not boiling — water, and whisk in a zig-zag until frothy. Top up with water or your milk of choice, hot or iced.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Where can I buy SANcha matcha?</summary>
+        <p>Shop our IKI &amp; YUAN tins online, visit us at our Westfield store, or catch us at our pop-ups — follow <a href="https://www.instagram.com/sanchamatchaa">@sanchamatchaa</a> for the latest dates.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Do you offer wholesale or trade supply?</summary>
+        <p>Yes. We supply cafés and businesses with ceremonial-grade matcha in 500g, 1kg and 10kg-plus formats. See the wholesale section above or email <a href="mailto:contact@sanchamatcha.co.uk?subject=Wholesale%20enquiry">contact@sanchamatcha.co.uk</a>.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Who is behind SANcha?</summary>
+        <p>SANcha was founded by three friends in London who wanted matcha made for real life — the everyday cup they wished coffee could be. SAN + CHA means "three tea," for the three of us.</p>
+      </details>
+    </div>
+  </div>
+</section>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"What is ceremonial-grade matcha?","acceptedAnswer":{"@type":"Answer","text":"Ceremonial grade is the highest quality of matcha — made from the youngest, shade-grown tea leaves, stone-milled into an ultra-fine powder. It's smooth enough to whisk with just hot water, with no bitterness and nothing added."}},
+    {"@type":"Question","name":"Will matcha give me the caffeine jitters?","acceptedAnswer":{"@type":"Answer","text":"No. Matcha gives clean, steady energy: its caffeine is balanced by an amino acid called L-theanine, so you get calm focus without the spike and crash of coffee — no jitters, no 3pm slump."}},
+    {"@type":"Question","name":"How do I prepare matcha?","acceptedAnswer":{"@type":"Answer","text":"Sift about half a teaspoon (1–2g) into a bowl, add a little hot — not boiling — water, and whisk in a zig-zag until frothy. Top up with water or your milk of choice, hot or iced."}},
+    {"@type":"Question","name":"Where can I buy SANcha matcha?","acceptedAnswer":{"@type":"Answer","text":"Shop our IKI & YUAN tins online, visit us at our Westfield store, or catch us at our pop-ups — follow @sanchamatchaa on Instagram for the latest dates."}},
+    {"@type":"Question","name":"Do you offer wholesale or trade supply?","acceptedAnswer":{"@type":"Answer","text":"Yes. We supply cafés and businesses with ceremonial-grade matcha in 500g, 1kg and 10kg-plus formats. See the wholesale section or email contact@sanchamatcha.co.uk."}},
+    {"@type":"Question","name":"Who is behind SANcha?","acceptedAnswer":{"@type":"Answer","text":"SANcha was founded by three friends in London who wanted matcha made for real life — the everyday cup they wished coffee could be. SAN + CHA means three tea, for the three of us."}}
+  ]
+}
+</script>
 
 <section class="cta">
   <div class="wrap">
