@@ -29,6 +29,7 @@
 <meta name="twitter:image:alt" content="SANcha — hand-drawn ceremonial matcha bowl logo">
 
 <link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="preload" as="image" href="assets/logo-dark.webp" type="image/webp" fetchpriority="high">
 <!-- Self-hosted fonts (same-origin, no external requests); preload the two above-the-fold weights -->
 <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -240,6 +241,9 @@
   .subscribe{display:flex;max-width:460px;margin:0 auto;border:1px solid rgba(245,242,233,.4);border-radius:40px;overflow:hidden}
   .subscribe input{flex:1;background:transparent;border:0;padding:16px 24px;color:var(--cream);font-family:'Jost','Jost Fallback',sans-serif;font-size:15px;outline:none}
   .subscribe input::placeholder{color:rgba(245,242,233,.6)}
+  .subscribe .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+  .foot-legal a{color:#c7cdb5;text-decoration:none;margin:0 10px}
+  .foot-legal a:hover{color:var(--cream)}
   .subscribe button{background:var(--cream);color:var(--matcha-deep);border:0;padding:0 30px;font-family:'Jost','Jost Fallback',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s}
   .subscribe button:hover{background:#fff}
 
@@ -605,8 +609,9 @@
     <span class="label" style="color:#cdd6b5">Join the ritual</span>
     <h2>Slow down. Sip well.</h2>
     <p>Be first to know when the tins launch, plus new drops and quiet café moments — a gentle note, never a loud one.</p>
-    <form class="subscribe" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('button').textContent='Welcome ✓'">
-      <input type="email" placeholder="you@example.com" required>
+    <form class="subscribe" onsubmit="return handleSubscribe(event)" novalidate>
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
+      <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit">Subscribe</button>
     </form>
   </div>
@@ -626,6 +631,7 @@
     </div>
     <div class="foot-bottom">
       <span>© 2026 SANcha · London</span>
+      <span class="foot-legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></span>
       <span>Concept design · Style 01 — Zen Minimal</span>
     </div>
   </div>
@@ -638,6 +644,22 @@
      Local preview: serve the folder and open index.html?demo=1 to render every
      section from the sample CSVs in assets/ (see "Local test" in SHEET-SETUP.md).
      ========================================================================== -->
+<script>
+  // Newsletter form: validate email + honeypot spam trap before "submitting".
+  // NOTE: not yet wired to a backend — see BACKLOG (newsletter -> Google Sheet).
+  function handleSubscribe(e){
+    e.preventDefault();
+    var f=e.target;
+    if(f.company && f.company.value){return false;}      // honeypot filled = bot, silently drop
+    var email=f.email;
+    if(!email.value || !email.checkValidity()){email.reportValidity();return false;}
+    // TODO: POST email to storage here.
+    email.value='';
+    var btn=f.querySelector('button');
+    if(btn){btn.textContent='Welcome ✓';btn.disabled=true;}
+    return false;
+  }
+</script>
 <script>
 (function () {
   // 1) Paste each tab's published-to-web CSV link between the quotes below.
