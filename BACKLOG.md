@@ -30,6 +30,21 @@ Swap the remaining placeholders for the real thing when it's ready:
 - Only remaining lever (minor): LCP ~3.2s is the hero image over throttled mobile —
   a smaller/further-optimised hero asset could shave a little. Diminishing returns.
 
+## Launch-readiness checklist (Sep 2026)
+Done: privacy + terms pages, custom 404, form validation + honeypot, apple-touch-icon,
+image compression, sitemap/robots, meta title+desc, OG image, alt text, colour contrast,
+mobile-friendly, page speed, secrets check (clean), broken-link check (clean), FAQ+schema.
+Still open:
+- **Force HTTPS:** confirm the "Enforce HTTPS" box is ticked in GitHub → Settings → Pages
+  (DNS check was green). One-click, client/us to confirm.
+- **Analytics:** deferred — client chose "none for now" (Privacy Policy states no
+  analytics/cookies). If added later: cookieless (Plausible/Fathom) needs NO cookie banner;
+  GA4 would need a consent banner built.
+- **Legal pages need a review:** privacy/terms are solid plain-English drafts — client should
+  add registered business details and have them checked before relying on them commercially.
+- **Newsletter form** validates client-side but isn't wired to storage yet (see below /
+  the newsletter→Google Sheet plan in memory).
+
 ---
 
 ## Decisions on record
