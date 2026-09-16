@@ -21,12 +21,14 @@ Swap the remaining placeholders for the real thing when it's ready:
 - Verification is a DNS TXT record in Wix (which we control), so any account works —
   it's only a question of who should own it long-term.
 
-## Performance polish (Lighthouse)
-- Live mobile scores: Performance **84**, Accessibility **100**, Best Practices **100**,
-  SEO effectively 100. Remaining perf points are LCP (~3.5s, hero image over the network)
-  and a small CLS (0.087, from async font swap — still in the "good" <0.1 range).
-- To push further later: ship a smaller/optimised hero image (or WebP), and add a
-  size-adjusted font fallback to remove the font-swap layout shift. Diminishing returns.
+## Performance polish (Lighthouse) — DONE
+- Live mobile: Performance **91–92**, Accessibility **100**, Best Practices **100**,
+  SEO effectively 100. **CLS 0**, FCP 1.2s, LCP ~3.2s, SI ~3.8s.
+- Done: self-hosted Cormorant + Jost (same-origin woff2, font-display:optional, preloaded
+  above-the-fold weights) with metric-matched fallbacks; WebP hero via <picture>;
+  aspect-ratio reserved on hero/story images. Eliminated the font-swap CLS.
+- Only remaining lever (minor): LCP ~3.2s is the hero image over throttled mobile —
+  a smaller/further-optimised hero asset could shave a little. Diminishing returns.
 
 ---
 
