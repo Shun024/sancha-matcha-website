@@ -78,6 +78,7 @@
     --peach:#FFD9CF;
     --blue:#2B43BC;
     --maroon:#6C2C25;
+    --lemon:#FBEFBE;   /* soft light yellow */
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -100,8 +101,8 @@
   .nav-links{display:flex;gap:34px;list-style:none}
   .nav-links a{text-decoration:none;color:var(--charcoal);font-size:13px;letter-spacing:.14em;text-transform:uppercase;transition:color .3s}
   .nav-links a:hover{color:var(--matcha-deep)}
-  .nav-cta{border:1px solid var(--charcoal);padding:10px 22px;border-radius:40px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--charcoal);transition:.3s}
-  .nav-cta:hover{background:var(--charcoal);color:var(--cream)}
+  .nav-cta{border:1px solid var(--maroon);background:var(--maroon);padding:10px 22px;border-radius:40px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--cream);transition:.3s}
+  .nav-cta:hover{background:#55221c;border-color:#55221c}
   .nav-menu{display:flex;align-items:center;gap:34px}
   .nav-burger{display:none;background:none;border:0;cursor:pointer;padding:10px;width:46px;height:46px;color:var(--charcoal);margin-right:-10px}
   .nav-burger span{display:block;width:24px;height:2px;background:currentColor;border-radius:2px;margin:5px 0;transition:transform .3s,opacity .3s}
@@ -126,10 +127,10 @@
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
 
   /* MARQUEE */
-  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;overflow:hidden;white-space:nowrap;background:var(--cream)}
+  .marquee{border-top:1px solid var(--blue);border-bottom:1px solid var(--blue);padding:20px 0;overflow:hidden;white-space:nowrap;background:var(--blue)}
   .marquee-track{display:inline-block;animation:scroll 30s linear infinite}
-  .marquee-track span{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:26px;font-style:normal;color:var(--matcha-deep);margin:0 40px}
-  .marquee-track span::after{content:"◦";margin-left:44px;color:var(--stone);font-style:normal}
+  .marquee-track span{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:26px;font-style:normal;color:var(--cream);margin:0 40px}
+  .marquee-track span::after{content:"◦";margin-left:44px;color:rgba(255,244,214,.55);font-style:normal}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
   section{padding:110px 0}
@@ -139,7 +140,8 @@
   .sec-head p{color:#5c5c53;font-size:17px}
 
   /* BENEFITS */
-  .benefits{background:var(--peach)}
+  .benefits{background:var(--lemon)}
+  .benefits .sec-head h2{color:var(--blue)}
   .ben-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
   .ben{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:34px 28px;transition:.35s}
   .ben:hover{transform:translateY(-6px);box-shadow:0 22px 46px -30px rgba(40,51,26,.3);border-color:var(--matcha)}
@@ -177,6 +179,8 @@
 
   /* TINS (hero product) */
   .tins-sec{background:var(--cream)}
+  /* small pink bubble "New" badge on the tins heading (on-brand, off the product images) */
+  .badge-new{display:inline-block;background:var(--peach);color:var(--maroon);font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:5px 15px;border-radius:999px;transform:rotate(-4deg);vertical-align:middle;margin-left:14px;box-shadow:0 5px 12px -5px rgba(108,44,37,.45)}
   .tins{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
   .tin-card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:40px;transition:.4s;display:flex;flex-direction:column}
   .tin-card:hover{box-shadow:0 30px 60px -34px rgba(40,51,26,.34);border-color:var(--matcha)}
@@ -229,6 +233,9 @@
   .b2b-opt .wl-main{display:flex;align-items:center;gap:18px;min-width:0}
   .b2b-opt .thumb{width:58px;height:58px;border-radius:10px;object-fit:cover;flex:none;display:block}
   .b2b-actions{display:flex;gap:16px;margin-top:26px;flex-wrap:wrap}
+  .b2b-intro{max-width:640px;margin:0 auto;text-align:center}
+  .b2b-intro p{margin-left:auto;margin-right:auto}
+  .b2b-intro .b2b-actions{justify-content:center}
   .b2b .btn-cream{background:var(--cream);color:var(--matcha-deep)}
   .b2b .btn-cream:hover{background:#fff}
   .b2b .btn-outline{border:1px solid rgba(245,242,233,.5);color:var(--cream)}
@@ -237,6 +244,7 @@
   /* VISIT */
   .visit{background:var(--paper)}
   .visit-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+  .visit-grid.visit-solo{grid-template-columns:1fr;max-width:620px;margin:0 auto}
   .flagship{background:var(--cream);border:1px solid var(--line);border-radius:20px;padding:44px}
   .flagship .tag{display:inline-block;background:var(--matcha-deep);color:var(--cream);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border-radius:30px;margin-bottom:18px}
   .flagship h3{font-size:34px;margin-bottom:8px}
@@ -390,7 +398,7 @@
 
 <div class="marquee">
   <div class="marquee-track">
-    <span>Clean Energy, No Crash</span><span>Three Teas</span><span>Rich in Antioxidants</span><span>A Kinder Alternative to Coffee</span><span>Clean Energy, No Crash</span><span>Three Teas</span><span>Rich in Antioxidants</span><span>A Kinder Alternative to Coffee</span>
+    <span>Clean Energy, No Crash</span><span>Rich in Antioxidants</span><span>A Kinder Alternative to Coffee</span><span>Clean Energy, No Crash</span><span>Rich in Antioxidants</span><span>A Kinder Alternative to Coffee</span>
   </div>
 </div>
 
@@ -433,27 +441,16 @@
     </div>
     <div class="story-copy">
       <span class="label">Our Story</span>
-      <h2>Three friends, one better cup.</h2>
-      <p>We're three professionals who made an unconventional decision — we left our corporate careers to build something we genuinely believe in.</p>
-      <p>Like most people around us, we ran on coffee: quick energy, followed by crashes, jitters and burnout. A cycle we couldn't seem to escape. So we went looking for something better and found matcha — a cleaner, more sustained source of caffeine that supports focus without the spike, thanks to its natural pairing of caffeine and L‑theanine.</p>
-      <p>But it was never just about energy. Rich in antioxidants and gentler on the body than acidic coffee, matcha turned a personal shift into something bigger. We realised that experienced this way, matcha isn't just an alternative — it becomes a daily ritual.</p>
-      <div class="sig">— The three of SANcha</div>
+      <h2>Good matcha shouldn't have to come at a high price.</h2>
+      <p>Finding good-quality matcha in the UK at an affordable price isn't always easy. As matcha became more popular, we started thinking about why it had to be this way — and whether there was another way to enjoy good matcha without paying more and more for it.</p>
+      <p>Japan has long been at the heart of matcha, and as demand continues to grow, sourcing becomes increasingly competitive. We started wondering: what if we looked beyond Japan?</p>
+      <p>That question led us to China.</p>
+      <p>With a long history of tea cultivation of its own, China felt like a place worth exploring. So we travelled there, visited tea farms, learnt more about the people and culture behind the tea, and most importantly, tasted and tested the matcha ourselves.</p>
+      <p>We didn't want to choose a product based on its origin alone. We wanted to find matcha we genuinely enjoyed, that met our standards for quality and taste, and that we could bring to more people at a price that felt fair.</p>
+      <p>That's how SANcha began.</p>
+      <p>We're here to make good matcha more accessible, to keep exploring what matcha can be, and to share what we discover along the way.</p>
+      <div class="sig">Good matcha, more accessible. That's what SANcha is all about.</div>
     </div>
-  </div>
-</section>
-
-<section class="meaning">
-  <div class="wrap">
-    <span class="label">What "SANcha" means</span>
-    <div class="kanji-row" style="margin-top:34px">
-      <div class="k"><div class="c">SAN</div><div class="t">Three</div></div>
-      <div class="plus">+</div>
-      <div class="k"><div class="c">CHA</div><div class="t">Tea</div></div>
-      <div class="plus">=</div>
-      <div class="k"><div class="c">SANcha</div><div class="t">Three Teas</div></div>
-    </div>
-    <h2>Simple, but deeply personal.</h2>
-    <p>“San” means <em>three</em> — the three founders and the shared journey that brought us here. “Cha” means <em>tea</em>, the heart of everything we do. A name that brings the two together, just like matcha itself, connecting history, craftsmanship and modern life.</p>
   </div>
 </section>
 
@@ -478,7 +475,7 @@
   <div class="wrap">
     <div class="sec-head center">
       <span class="label">Tinned Matcha · Our Hero Product</span>
-      <h2>Matcha should tell a story.</h2>
+      <h2>Matcha should tell a story. <span class="badge-new">New</span></h2>
       <p>Two distinct expressions of tea craftsmanship — one born from innovation and harmony, the other from purity and origin.</p>
     </div>
     <!-- Products below can be edited from a Google Sheet (see SHEET-SETUP.md).
@@ -555,21 +552,14 @@
 </section>
 
 <section class="b2b" id="b2b">
-  <div class="wrap b2b-grid">
-    <div>
+  <div class="wrap">
+    <div class="b2b-intro">
       <span class="label">Wholesale · B2B Supply</span>
       <h2>Matcha for your menu.</h2>
       <p>We supply cafés, restaurants and businesses with the same high-grade matcha powder we pour ourselves — consistent, finely milled, and ready to scale with you.</p>
       <div class="b2b-actions">
-        <a href="mailto:contact@sanchamatcha.co.uk?subject=Wholesale%20order" class="btn btn-cream">Order Wholesale</a>
-        <a href="mailto:contact@sanchamatcha.co.uk?subject=Bulk%20enquiry%20(10kg%2B)" class="btn btn-outline">Bulk Enquiry (10kg+)</a>
+        <a href="mailto:contact@sanchamatcha.co.uk?subject=Wholesale%20enquiry" class="btn btn-cream">Enquire Now</a>
       </div>
-    </div>
-    <!-- Editable from a Google Sheet — see SHEET-SETUP.md (Wholesale tab). -->
-    <div class="b2b-opts" id="wholesale-grid" data-sheet-products>
-      <div class="b2b-opt"><div class="lft"><h3>500g Packet</h3><p>Perfect for smaller cafés &amp; trials</p></div><div class="rgt">Order online</div></div>
-      <div class="b2b-opt"><div class="lft"><h3>1kg Packet</h3><p>For steady, high-volume service</p></div><div class="rgt">Order online</div></div>
-      <div class="b2b-opt"><div class="lft"><h3>10kg &amp; above</h3><p>Bulk pricing &amp; discounts</p></div><div class="rgt">Enquiry form</div></div>
     </div>
   </div>
 </section>
@@ -580,7 +570,7 @@
       <span class="label">Find Us</span>
       <h2>Come say hello.</h2>
     </div>
-    <div class="visit-grid">
+    <div class="visit-grid visit-solo">
       <div class="flagship">
         <span class="tag">Flagship Store</span>
         <h3>Westfield, Shepherd's Bush</h3>
@@ -589,12 +579,6 @@
           <div class="h"><div class="d">Mon – Sat</div><div class="v">10am – 9pm</div></div>
           <div class="h"><div class="d">Sunday</div><div class="v">12pm – 6pm</div></div>
         </div>
-      </div>
-      <div class="popups">
-        <h3>Also catch us at</h3>
-        <div class="pop"><span class="nm">Backyard Market</span><span class="de">Brick Lane · E1 6QL</span><span class="hr">Sat 11–6 · Sun 10–6</span></div>
-        <div class="pop"><span class="nm">Battersea River Walk</span><span class="de">Battersea · SW11 8DD</span><span class="hr">Sun 11–5</span></div>
-        <p style="margin-top:18px;font-size:14px;color:#5f5f57">Pop-up dates move around — follow <a href="https://www.instagram.com/sanchamatchaa" style="color:var(--matcha-deep)">@sanchamatchaa</a> for the latest.</p>
       </div>
     </div>
   </div>
@@ -608,8 +592,9 @@
     </div>
     <div class="faq-list">
       <details class="faq-item">
-        <summary>What is ceremonial-grade matcha?</summary>
-        <p>Ceremonial grade is the highest quality of matcha — made from the youngest, shade-grown tea leaves, stone-milled into an ultra-fine powder. It's smooth enough to whisk with just hot water, with no bitterness and nothing added.</p>
+        <summary>How do we choose our matcha?</summary>
+        <p>You'll often see matcha labelled as “ceremonial grade”, but the term doesn't have one universally recognised grading standard across the industry. Rather than relying on a label, we look at what matters to us: the tea's origin, cultivar, harvest, colour, aroma and, most importantly, taste.</p>
+        <p>We travel to source our matcha and taste-test the products ourselves, looking for the right balance of flavour and quality for each of our blends. Good matcha goes beyond a grade — it's about understanding the tea and finding what tastes good in your cup.</p>
       </details>
       <details class="faq-item">
         <summary>Will matcha give me the caffeine jitters?</summary>
@@ -639,7 +624,7 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type":"Question","name":"What is ceremonial-grade matcha?","acceptedAnswer":{"@type":"Answer","text":"Ceremonial grade is the highest quality of matcha — made from the youngest, shade-grown tea leaves, stone-milled into an ultra-fine powder. It's smooth enough to whisk with just hot water, with no bitterness and nothing added."}},
+    {"@type":"Question","name":"How do we choose our matcha?","acceptedAnswer":{"@type":"Answer","text":"You'll often see matcha labelled as \"ceremonial grade\", but the term doesn't have one universally recognised grading standard across the industry. Rather than relying on a label, we look at what matters to us: the tea's origin, cultivar, harvest, colour, aroma and, most importantly, taste. We travel to source our matcha and taste-test the products ourselves, looking for the right balance of flavour and quality for each of our blends. Good matcha goes beyond a grade — it's about understanding the tea and finding what tastes good in your cup."}},
     {"@type":"Question","name":"Will matcha give me the caffeine jitters?","acceptedAnswer":{"@type":"Answer","text":"No. Matcha gives clean, steady energy: its caffeine is balanced by an amino acid called L-theanine, so you get calm focus without the spike and crash of coffee — no jitters, no 3pm slump."}},
     {"@type":"Question","name":"How do I prepare matcha?","acceptedAnswer":{"@type":"Answer","text":"Sift about half a teaspoon (1–2g) into a bowl, add a little hot — not boiling — water, and whisk in a zig-zag until frothy. Top up with water or your milk of choice, hot or iced."}},
     {"@type":"Question","name":"Where can I buy SANcha matcha?","acceptedAnswer":{"@type":"Answer","text":"Shop our IKI & YUAN tins online, visit us at our Westfield store, or catch us at our pop-ups — follow @sanchamatchaa on Instagram for the latest dates."}},
