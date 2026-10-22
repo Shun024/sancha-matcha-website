@@ -141,11 +141,11 @@
 
   /* BENEFITS */
   .benefits{background:var(--lemon)}
-  .benefits .sec-head h2{color:var(--blue)}
+  .benefits .sec-head h2{color:var(--matcha-deep)}
   .ben-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
   .ben{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:34px 28px;transition:.35s}
   .ben:hover{transform:translateY(-6px);box-shadow:0 22px 46px -30px rgba(40,51,26,.3);border-color:var(--matcha)}
-  .ben svg{width:40px;height:40px;color:var(--matcha-deep);margin-bottom:20px}
+  .ben svg{width:40px;height:40px;color:var(--blue);margin-bottom:20px}
   .ben h3{font-size:23px;margin-bottom:8px}
   .ben p{font-size:14.5px;color:#6a6a60}
 
@@ -156,7 +156,9 @@
   .story-visual img{width:78%;aspect-ratio:775/717;opacity:.96}
   .story-copy h2{font-size:clamp(34px,4.5vw,54px);margin:18px 0 22px}
   .story-copy p{color:#54544c;margin-bottom:18px;font-size:16.5px}
-  .story-copy .sig{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-style:normal;font-size:23px;color:var(--matcha-deep);margin-top:12px}
+  .story-copy .sig{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-style:normal;font-size:23px;color:var(--maroon);margin-top:12px}
+  .story-grid.story-solo{grid-template-columns:1fr;max-width:760px;margin:0 auto}
+  .sourcing-grid.sourcing-solo{grid-template-columns:1fr;max-width:760px;margin:0 auto}
 
   /* MEANING BAND */
   .meaning{background:var(--forest);color:var(--cream);text-align:center}
@@ -305,7 +307,7 @@
   }
 
   /* FAQ */
-  .faq{background:var(--peach)}
+  .faq{background:var(--lemon)}
   .faq .head{text-align:center;max-width:640px;margin:0 auto}
   .faq h2{font-size:clamp(30px,4.4vw,46px);color:var(--forest);margin:14px 0 0}
   .faq-list{max-width:820px;margin:44px auto 0}
@@ -377,7 +379,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="label">Ceremonial-grade matcha · London</span>
+      <span class="label">High-quality matcha · direct from tea farms in Zhejiang, China to London</span>
       <h1>A daily ritual, <em>without</em> the crash.</h1>
       <p class="lead">SANcha is matcha made for real life — clean, steady energy from a cleaner cup. No jitters, no 3pm slump. Just calm focus, the way three of us wished coffee could be.</p>
       <div class="hero-actions">
@@ -435,10 +437,7 @@
 </section>
 
 <section class="story" id="story">
-  <div class="wrap story-grid">
-    <div class="story-visual">
-      <img src="assets/emblem-bowl-cream.png" alt="SANcha hand-drawn matcha bowl emblem">
-    </div>
+  <div class="wrap story-grid story-solo">
     <div class="story-copy">
       <span class="label">Our Story</span>
       <h2>Good matcha shouldn't have to come at a high price.</h2>
@@ -455,18 +454,12 @@
 </section>
 
 <section id="sourcing">
-  <div class="wrap sourcing-grid">
+  <div class="wrap sourcing-grid sourcing-solo">
     <div class="sourcing-copy">
       <span class="label">Where our matcha comes from</span>
       <h2 style="font-size:clamp(34px,4.5vw,54px);margin:16px 0 22px">Chinese roots, refined craft.</h2>
-      <p>We work directly with producers in <strong>Zhejiang, China</strong>, using modern processing techniques inspired by Japanese methods — finely milled, high-grade matcha with the consistency to match.</p>
+      <p>We work directly with producers in <strong style="color:var(--maroon)">Zhejiang, China</strong>, using modern processing techniques inspired by Japanese methods — finely milled, high-grade matcha with the consistency to match.</p>
       <p>Matcha is often tied to Japan, but its origins trace back to China, where powdered tea was first developed; Japan later refined it into the matcha we know today. Our goal is to bring traditional knowledge together with modern quality control, for a consistent, high-quality cup every time.</p>
-    </div>
-    <div class="sourcing-facts">
-      <div class="sf"><div class="n">Zhejiang</div><div class="t">Direct-from-producer sourcing</div></div>
-      <div class="sf"><div class="n">Stone-milled</div><div class="t">Finely milled, high grade</div></div>
-      <div class="sf"><div class="n">粋 &amp; 源</div><div class="t">Two signature expressions</div></div>
-      <div class="sf"><div class="n">Modern QC</div><div class="t">Consistent, cup after cup</div></div>
     </div>
   </div>
 </section>
