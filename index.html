@@ -182,9 +182,12 @@
   /* TINS (hero product) */
   .tins-sec{background:var(--cream)}
   /* small pink bubble "New" badge on the tins heading (on-brand, off the product images) */
-  .badge-new{display:inline-block;background:var(--peach);color:var(--maroon);font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:5px 15px;border-radius:999px;transform:rotate(-4deg);vertical-align:middle;margin-left:14px;box-shadow:0 5px 12px -5px rgba(108,44,37,.45)}
+  /* Product badges (top-left of each tin card) — set from the sheet's `badge` + `new` columns */
+  .tin-badges{position:absolute;top:14px;left:14px;z-index:3;display:flex;flex-direction:column;gap:7px;align-items:flex-start}
+  .tin-badge{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:5px 13px;border-radius:999px;background:var(--maroon);color:var(--peach);box-shadow:0 5px 12px -5px rgba(30,43,34,.55)}
+  .tin-badge.is-new{background:var(--peach);color:var(--maroon)}
   .tins{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
-  .tin-card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:40px;transition:.4s;display:flex;flex-direction:column}
+  .tin-card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:40px;transition:.4s;display:flex;flex-direction:column;position:relative}
   .tin-card:hover{box-shadow:0 30px 60px -34px rgba(40,51,26,.34);border-color:var(--matcha)}
   .tin-top{display:flex;gap:30px;align-items:center;margin-bottom:26px}
   .tin{width:118px;height:152px;border-radius:12px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f3f0e4;box-shadow:0 18px 34px -18px rgba(40,51,26,.6);position:relative}
@@ -265,14 +268,14 @@
   .cta-emblem{width:88px;height:auto;display:block;margin:0 auto 22px;opacity:.95}
   .cta h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px;color:#f3f0e4}
   .cta p{max-width:500px;margin:0 auto 36px;color:#d4d8c6;font-size:17px}
-  .subscribe{display:flex;max-width:460px;margin:0 auto;border:1px solid rgba(245,242,233,.4);border-radius:40px;overflow:hidden}
-  .subscribe input{flex:1;min-width:0;background:transparent;border:0;padding:16px 20px;color:var(--cream);font-family:'Bitter','Bitter Fallback',serif;font-size:15px;outline:none}
-  .subscribe button{flex:none}
+  .subscribe{display:flex;flex-direction:column;gap:10px;max-width:400px;margin:0 auto;text-align:left}
+  .subscribe input{background:rgba(245,242,233,.08);border:1px solid rgba(245,242,233,.4);border-radius:14px;padding:14px 18px;color:var(--cream);font-family:'Bitter','Bitter Fallback',serif;font-size:15px;outline:none;width:100%}
+  .subscribe input:focus{border-color:var(--cream)}
   .subscribe input::placeholder{color:rgba(245,242,233,.6)}
   .subscribe .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
   .foot-legal a{color:#c7cdb5;text-decoration:none;margin:0 10px}
   .foot-legal a:hover{color:var(--cream)}
-  .subscribe button{background:var(--cream);color:var(--matcha-deep);border:0;padding:0 30px;font-family:'Bitter','Bitter Fallback',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s}
+  .subscribe button{margin-top:4px;background:var(--cream);color:var(--matcha-deep);border:0;border-radius:14px;padding:15px 20px;font-family:'Bitter','Bitter Fallback',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s}
   .subscribe button:hover{background:#fff}
 
   /* FOOTER */
@@ -468,7 +471,7 @@
   <div class="wrap">
     <div class="sec-head center">
       <span class="label">Tinned Matcha · Our Hero Product</span>
-      <h2>Matcha should tell a story. <span class="badge-new">New</span></h2>
+      <h2>Matcha should tell a story.</h2>
       <p>Two distinct expressions of tea craftsmanship — one born from innovation and harmony, the other from purity and origin.</p>
     </div>
     <!-- Products below can be edited from a Google Sheet (see SHEET-SETUP.md).
@@ -476,6 +479,7 @@
          If the sheet is empty/unreachable, these stay as a safe fallback. -->
     <div class="tins" id="tins-grid" data-sheet-products>
       <div class="tin-card">
+        <div class="tin-badges"><span class="tin-badge">Signature Blend</span><span class="tin-badge is-new">New</span></div>
         <div class="tin-top">
           <div class="tin tin-iki"><div class="kanji">粋</div><div class="rom">IKI</div></div>
           <div>
@@ -492,6 +496,7 @@
         </div>
       </div>
       <div class="tin-card">
+        <div class="tin-badges"><span class="tin-badge">Single Cultivar</span><span class="tin-badge is-new">New</span></div>
         <div class="tin-top">
           <div class="tin tin-yuan"><div class="kanji">源</div><div class="rom">YUAN</div></div>
           <div>
@@ -509,7 +514,7 @@
       </div>
     </div>
     <div style="text-align:center;margin-top:44px">
-      <a href="mailto:contact@sanchamatcha.co.uk?subject=Notify%20me%20when%20tins%20launch" class="btn btn-solid">Notify me at launch</a>
+      <a href="#join" class="btn btn-solid">Join the waiting list</a>
     </div>
   </div>
 </section>
@@ -583,7 +588,7 @@
       <span class="label">Good to know</span>
       <h2>Frequently asked questions</h2>
     </div>
-    <div class="faq-list">
+    <div class="faq-list" id="faq-list" data-sheet-faq>
       <details class="faq-item">
         <summary>How do we choose our matcha?</summary>
         <p>You'll often see matcha labelled as “ceremonial grade”, but the term doesn't have one universally recognised grading standard across the industry. Rather than relying on a label, we look at what matters to us: the tea's origin, cultivar, harvest, colour, aroma and, most importantly, taste.</p>
@@ -630,13 +635,14 @@
 <section class="cta" id="join">
   <div class="wrap">
     <img src="assets/emblem-bowl-cream.png" alt="" aria-hidden="true" class="cta-emblem">
-    <span class="label" style="color:#cdd6b5">Join the ritual</span>
-    <h2>Slow down. Sip well.</h2>
-    <p>Be first to know when the tins launch, plus new drops and quiet café moments — a gentle note, never a loud one.</p>
+    <span class="label" style="color:#cdd6b5">Tins waiting list</span>
+    <h2>Join the waiting list.</h2>
+    <p>Our matcha tins are launching soon. Pop your name and email below and we'll let you know the moment they're available — you'll be first in line.</p>
     <form class="subscribe" onsubmit="return handleSubscribe(event)" novalidate>
+      <input type="text" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required>
       <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
       <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <button type="submit">Subscribe</button>
+      <button type="submit">Join the waiting list</button>
     </form>
   </div>
 </section>
@@ -669,38 +675,40 @@
      section from the sample CSVs in assets/ (see "Local test" in SHEET-SETUP.md).
      ========================================================================== -->
 <script>
-  // Newsletter signup. TO GO LIVE: paste your Google Apps Script Web App "/exec" URL
-  // between the quotes below (the doPost script appends [timestamp, email] to a Sheet;
-  // see BACKLOG / SHEET-SETUP). While empty, the form validates + thanks the visitor
-  // but does NOT store anything yet.
-  var NEWSLETTER_ENDPOINT = "";
+  // Tins waiting-list signup. TO GO LIVE: paste your Google Apps Script Web App "/exec" URL
+  // between the quotes below. The doPost script appends [timestamp, name, email, source] to
+  // a "Waitlist" tab in the product spreadsheet (see SHEET-UPDATES.md for the script + steps).
+  // While empty, the form validates + thanks the visitor but does NOT store anything yet.
+  var WAITLIST_ENDPOINT = "";
 
   function handleSubscribe(e){
     e.preventDefault();
     var f=e.target;
-    if(f.company && f.company.value){return false;}      // honeypot filled = bot, silently drop
-    var email=f.email;
+    if(f.elements['company'] && f.elements['company'].value){return false;}   // honeypot = bot, drop
+    var nameEl=f.elements['name'], email=f.elements['email'];
+    if(!nameEl.value.trim()){nameEl.reportValidity();return false;}
     if(!email.value || !email.checkValidity()){email.reportValidity();return false;}
     var btn=f.querySelector('button');
-    var done=function(){ email.value=''; if(btn){btn.textContent='Welcome ✓';btn.disabled=true;} };
-    if(NEWSLETTER_ENDPOINT){
+    var done=function(){ f.reset(); if(btn){btn.textContent="You're on the list ✓";btn.disabled=true;} };
+    if(WAITLIST_ENDPOINT){
       if(btn){btn.textContent='…';btn.disabled=true;}
-      var body=new URLSearchParams({email:email.value, ts:new Date().toISOString()});
-      fetch(NEWSLETTER_ENDPOINT,{method:'POST',mode:'no-cors',
+      var body=new URLSearchParams({name:nameEl.value.trim(), email:email.value.trim(),
+                                    source:'tins-waitlist', ts:new Date().toISOString()});
+      fetch(WAITLIST_ENDPOINT,{method:'POST',mode:'no-cors',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body})
         .then(done)
         .catch(function(){ if(btn){btn.textContent='Try again';btn.disabled=false;} });
     } else {
-      console.warn('Newsletter: NEWSLETTER_ENDPOINT is empty — email not stored. Paste your Apps Script URL to go live.');
+      console.warn('Waitlist: WAITLIST_ENDPOINT is empty — not stored yet. Paste your Apps Script URL to go live.');
       done();
     }
     return false;
   }
 
-  // Deep-link: focus the email field when someone arrives via a "Join the launch list" link.
+  // Deep-link: focus the first field when someone arrives via a "Join the waiting list" link.
   document.addEventListener('click',function(e){
     var a=e.target.closest && e.target.closest('a[href="#join"]'); if(!a) return;
-    var inp=document.querySelector('.subscribe input[type=email]');
+    var inp=document.querySelector('.subscribe input[name="name"]');
     if(inp) setTimeout(function(){ try{inp.focus({preventScroll:true});}catch(_){inp.focus();} },500);
   });
 </script>
@@ -712,7 +720,8 @@
   var SHEET = {
     tins:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=2006886247&single=true&output=csv",   // Tins tab
     shop:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=465562058&single=true&output=csv",   // Shop tab
-    wholesale: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=739120538&single=true&output=csv"    // Wholesale tab
+    wholesale: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=739120538&single=true&output=csv",   // Wholesale tab
+    faq:       ""    // FAQ tab — paste its published-to-web CSV link here (see SHEET-UPDATES.md)
   };
 
   // ---- shared helpers -------------------------------------------------------
@@ -772,6 +781,18 @@
   // their real logo with no sheet change; an `image` column in the sheet overrides.
   var TIN_LOGOS = { iki: "assets/product-iki.png", yuan: "assets/product-yuan.png" };
 
+  // Top-left product badges. Sheet columns `badge` (type label) + `new` (yes/no) override
+  // these per-tin defaults. Type badge = red/pink; NEW badge = pink/red.
+  var TIN_BADGE_DEFAULTS = { iki:{badge:"Signature Blend",isNew:true}, yuan:{badge:"Single Cultivar",isNew:true} };
+  function tinBadges(p){
+    var key=(p.roman||p.name||"").toLowerCase(), def=TIN_BADGE_DEFAULTS[key]||{};
+    var badge=(p.badge&&p.badge.trim())||def.badge||"";
+    var isNew = (p.new!=null && String(p.new).trim()!=="") ? /^(true|yes|1|new)$/i.test(String(p.new).trim()) : !!def.isNew;
+    var html=(badge?'<span class="tin-badge">'+esc(badge)+'</span>':'')+
+             (isNew?'<span class="tin-badge is-new">New</span>':'');
+    return html?'<div class="tin-badges">'+html+'</div>':'';
+  }
+
   function renderTin(p) {
     var cultivars = pipes(p.cultivars).map(function (s) { return "<span>" + esc(s) + "</span>"; }).join("");
     var body =
@@ -783,7 +804,7 @@
 
     var logo = imageUrl(p.image) || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
     if (logo) {
-      return '<div class="tin-card">' +
+      return '<div class="tin-card">' + tinBadges(p) +
           '<div class="tin-logo"><img src="' + esc(logo) + '" alt="' + esc(p.name) + ' matcha" loading="lazy"></div>' +
           '<div class="tin-head"><h3>' + esc(p.name) + '</h3>' +
             (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : '') + '</div>' +
@@ -792,7 +813,7 @@
     }
 
     var from = p.tin_from || "#7c8a63", to = p.tin_to || "#4c5541";
-    return '<div class="tin-card">' +
+    return '<div class="tin-card">' + tinBadges(p) +
         '<div class="tin-top">' +
           '<div class="tin" style="background:linear-gradient(160deg,' + esc(from) + ',' + esc(to) + ')">' +
             '<div class="kanji">' + esc(p.kanji) + '</div>' +
@@ -840,6 +861,12 @@
         '<div class="rgt">' + esc(p.action) + '</div></div>';
   }
 
+  // FAQ items from a sheet tab with `question` + `answer` columns.
+  function renderFAQ(p) {
+    return '<details class="faq-item"><summary>' + esc(p.question) + '</summary>' +
+        '<p>' + esc(p.answer) + '</p></details>';
+  }
+
   // ---- loader ---------------------------------------------------------------
   // ?demo=1 renders every section from the local sample CSVs so you can preview
   // the sheet-driven layout before wiring up Google Sheets.
@@ -848,7 +875,8 @@
   var FEEDS = [
     { grid: "tins-grid",      key: "tins",      demoCsv: "assets/product-sheet-template.csv",   render: renderTin,   needs: "name" },
     { grid: "shop-grid",      key: "shop",      demoCsv: "assets/shop-sheet-template.csv",       render: renderShop,  needs: "title" },
-    { grid: "wholesale-grid", key: "wholesale", demoCsv: "assets/wholesale-sheet-template.csv",  render: renderWholesale, needs: "title" }
+    { grid: "wholesale-grid", key: "wholesale", demoCsv: "assets/wholesale-sheet-template.csv",  render: renderWholesale, needs: "title" },
+    { grid: "faq-list",       key: "faq",       demoCsv: "assets/faq-sheet-template.csv",        render: renderFAQ,       needs: "question" }
   ];
 
   FEEDS.forEach(function (feed) {
