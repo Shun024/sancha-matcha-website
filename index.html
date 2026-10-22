@@ -679,7 +679,7 @@
   // between the quotes below. The doPost script appends [timestamp, name, email, source] to
   // a "Waitlist" tab in the product spreadsheet (see SHEET-UPDATES.md for the script + steps).
   // While empty, the form validates + thanks the visitor but does NOT store anything yet.
-  var WAITLIST_ENDPOINT = "";
+  var WAITLIST_ENDPOINT = "https://script.google.com/macros/s/AKfycbw-Wit-9V4262qIhXQUdnjn1gs784VFdzur_IIOZZH1kfBO60tvOQPZkEgLHTNmBIQ/exec";
 
   function handleSubscribe(e){
     e.preventDefault();
@@ -721,7 +721,8 @@
     tins:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=2006886247&single=true&output=csv",   // Tins tab
     shop:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=465562058&single=true&output=csv",   // Shop tab
     wholesale: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=739120538&single=true&output=csv",   // Wholesale tab
-    faq:       ""    // FAQ tab — paste its published-to-web CSV link here (see SHEET-UPDATES.md)
+    faq:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=1195687923&single=true&output=csv"    // FAQ tab
+
   };
 
   // ---- shared helpers -------------------------------------------------------
