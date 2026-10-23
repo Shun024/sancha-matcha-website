@@ -245,6 +245,22 @@
   .b2b .btn-cream:hover{background:#fff}
   .b2b .btn-outline{border:1px solid rgba(245,242,233,.5);color:var(--cream)}
   .b2b .btn-outline:hover{background:rgba(245,242,233,.12)}
+  /* Wholesale enquiry form (fields come from the WholesaleForm sheet tab) */
+  .b2b-copy{max-width:520px}
+  .b2b-alt{font-size:14px;color:#dfe3d3}
+  .b2b-alt a{color:var(--cream)}
+  .wholesale-form{position:relative;background:rgba(245,242,233,.06);border:1px solid rgba(245,242,233,.18);border-radius:18px;padding:30px;display:flex;flex-direction:column;gap:14px}
+  .wf-field{display:flex;flex-direction:column;gap:6px}
+  .wf-q{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#cdd6b5}
+  .wholesale-form input,.wholesale-form select,.wholesale-form textarea{background:rgba(245,242,233,.08);border:1px solid rgba(245,242,233,.4);border-radius:12px;padding:12px 14px;color:var(--cream);font-family:'Bitter','Bitter Fallback',serif;font-size:15px;outline:none;width:100%}
+  .wholesale-form input:focus,.wholesale-form select:focus,.wholesale-form textarea:focus{border-color:var(--cream)}
+  .wholesale-form input::placeholder,.wholesale-form textarea::placeholder{color:rgba(245,242,233,.6)}
+  .wholesale-form select{appearance:none;-webkit-appearance:none}
+  .wholesale-form select option{color:#222}
+  .wholesale-form textarea{resize:vertical;min-height:88px}
+  .wholesale-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+  .wholesale-form button{margin-top:6px;background:var(--cream);color:var(--matcha-deep);border:0;border-radius:14px;padding:15px 20px;font-family:'Bitter','Bitter Fallback',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s}
+  .wholesale-form button:hover{background:#fff}
 
   /* VISIT */
   .visit{background:var(--paper)}
@@ -272,6 +288,8 @@
   .subscribe input{background:rgba(245,242,233,.08);border:1px solid rgba(245,242,233,.4);border-radius:14px;padding:14px 18px;color:var(--cream);font-family:'Bitter','Bitter Fallback',serif;font-size:15px;outline:none;width:100%}
   .subscribe input:focus{border-color:var(--cream)}
   .subscribe input::placeholder{color:rgba(245,242,233,.6)}
+  .subscribe .consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.5;color:#d4d8c6;cursor:pointer;margin-top:2px}
+  .subscribe .consent input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:none;accent-color:var(--cream);cursor:pointer}
   .subscribe .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
   .foot-legal a{color:#c7cdb5;text-decoration:none;margin:0 10px}
   .foot-legal a:hover{color:var(--cream)}
@@ -550,15 +568,29 @@
 </section>
 
 <section class="b2b" id="b2b">
-  <div class="wrap">
-    <div class="b2b-intro">
+  <div class="wrap b2b-grid">
+    <div class="b2b-copy">
       <span class="label">Wholesale · B2B Supply</span>
       <h2>Matcha for your menu.</h2>
       <p>We supply cafés, restaurants and businesses with the same high-grade matcha powder we pour ourselves — consistent, finely milled, and ready to scale with you.</p>
-      <div class="b2b-actions">
-        <a href="mailto:contact@sanchamatcha.co.uk?subject=Wholesale%20enquiry" class="btn btn-cream">Enquire Now</a>
-      </div>
+      <p>Tell us a little about your business below and we'll be in touch with pricing and samples.</p>
+      <p class="b2b-alt">Prefer email? <a href="mailto:contact@sanchamatcha.co.uk?subject=Wholesale%20enquiry">contact@sanchamatcha.co.uk</a></p>
     </div>
+    <!-- Fields come from the "WholesaleForm" sheet tab when configured (see SHEET-UPDATES.md);
+         the fields below are the built-in fallback until then. Responses post to the sheet. -->
+    <form class="wholesale-form" id="wholesale-form" onsubmit="return handleWholesale(event)" novalidate>
+      <div id="wholesale-fields" data-sheet-fields>
+        <label class="wf-field"><span class="wf-q">Your name</span><input type="text" name="Your name" required></label>
+        <label class="wf-field"><span class="wf-q">Business name</span><input type="text" name="Business name" required></label>
+        <label class="wf-field"><span class="wf-q">Email</span><input type="email" name="Email" required></label>
+        <label class="wf-field"><span class="wf-q">Phone</span><input type="tel" name="Phone"></label>
+        <label class="wf-field"><span class="wf-q">Business type</span><select name="Business type"><option value="">Select…</option><option>Café</option><option>Restaurant</option><option>Retailer</option><option>Distributor</option><option>Other</option></select></label>
+        <label class="wf-field"><span class="wf-q">Estimated monthly volume</span><input type="text" name="Estimated monthly volume" placeholder="e.g. 2–5 kg"></label>
+        <label class="wf-field"><span class="wf-q">Message</span><textarea name="Message" rows="3" placeholder="Anything else we should know?"></textarea></label>
+      </div>
+      <input type="text" name="company_hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit">Send enquiry</button>
+    </form>
   </div>
 </section>
 
@@ -642,6 +674,7 @@
       <input type="text" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required>
       <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
       <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I'd like to receive SANcha Matcha product launch emails and occasional updates. I can unsubscribe at any time.</span></label>
       <button type="submit">Join the waiting list</button>
     </form>
   </div>
@@ -675,31 +708,65 @@
      section from the sample CSVs in assets/ (see "Local test" in SHEET-SETUP.md).
      ========================================================================== -->
 <script>
-  // Tins waiting-list signup. TO GO LIVE: paste your Google Apps Script Web App "/exec" URL
-  // between the quotes below. The doPost script appends [timestamp, name, email, source] to
-  // a "Waitlist" tab in the product spreadsheet (see SHEET-UPDATES.md for the script + steps).
-  // While empty, the form validates + thanks the visitor but does NOT store anything yet.
-  var WAITLIST_ENDPOINT = "https://script.google.com/macros/s/AKfycbw-Wit-9V4262qIhXQUdnjn1gs784VFdzur_IIOZZH1kfBO60tvOQPZkEgLHTNmBIQ/exec";
+  // Form submissions (tins waiting list + wholesale enquiries) POST to ONE Google Apps Script
+  // Web App "/exec" URL — paste it between the quotes below. The doPost script (see
+  // SHEET-UPDATES.md) routes by `source`: waitlist rows go to a "Waitlist" tab; wholesale
+  // enquiries go to a "Wholesale Enquiries" tab with one column per question (adding a new
+  // question adds a new column automatically). While empty, forms validate + thank the
+  // visitor but do NOT store anything yet.
+  var FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbw-Wit-9V4262qIhXQUdnjn1gs784VFdzur_IIOZZH1kfBO60tvOQPZkEgLHTNmBIQ/exec";
 
   function handleSubscribe(e){
     e.preventDefault();
     var f=e.target;
     if(f.elements['company'] && f.elements['company'].value){return false;}   // honeypot = bot, drop
-    var nameEl=f.elements['name'], email=f.elements['email'];
+    var nameEl=f.elements['name'], email=f.elements['email'], consent=f.elements['consent'];
     if(!nameEl.value.trim()){nameEl.reportValidity();return false;}
     if(!email.value || !email.checkValidity()){email.reportValidity();return false;}
+    if(consent && !consent.checked){consent.reportValidity();return false;}    // marketing opt-in required
     var btn=f.querySelector('button');
     var done=function(){ f.reset(); if(btn){btn.textContent="You're on the list ✓";btn.disabled=true;} };
-    if(WAITLIST_ENDPOINT){
+    if(FORM_ENDPOINT){
       if(btn){btn.textContent='…';btn.disabled=true;}
       var body=new URLSearchParams({name:nameEl.value.trim(), email:email.value.trim(),
-                                    source:'tins-waitlist', ts:new Date().toISOString()});
-      fetch(WAITLIST_ENDPOINT,{method:'POST',mode:'no-cors',
+                                    consent:(consent&&consent.checked)?'yes':'', source:'tins-waitlist'});
+      fetch(FORM_ENDPOINT,{method:'POST',mode:'no-cors',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body})
         .then(done)
         .catch(function(){ if(btn){btn.textContent='Try again';btn.disabled=false;} });
     } else {
-      console.warn('Waitlist: WAITLIST_ENDPOINT is empty — not stored yet. Paste your Apps Script URL to go live.');
+      console.warn('Waitlist: FORM_ENDPOINT is empty — not stored yet. Paste your Apps Script URL to go live.');
+      done();
+    }
+    return false;
+  }
+
+  // Wholesale enquiry. Posts every named field using its label as the key, so the "Wholesale
+  // Enquiries" tab gets one column per question. Fields are whatever the WholesaleForm sheet
+  // tab defines (or the built-in fallback set). Required fields use native HTML validation.
+  function handleWholesale(e){
+    e.preventDefault();
+    var f=e.target;
+    if(f.elements['company_hp'] && f.elements['company_hp'].value){return false;}   // honeypot
+    if(!f.checkValidity()){ f.reportValidity(); return false; }
+    var btn=f.querySelector('button[type="submit"]');
+    var done=function(){ f.reset(); if(btn){btn.textContent='Enquiry sent ✓';btn.disabled=true;} };
+    if(FORM_ENDPOINT){
+      if(btn){btn.textContent='…';btn.disabled=true;}
+      var data=new URLSearchParams();
+      Array.prototype.forEach.call(f.elements,function(el){
+        if(!el.name || el.name==='company_hp') return;
+        if((el.type==='checkbox'||el.type==='radio') && !el.checked) return;
+        if(!el.value) return;
+        data.append(el.name, el.value);
+      });
+      data.append('source','wholesale-enquiry');
+      fetch(FORM_ENDPOINT,{method:'POST',mode:'no-cors',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data})
+        .then(done)
+        .catch(function(){ if(btn){btn.textContent='Try again';btn.disabled=false;} });
+    } else {
+      console.warn('Wholesale: FORM_ENDPOINT is empty — not stored yet. Paste your Apps Script URL to go live.');
       done();
     }
     return false;
@@ -721,8 +788,8 @@
     tins:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=2006886247&single=true&output=csv",   // Tins tab
     shop:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=465562058&single=true&output=csv",   // Shop tab
     wholesale: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=739120538&single=true&output=csv",   // Wholesale tab
-    faq:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=1195687923&single=true&output=csv"    // FAQ tab
-
+    faq:           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTf1IYWaAhwgZnA3V5ekw7lOYANzVZ43oxpMzHYyfpQx46am7Pkjzxc8lIx73XepoqgYSmV6a1A1oFp/pub?gid=1195687923&single=true&output=csv",   // FAQ tab
+    wholesaleform: ""    // Wholesale enquiry FORM fields — publish the "WholesaleForm" tab (question/type/options/required/placeholder) as CSV and paste its link here
   };
 
   // ---- shared helpers -------------------------------------------------------
@@ -868,6 +935,28 @@
         '<p>' + esc(p.answer) + '</p></details>';
   }
 
+  // Wholesale enquiry FORM fields from a sheet tab. Columns: question / type / options /
+  // required / placeholder (+ visible). type = text | email | tel | number | textarea | select.
+  // The question text is used as the field name, so it becomes the response column header.
+  function renderField(p) {
+    var name = p.question;
+    var type = (p.type || "text").toLowerCase();
+    var req = /^(true|yes|1|required|y)$/i.test((p.required || "").trim()) ? " required" : "";
+    var ph = p.placeholder ? ' placeholder="' + esc(p.placeholder) + '"' : "";
+    var field;
+    if (type === "textarea") {
+      field = '<textarea name="' + esc(name) + '" rows="3"' + req + ph + "></textarea>";
+    } else if (type === "select") {
+      var opts = (p.options || "").split(/[|,]/).map(function (s) { return s.trim(); }).filter(Boolean);
+      field = '<select name="' + esc(name) + '"' + req + '><option value="">Select…</option>' +
+        opts.map(function (o) { return "<option>" + esc(o) + "</option>"; }).join("") + "</select>";
+    } else {
+      var t = /^(email|tel|number)$/.test(type) ? type : "text";
+      field = '<input type="' + t + '" name="' + esc(name) + '"' + req + ph + ">";
+    }
+    return '<label class="wf-field"><span class="wf-q">' + esc(name) + "</span>" + field + "</label>";
+  }
+
   // ---- loader ---------------------------------------------------------------
   // ?demo=1 renders every section from the local sample CSVs so you can preview
   // the sheet-driven layout before wiring up Google Sheets.
@@ -877,7 +966,8 @@
     { grid: "tins-grid",      key: "tins",      demoCsv: "assets/product-sheet-template.csv",   render: renderTin,   needs: "name" },
     { grid: "shop-grid",      key: "shop",      demoCsv: "assets/shop-sheet-template.csv",       render: renderShop,  needs: "title" },
     { grid: "wholesale-grid", key: "wholesale", demoCsv: "assets/wholesale-sheet-template.csv",  render: renderWholesale, needs: "title" },
-    { grid: "faq-list",       key: "faq",       demoCsv: "assets/faq-sheet-template.csv",        render: renderFAQ,       needs: "question" }
+    { grid: "faq-list",       key: "faq",       demoCsv: "assets/faq-sheet-template.csv",        render: renderFAQ,       needs: "question" },
+    { grid: "wholesale-fields", key: "wholesaleform", demoCsv: "assets/wholesale-form-template.csv", render: renderField, needs: "question" }
   ];
 
   FEEDS.forEach(function (feed) {

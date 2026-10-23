@@ -1,0 +1,8 @@
+question,type,options,required,placeholder,visible
+Your name,text,,yes,,yes
+Business name,text,,yes,,yes
+Email,email,,yes,,yes
+Phone,tel,,no,,yes
+Business type,select,Café|Restaurant|Retailer|Distributor|Other,no,,yes
+Estimated monthly volume,text,,no,e.g. 2–5 kg,yes
+Message,textarea,,no,Anything else we should know?,yes
