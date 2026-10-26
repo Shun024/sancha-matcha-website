@@ -10,12 +10,15 @@
  *   SUMUP_API_KEY   = SANDBOX secret key while testing; swap to the LIVE key at go-live
  *   SUMUP_MERCHANT  = matching SANDBOX merchant code; swap to LIVE at go-live
  *   ORDER_ALERT_TO  = email address that should be notified on each new order
+ *   SHEET_ID        = the product spreadsheet's ID (from its URL:
+ *                     docs.google.com/spreadsheets/d/<SHEET_ID>/edit)
  *
- * Catalogue + stock are read from the "Tins" (and "Shop") tabs of the bound
- * spreadsheet; orders are written to an auto-created "Orders" tab.
+ * Catalogue + stock are read from the "Tins" (and "Shop") tabs; orders are written
+ * to an auto-created "Orders" tab.
  *
- * NOTE: keep this SEPARATE from the forms doPost (waitlist/wholesale) — deploy it
- * as its own web app so the two don't collide on a single doPost.
+ * IMPORTANT: this is a SEPARATE Apps Script project from the forms doPost
+ * (waitlist/wholesale) — one project can only have one doPost. Because it's
+ * standalone (not bound to the sheet) it opens the sheet by SHEET_ID.
  */
 
 var SUMUP_API = 'https://api.sumup.com/v0.1';
@@ -23,6 +26,8 @@ var CURRENCY  = 'GBP';
 
 function props_()   { return PropertiesService.getScriptProperties(); }
 function cfg_(k)     { return props_().getProperty(k) || ''; }
+// Standalone project → open the sheet by ID; falls back to bound sheet if present.
+function getSS_()    { var id = cfg_('SHEET_ID'); return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActiveSpreadsheet(); }
 function json_(obj)  { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
 
 function doPost(e) {
@@ -108,7 +113,7 @@ function sumup_(method, path, body) {
 function loadProducts_() {
   var out = {};
   ['Tins', 'Shop'].forEach(function (tab) {
-    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
+    var sh = getSS_().getSheetByName(tab);
     if (!sh) return;
     var values = sh.getDataRange().getValues();
     if (values.length < 2) return;
@@ -135,14 +140,14 @@ function decrementStock_(lines) {
   lines.forEach(function (l) {
     var p = products[l.key];
     if (!p || p.stock == null || !p.stockCol) return;
-    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(p.tab);
+    var sh = getSS_().getSheetByName(p.tab);
     sh.getRange(p.row, p.stockCol).setValue(Math.max(0, p.stock - l.qty));
   });
 }
 
 /* --- Orders tab + pending stash ------------------------------------------- */
 function recordOrder_(co, pending) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSS_();
   var sh = ss.getSheetByName('Orders');
   if (!sh) { sh = ss.insertSheet('Orders'); sh.appendRow(['Timestamp','Reference','Status','Name','Email','Items','Total','Currency']); }
   var c = pending.customer || {};
