@@ -7,8 +7,9 @@
 (function () {
   "use strict";
 
-  // Paste the checkout Apps Script "/exec" URL here (sandbox first, then live).
-  var CHECKOUT_ENDPOINT = "";
+  // Checkout Apps Script "/exec" URL. Currently the SANDBOX deployment (test sheet +
+  // sandbox SumUp). Swap to the live deployment URL at go-live.
+  var CHECKOUT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh5hnIxGmDFdqNi5kggKZtkIlWEtESaZixTJOQg_7-rGlmPsnS1hxdYPOU1kFLHbC_rA/exec";
 
   /* ---- cart state (persisted) --------------------------------------------- */
   var CART_KEY = "sancha_cart";
