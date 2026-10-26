@@ -39,6 +39,29 @@ Money/price are never trusted from the browser — the backend is the source of 
 Only the two Script properties change: set `SUMUP_API_KEY` + `SUMUP_MERCHANT` to the **live**
 values and redeploy (new version). No code change.
 
+### 4) Redeploying after a `Checkout.gs` code change
+**The `apps-script/Checkout.gs` file in this repo is NOT the running backend.** Editing it here
+changes nothing live — the deployed Apps Script web app has its own copy. To push a change:
+
+1. Open the Apps Script project (the standalone checkout web app, **not** the forms one).
+2. Open `Checkout.gs` in the editor and **replace its entire contents** with the repo version
+   (copy–paste the whole file). Save (⌘S / Ctrl-S).
+3. **Deploy ▸ Manage deployments ▸** (pencil/edit the existing web-app deployment) ▸
+   **Version: New version** ▸ **Deploy**. Editing the existing deployment keeps the **same
+   `/exec` URL**, so nothing in `checkout.js` needs to change. *(Do NOT create a brand-new
+   deployment — that gives a new URL and you'd have to re-wire the frontend.)*
+4. **Re-authorize if prompted.** The email code now uses `GmailApp.sendEmail` (new
+   `gmail.send` scope). The first run after this change will show an authorization screen —
+   click through it as the script-owner account. If you skip it, emails silently fail to send.
+5. **Test it worked:** place a sandbox order (success card, not amount `11`) and confirm the
+   confirmation email now shows sender **"SANcha Matcha"** with reply-to
+   **contact@sanchamatcha.co.uk**, and the order-alert email's Reply goes to the customer.
+
+> Go-live note: to send FROM a branded address (e.g. `orders@sanchamatcha.co.uk`) rather than
+> the script owner's Gmail, add a verified **"Send mail as"** alias in that Gmail account
+> (Settings ▸ Accounts) and pass `{ from: '…' }` to `GmailApp.sendEmail` (see the `TODO` in
+> `Checkout.gs`). Until then the underlying sender address stays the owner's Gmail.
+
 ## Testing (sandbox)
 - Sandbox never moves real money. **An amount of exactly `11` always fails** by design — use it
   to test the failure path.
@@ -57,7 +80,9 @@ is to move just this backend to **Cloudflare Workers** (the frontend/flow stays 
 - [x] Frontend (`assets/checkout.js`) — cart state, drawer, add-to-basket, qty/remove, details form, payment step, confirmation
 - [x] index.html integration — nav basket button, drawer markup + CSS, "Add to basket" on tins, SDK + script includes
 - [x] UI verified via headless screenshots (basket / details / payment) + no mobile overflow (sw=390 @390)
-- [ ] Deploy backend + paste /exec URL → **verify the CORS approach in a real browser**
+- [x] Deploy backend (sandbox) + paste /exec URL → **CORS verified in a real browser** (text/plain works; no Cloudflare pivot needed)
+- [x] End-to-end sandbox order confirmed: PAID → Orders row + stock decrement + confirmation email received
+- [x] Email sender presentation: name "SANcha Matcha" + reply-to contact@sanchamatcha.co.uk (needs Apps Script redeploy — see §4)
 - [ ] Shipping (UK rate), VAT handling, on-brand email template + client thank-you copy
 - [ ] Sold-out "notify me" email automation (waitlist)
 - [ ] End-to-end sandbox test (incl. card widget + amount=11 failure path), then live switch

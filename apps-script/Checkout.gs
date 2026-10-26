@@ -162,23 +162,31 @@ function popPending_(ref) {
 }
 
 /* --- Emails --------------------------------------------------------------- */
+var FROM_NAME = 'SANcha Matcha';
+var REPLY_TO  = 'contact@sanchamatcha.co.uk';
+// TODO go-live: send FROM a branded address (orders@sanchamatcha.co.uk) via a
+// verified Gmail "Send mail as" alias — add { from: ... } below once set up.
 function sendConfirmation_(co, pending) {
   var c = pending.customer || {};
   if (!c.email) return;
   // TODO: on-brand HTML template (logo/colours) + the client's thank-you copy.
   var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join('<br>');
-  MailApp.sendEmail({
-    to: c.email,
-    subject: 'Your SANcha order ' + co.checkout_reference,
+  GmailApp.sendEmail(c.email, 'Your SANcha order ' + co.checkout_reference, '', {
+    name: FROM_NAME,
+    replyTo: REPLY_TO,
     htmlBody: 'Thank you for your order!<br><br>' + items + '<br><br>Total: £' + pending.total
   });
 }
 function sendAlert_(co, pending) {
   var to = cfg_('ORDER_ALERT_TO');
   if (!to) return;
+  var c = pending.customer || {};
   var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join(', ');
-  MailApp.sendEmail({ to: to, subject: 'New SANcha order ' + co.checkout_reference,
-    body: 'Reference: ' + co.checkout_reference + '\nItems: ' + items + '\nTotal: £' + pending.total });
+  GmailApp.sendEmail(to, 'New SANcha order ' + co.checkout_reference,
+    'Reference: ' + co.checkout_reference +
+    '\nCustomer: ' + (c.name || '') + ' <' + (c.email || '') + '>' +
+    '\nItems: ' + items + '\nTotal: £' + pending.total,
+    { name: FROM_NAME, replyTo: c.email || REPLY_TO });
 }
 
 /* --- utils ---------------------------------------------------------------- */

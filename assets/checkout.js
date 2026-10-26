@@ -102,6 +102,7 @@
     if (card) card.innerHTML = "<p style='color:#6a6a60;font-size:14px'>Loading secure payment…</p>";
     post({ action: "createCheckout", cart: getCart(), customer: customer })
       .then(function (res) {
+        console.log("[checkout] createCheckout response:", res);
         if (!res || res.error) throw new Error((res && res.error) || "createCheckout failed");
         if (card) card.innerHTML = "";
         mountWidget(res.checkoutId);
@@ -115,9 +116,11 @@
       id: "sumup-card",
       checkoutId: checkoutId,
       onResponse: function (type, body) {
+        console.log("[checkout] widget response:", type, body);
         if (type === "success") finalize(checkoutId);
         else if (type === "error" || type === "fail")
-          payError(body && body.message ? body.message : "Payment didn't go through. Please try again.");
+          payError((body && body.message) ? body.message
+                   : ("Payment didn't go through (" + type + "). Please try again."));
         // "sent" / "invalid" / "auth-screen" → handled by the widget
       }
     });
@@ -126,6 +129,7 @@
   function finalize(checkoutId) {
     post({ action: "finalizeOrder", checkoutId: checkoutId })
       .then(function (res) {
+        console.log("[checkout] finalizeOrder response:", res);
         if (res && res.ok) {
           localStorage.removeItem(CART_KEY); renderCount(); renderDrawer();
           if (res.reference && el("done-msg"))
