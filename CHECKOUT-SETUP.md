@@ -53,12 +53,14 @@ is to move just this backend to **Cloudflare Workers** (the frontend/flow stays 
 
 ## Status
 - [x] Backend scaffold (`apps-script/Checkout.gs`) — createCheckout, finalizeOrder, stock, orders, emails (email/shipping templates = TODO)
-- [x] Frontend scaffold (`assets/checkout.js`) — cart state + checkout orchestration + widget mount
-- [ ] Frontend UI: basket drawer, add-to-basket buttons, checkout form, confirmation screen
-- [ ] index.html integration (SDK + script + hooks)
+- [x] SumUp API flow validated in sandbox (create + retrieve checkout via curl)
+- [x] Frontend (`assets/checkout.js`) — cart state, drawer, add-to-basket, qty/remove, details form, payment step, confirmation
+- [x] index.html integration — nav basket button, drawer markup + CSS, "Add to basket" on tins, SDK + script includes
+- [x] UI verified via headless screenshots (basket / details / payment) + no mobile overflow (sw=390 @390)
+- [ ] Deploy backend + paste /exec URL → **verify the CORS approach in a real browser**
 - [ ] Shipping (UK rate), VAT handling, on-brand email template + client thank-you copy
-- [ ] Verify the CORS approach in-browser against the sandbox
-- [ ] End-to-end sandbox test, then live switch
+- [ ] Sold-out "notify me" email automation (waitlist)
+- [ ] End-to-end sandbox test (incl. card widget + amount=11 failure path), then live switch
 
 ## Still needed from the client
 Sandbox key verified · shipping rate · VAT details · policy wordings · order-confirmation

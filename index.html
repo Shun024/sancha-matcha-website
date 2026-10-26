@@ -109,6 +109,47 @@
   nav.open .nav-burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
   nav.open .nav-burger span:nth-child(2){opacity:0}
   nav.open .nav-burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  /* NAV right group + basket button */
+  .nav-right{display:flex;align-items:center;gap:22px}
+  .cart-btn{position:relative;background:none;border:0;cursor:pointer;color:var(--charcoal);padding:4px;display:inline-flex;align-items:center;transition:color .3s}
+  .cart-btn:hover{color:var(--matcha-deep)}
+  .cart-btn svg{width:25px;height:25px}
+  .cart-count{position:absolute;top:-5px;right:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--maroon);color:var(--cream);font-family:'Bitter','Bitter Fallback',serif;font-size:10px;line-height:17px;text-align:center;font-weight:600}
+  /* BASKET DRAWER */
+  .cart-overlay{position:fixed;inset:0;background:rgba(30,43,34,.45);z-index:60;opacity:0;transition:opacity .3s}
+  .cart-overlay.open{opacity:1}
+  .cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);background:var(--paper);z-index:61;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-20px 0 50px -30px rgba(30,43,34,.6)}
+  .cart-drawer.open{transform:none}
+  .cart-head{display:flex;align-items:center;justify-content:space-between;padding:24px 26px;border-bottom:1px solid var(--line);flex:none}
+  .cart-head h3{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:24px;color:var(--forest)}
+  .cart-close{background:none;border:0;font-size:30px;line-height:1;cursor:pointer;color:var(--charcoal);padding:0 4px}
+  .cart-body{flex:1;overflow-y:auto;padding:22px 26px}
+  .cart-step{display:flex;flex-direction:column;gap:16px}
+  .cart-drawer [hidden]{display:none!important}   /* ensure hidden steps/rows stay hidden despite display:flex */
+  .cart-line{display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+  .cart-line .nm{flex:1;min-width:0}
+  .cart-line .nm b{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-weight:500;font-size:16px;color:var(--forest);display:block}
+  .cart-line .nm>span{font-size:13px;color:#6a6a60}
+  .qty{display:flex;align-items:center;gap:9px}
+  .qty button{width:26px;height:26px;border:1px solid var(--line);background:var(--cream);border-radius:7px;cursor:pointer;font-size:15px;line-height:1;color:var(--matcha-deep)}
+  .qty>span{min-width:16px;text-align:center;font-size:14px}
+  .cart-line .lp{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:16px;color:var(--maroon);white-space:nowrap}
+  .cart-rm{display:block;background:none;border:0;color:#9a9a90;font-size:12px;cursor:pointer;text-decoration:underline;padding:4px 0 0}
+  .cart-empty{color:#6a6a60;text-align:center;padding:40px 0}
+  .cart-subtotal{display:flex;justify-content:space-between;align-items:baseline;padding-top:16px;font-size:15px}
+  .cart-subtotal b{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:22px;color:var(--forest)}
+  .cart-note{font-size:12px;color:#6a6a60;margin:-6px 0 0}
+  .cart-full{width:100%;text-align:center}
+  .cart-back{background:none;border:0;color:#6a6a60;font-size:13px;cursor:pointer;text-decoration:underline;padding:6px 0;align-self:center}
+  .cart-drawer .wf-field{display:flex;flex-direction:column;gap:6px}
+  .cart-drawer .wf-q{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#6a6a60}
+  .cart-drawer input,.cart-drawer textarea{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--charcoal);font-family:'Bitter','Bitter Fallback',serif;font-size:15px;outline:none;width:100%}
+  .cart-drawer input:focus,.cart-drawer textarea:focus{border-color:var(--matcha-deep)}
+  .cart-err{color:var(--maroon);font-size:13px}
+  .pay-summary{font-size:14px;color:#54544c;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .cart-done{text-align:center;padding:30px 0}
+  .cart-done h4{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:30px;color:var(--forest);margin-bottom:10px}
+  .cart-done p{color:#54544c;margin-bottom:22px}
 
   /* HERO */
   header.hero{padding:170px 0 90px}
@@ -368,16 +409,22 @@
 <nav>
   <div class="wrap nav-inner">
     <a href="#top"><picture><source srcset="assets/logo-dark.webp" type="image/webp"><img src="assets/logo-dark.png" alt="SANcha" class="logo"></picture></a>
-    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
-    <div class="nav-menu" id="nav-menu">
-      <ul class="nav-links">
-        <li><a href="#why">Why Matcha</a></li>
-        <li><a href="#story">Our Story</a></li>
-        <li><a href="#tins">Matcha</a></li>
-        <li><a href="#b2b">Wholesale</a></li>
-        <li><a href="#visit">Visit</a></li>
-      </ul>
-      <a href="#tins" class="nav-cta">Shop</a>
+    <div class="nav-right">
+      <div class="nav-menu" id="nav-menu">
+        <ul class="nav-links">
+          <li><a href="#why">Why Matcha</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#tins">Matcha</a></li>
+          <li><a href="#b2b">Wholesale</a></li>
+          <li><a href="#visit">Visit</a></li>
+        </ul>
+        <a href="#tins" class="nav-cta">Shop</a>
+      </div>
+      <button class="cart-btn" id="cart-btn" type="button" aria-label="Open basket">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-count" id="cart-count" hidden>0</span>
+      </button>
+      <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </nav>
@@ -682,6 +729,46 @@
 </section>
 </main>
 
+<!-- Basket + SumUp checkout drawer -->
+<div id="cart-overlay" class="cart-overlay" hidden></div>
+<aside id="cart-drawer" class="cart-drawer" aria-label="Basket" aria-hidden="true">
+  <div class="cart-head">
+    <h3 id="cart-title">Your basket</h3>
+    <button class="cart-close" type="button" aria-label="Close basket">&times;</button>
+  </div>
+  <div class="cart-body">
+    <div class="cart-step" data-step="basket">
+      <div id="cart-items"></div>
+      <div class="cart-empty" id="cart-empty">Your basket is empty.</div>
+      <div class="cart-subtotal" id="cart-sub-row" hidden><span>Subtotal</span><b id="cart-subtotal">£0.00</b></div>
+      <p class="cart-note" id="cart-note" hidden>Shipping calculated at the next step.</p>
+      <button class="btn btn-solid cart-full" id="to-details" type="button" disabled>Checkout</button>
+    </div>
+    <form class="cart-step" data-step="details" id="details-form" hidden novalidate>
+      <label class="wf-field"><span class="wf-q">Full name</span><input name="name" autocomplete="name" required></label>
+      <label class="wf-field"><span class="wf-q">Email</span><input type="email" name="email" autocomplete="email" required></label>
+      <label class="wf-field"><span class="wf-q">Delivery address</span><textarea name="address" rows="3" autocomplete="street-address" required></textarea></label>
+      <label class="wf-field"><span class="wf-q">Postcode</span><input name="postcode" autocomplete="postal-code" required></label>
+      <div class="cart-err" id="details-err" hidden></div>
+      <button class="btn btn-solid cart-full" type="submit">Continue to payment</button>
+      <button class="cart-back" type="button" data-back="basket">Back to basket</button>
+    </form>
+    <div class="cart-step" data-step="payment" hidden>
+      <div class="pay-summary" id="pay-summary"></div>
+      <div id="sumup-card"></div>
+      <div class="cart-err" id="pay-err" hidden></div>
+      <button class="cart-back" type="button" data-back="details">Back</button>
+    </div>
+    <div class="cart-step" data-step="done" hidden>
+      <div class="cart-done">
+        <h4>Thank you!</h4>
+        <p id="done-msg">Your order is confirmed. A confirmation email is on its way.</p>
+        <button class="btn btn-solid cart-full cart-close" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
 <footer>
   <div class="wrap">
     <div class="foot-grid">
@@ -864,8 +951,16 @@
 
   function renderTin(p) {
     var cultivars = pipes(p.cultivars).map(function (s) { return "<span>" + esc(s) + "</span>"; }).join("");
-    // `buy_url` (a SumUp store product link or payment link) → a "Buy now" button.
-    var buy = p.buy_url ? '<a class="btn btn-solid tin-buy" href="' + esc(p.buy_url) + '" target="_blank" rel="noopener">Buy now</a>' : '';
+    // Option 2 checkout: "Add to basket" when there's a numeric price + stock; sold-out otherwise.
+    var priceNum = parseFloat(String(p.price || '').replace(/[^0-9.]/g, '')) || 0;
+    var stock = (p.stock != null && String(p.stock).trim() !== '') ? parseInt(p.stock, 10) : null;
+    var soldOut = stock != null && stock <= 0;
+    var buy = '';
+    if (priceNum > 0 && !soldOut) {
+      buy = '<button class="btn btn-solid tin-buy add-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '" data-price="' + priceNum + '">Add to basket</button>';
+    } else if (soldOut) {
+      buy = '<button class="btn btn-ghost tin-buy notify-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '">Notify me when back in stock</button>';
+    }
     var body =
         (p.description ? '<p>' + esc(p.description) + '</p>' : '') +
         (cultivars ? '<div class="cultivars">' + cultivars + '</div>' : '') +
@@ -995,6 +1090,10 @@
   });
 })();
 </script>
+
+<!-- SumUp card widget SDK + checkout logic -->
+<script src="https://gateway.sumup.com/gateway/ecom/card/v2/sdk.js"></script>
+<script src="assets/checkout.js" defer></script>
 
 </body>
 </html>
