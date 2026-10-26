@@ -104,15 +104,28 @@
       .then(function (res) {
         console.log("[checkout] createCheckout response:", res);
         if (!res || res.error) throw new Error((res && res.error) || "createCheckout failed");
+        if (!res.checkoutId) throw new Error("No checkout id returned — please try again.");
         if (card) card.innerHTML = "";
         mountWidget(res.checkoutId);
       })
       .catch(payError);
   }
 
+  // Live SumUp widget instance. Must be unmounted before re-mounting — leaving a
+  // stale instance alive while mounting a new one makes the SDK fail with an
+  // opaque "undefined: undefined" on the second payment attempt.
+  var cardWidget = null;
+  function unmountWidget() {
+    if (cardWidget && typeof cardWidget.unmount === "function") {
+      try { cardWidget.unmount(); } catch (_) {}
+    }
+    cardWidget = null;
+  }
+
   function mountWidget(checkoutId) {
     if (!window.SumUpCard) { payError("Payment library not loaded — please refresh."); return; }
-    SumUpCard.mount({
+    unmountWidget();
+    cardWidget = SumUpCard.mount({
       id: "sumup-card",
       checkoutId: checkoutId,
       onResponse: function (type, body) {
