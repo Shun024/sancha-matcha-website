@@ -1,0 +1,182 @@
+/**
+ * SANcha — SumUp checkout backend (Google Apps Script).  [SCAFFOLD]
+ *
+ * Deploy as a Web App:  Deploy ▸ New deployment ▸ Web app
+ *   - Execute as: Me
+ *   - Who has access: Anyone
+ * Then paste the /exec URL into assets/checkout.js (CHECKOUT_ENDPOINT).
+ *
+ * Secrets live in  Project Settings ▸ Script properties  (never in this file / the repo):
+ *   SUMUP_API_KEY   = SANDBOX secret key while testing; swap to the LIVE key at go-live
+ *   SUMUP_MERCHANT  = matching SANDBOX merchant code; swap to LIVE at go-live
+ *   ORDER_ALERT_TO  = email address that should be notified on each new order
+ *
+ * Catalogue + stock are read from the "Tins" (and "Shop") tabs of the bound
+ * spreadsheet; orders are written to an auto-created "Orders" tab.
+ *
+ * NOTE: keep this SEPARATE from the forms doPost (waitlist/wholesale) — deploy it
+ * as its own web app so the two don't collide on a single doPost.
+ */
+
+var SUMUP_API = 'https://api.sumup.com/v0.1';
+var CURRENCY  = 'GBP';
+
+function props_()   { return PropertiesService.getScriptProperties(); }
+function cfg_(k)     { return props_().getProperty(k) || ''; }
+function json_(obj)  { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
+
+function doPost(e) {
+  try {
+    var req = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    switch (req.action) {
+      case 'createCheckout': return json_(createCheckout_(req));
+      case 'finalizeOrder':  return json_(finalizeOrder_(req));
+      default:               return json_({ error: 'unknown action' });
+    }
+  } catch (err) {
+    return json_({ error: String(err) });
+  }
+}
+
+/* 1) Create a SumUp checkout for the submitted cart.
+ * Every line is re-validated against the sheet (price + stock) and the total is
+ * computed HERE, server-side — the browser can never set its own price. */
+function createCheckout_(req) {
+  var cart = req.cart || [];
+  if (!cart.length) throw new Error('empty cart');
+
+  var products = loadProducts_();
+  var lines = [], total = 0;
+  cart.forEach(function (item) {
+    var p = products[normKey_(item.id || item.name)];
+    if (!p) throw new Error('unknown product: ' + (item.id || item.name));
+    var qty = Math.max(1, parseInt(item.qty, 10) || 1);
+    if (p.stock != null && qty > p.stock) throw new Error('out of stock: ' + p.name);
+    total += p.price * qty;
+    lines.push({ key: p.key, name: p.name, qty: qty, price: p.price });
+  });
+  // TODO shipping: add the UK delivery charge once the client confirms rates
+  //                (flat rate / free over £X). total += shipping_(...);
+
+  var reference = 'SANCHA-' + Date.now() + '-' + Math.floor(Math.random() * 1e4);
+  var checkout = sumup_('POST', '/checkouts', {
+    checkout_reference: reference,
+    amount: round2_(total),
+    currency: CURRENCY,
+    merchant_code: cfg_('SUMUP_MERCHANT'),
+    description: 'SANcha order ' + reference
+  });
+
+  // Stash the validated order so finalize can trust it (keyed by reference).
+  stashPending_(reference, { lines: lines, total: round2_(total), customer: req.customer || {} });
+  return { checkoutId: checkout.id, reference: reference, amount: round2_(total), currency: CURRENCY };
+}
+
+/* 2) Finalise after the card widget reports success.
+ * Re-checks the REAL status with SumUp (never trust the browser), then records
+ * the order, decrements stock, and sends the emails. */
+function finalizeOrder_(req) {
+  if (!req.checkoutId) throw new Error('missing checkoutId');
+  var co = sumup_('GET', '/checkouts/' + encodeURIComponent(req.checkoutId), null);
+  if (co.status !== 'PAID') return { ok: false, status: co.status };
+
+  var pending = popPending_(co.checkout_reference) || {};
+  recordOrder_(co, pending);
+  decrementStock_(pending.lines || []);
+  sendConfirmation_(co, pending);
+  sendAlert_(co, pending);
+  return { ok: true, status: 'PAID', reference: co.checkout_reference };
+}
+
+/* --- SumUp REST helper ---------------------------------------------------- */
+function sumup_(method, path, body) {
+  var opts = {
+    method: method,
+    contentType: 'application/json',
+    headers: { Authorization: 'Bearer ' + cfg_('SUMUP_API_KEY') },
+    muteHttpExceptions: true
+  };
+  if (body) opts.payload = JSON.stringify(body);
+  var resp = UrlFetchApp.fetch(SUMUP_API + path, opts);
+  var code = resp.getResponseCode(), text = resp.getContentText();
+  if (code < 200 || code >= 300) throw new Error('SumUp ' + code + ': ' + text);
+  return text ? JSON.parse(text) : {};
+}
+
+/* --- Catalogue + stock (from the sheet) ----------------------------------- */
+// Returns { key: { key, name, price(Number), stock(Number|null), tab, row } }
+function loadProducts_() {
+  var out = {};
+  ['Tins', 'Shop'].forEach(function (tab) {
+    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
+    if (!sh) return;
+    var values = sh.getDataRange().getValues();
+    if (values.length < 2) return;
+    var head = values[0].map(function (h) { return String(h).trim().toLowerCase(); });
+    var iName = head.indexOf('name') > -1 ? head.indexOf('name') : head.indexOf('title');
+    var iPrice = head.indexOf('price'), iStock = head.indexOf('stock');
+    for (var r = 1; r < values.length; r++) {
+      var name = String(values[r][iName] || '').trim();
+      if (!name) continue;
+      out[normKey_(name)] = {
+        key: normKey_(name),
+        name: name,
+        price: parsePrice_(values[r][iPrice]),
+        stock: iStock > -1 && values[r][iStock] !== '' ? Number(values[r][iStock]) : null,
+        tab: tab, row: r + 1, stockCol: iStock > -1 ? iStock + 1 : null
+      };
+    }
+  });
+  return out;
+}
+
+function decrementStock_(lines) {
+  var products = loadProducts_();
+  lines.forEach(function (l) {
+    var p = products[l.key];
+    if (!p || p.stock == null || !p.stockCol) return;
+    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(p.tab);
+    sh.getRange(p.row, p.stockCol).setValue(Math.max(0, p.stock - l.qty));
+  });
+}
+
+/* --- Orders tab + pending stash ------------------------------------------- */
+function recordOrder_(co, pending) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Orders');
+  if (!sh) { sh = ss.insertSheet('Orders'); sh.appendRow(['Timestamp','Reference','Status','Name','Email','Items','Total','Currency']); }
+  var c = pending.customer || {};
+  var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join(', ');
+  sh.appendRow([new Date(), co.checkout_reference, co.status, c.name || '', c.email || '', items, pending.total, co.currency || CURRENCY]);
+}
+function stashPending_(ref, data) { props_().setProperty('PENDING_' + ref, JSON.stringify(data)); }
+function popPending_(ref) {
+  var k = 'PENDING_' + ref, v = props_().getProperty(k);
+  if (v) props_().deleteProperty(k);
+  return v ? JSON.parse(v) : null;
+}
+
+/* --- Emails --------------------------------------------------------------- */
+function sendConfirmation_(co, pending) {
+  var c = pending.customer || {};
+  if (!c.email) return;
+  // TODO: on-brand HTML template (logo/colours) + the client's thank-you copy.
+  var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join('<br>');
+  MailApp.sendEmail({
+    to: c.email,
+    subject: 'Your SANcha order ' + co.checkout_reference,
+    htmlBody: 'Thank you for your order!<br><br>' + items + '<br><br>Total: £' + pending.total
+  });
+}
+function sendAlert_(co, pending) {
+  var to = cfg_('ORDER_ALERT_TO');
+  if (!to) return;
+  var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join(', ');
+  MailApp.sendEmail({ to: to, subject: 'New SANcha order ' + co.checkout_reference,
+    body: 'Reference: ' + co.checkout_reference + '\nItems: ' + items + '\nTotal: £' + pending.total });
+}
+
+/* --- utils ---------------------------------------------------------------- */
+function normKey_(s)   { return String(s || '').trim().toLowerCase(); }
+function round2_(n)    { return Math.round(n * 100) / 100; }
+function parsePrice_(v){ return Number(String(v == null ? '' : v).replace(/[^0-9.]/g, '')) || 0; }
