@@ -119,9 +119,13 @@ function finalizeOrder_(req) {
   var pending = popPending_(co.checkout_reference) || {};
   recordOrder_(co, pending);
   decrementStock_(pending.lines || []);
-  sendConfirmation_(co, pending);
-  sendAlert_(co, pending);
-  return { ok: true, status: 'PAID', reference: co.checkout_reference };
+  // Emails are best-effort: the payment has already succeeded and the order is
+  // recorded, so a mail failure (e.g. auth/quota) must NOT fail the response —
+  // otherwise the customer sees an error and may pay again. Log and carry on.
+  var emailError = null;
+  try { sendConfirmation_(co, pending); sendAlert_(co, pending); }
+  catch (mailErr) { emailError = String(mailErr); console.error('order email failed: ' + emailError); }
+  return { ok: true, status: 'PAID', reference: co.checkout_reference, emailError: emailError };
 }
 
 /* --- SumUp REST helper ---------------------------------------------------- */
@@ -210,6 +214,23 @@ var C_GREEN = '#293D30', C_CREAM = '#FFF4D6', C_MAROON = '#6C2C25',
     C_STONE = '#c9b79a', C_LINE = '#e7ddbe';
 
 function gbp_(n) { return '£' + (Number(n) || 0).toFixed(2); }
+
+/* Run this ONCE from the Apps Script editor (Run ▸ authorizeAndPreviewEmail) to
+ * grant the Gmail (gmail.send) permission and send yourself a sample of the
+ * branded confirmation email. Clears the "authorization required" error that
+ * otherwise makes order emails fail silently. Sends to the signed-in owner. */
+function authorizeAndPreviewEmail() {
+  var co = { checkout_reference: 'SANCHA-TEST-0001', status: 'PAID', currency: 'GBP' };
+  var pending = {
+    lines: [{ name: 'IKI', qty: 1, price: 24 }, { name: 'YUAN', qty: 2, price: 26 }],
+    subtotal: 76, shipping: 0, total: 76,
+    customer: {
+      name: 'Test Buyer', email: Session.getActiveUser().getEmail(),
+      address: '1 Test Street, Testville', postcode: 'TE5 7ST'
+    }
+  };
+  sendConfirmation_(co, pending);
+}
 
 function sendConfirmation_(co, pending) {
   var c = pending.customer || {};
