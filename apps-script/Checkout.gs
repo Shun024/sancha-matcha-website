@@ -24,6 +24,22 @@
 var SUMUP_API = 'https://api.sumup.com/v0.1';
 var CURRENCY  = 'GBP';
 
+/* --- Shipping (UK) --------------------------------------------------------
+ * CONFIRM WITH CLIENT, then set these. Defaults = free shipping (no change to
+ * the total), so the checkout behaves exactly as before until a rate is set.
+ *   SHIPPING_FLAT      flat delivery charge per order, in GBP (0 = free).
+ *   SHIPPING_FREE_OVER subtotal at/above which delivery is free (null = never). */
+var SHIPPING_FLAT      = 0;      // TODO client: e.g. 3.95
+var SHIPPING_FREE_OVER = null;   // TODO client: e.g. 40  (free over £40)
+
+/* --- VAT ------------------------------------------------------------------
+ * CONFIRM WITH CLIENT. 'none' = not VAT-registered (no VAT line, current
+ * behaviour). 'inc' = prices already include VAT (show a note, no maths).
+ * 'add' = add VAT on top at the rate below. Set VAT_NUMBER for receipts. */
+var VAT_MODE   = 'none';         // TODO client: 'none' | 'inc' | 'add'
+var VAT_RATE   = 0.20;           // used only when VAT_MODE === 'add'
+var VAT_NUMBER = '';             // TODO client: registration number for receipts
+
 function props_()   { return PropertiesService.getScriptProperties(); }
 function cfg_(k)     { return props_().getProperty(k) || ''; }
 // Standalone project → open the sheet by ID; falls back to bound sheet if present.
@@ -51,30 +67,45 @@ function createCheckout_(req) {
   if (!cart.length) throw new Error('empty cart');
 
   var products = loadProducts_();
-  var lines = [], total = 0;
+  var lines = [], subtotal = 0;
   cart.forEach(function (item) {
     var p = products[normKey_(item.id || item.name)];
     if (!p) throw new Error('unknown product: ' + (item.id || item.name));
     var qty = Math.max(1, parseInt(item.qty, 10) || 1);
     if (p.stock != null && qty > p.stock) throw new Error('out of stock: ' + p.name);
-    total += p.price * qty;
+    subtotal += p.price * qty;
     lines.push({ key: p.key, name: p.name, qty: qty, price: p.price });
   });
-  // TODO shipping: add the UK delivery charge once the client confirms rates
-  //                (flat rate / free over £X). total += shipping_(...);
+  var shipping = shipping_(subtotal);
+  var total    = round2_(subtotal + shipping);
 
   var reference = 'SANCHA-' + Date.now() + '-' + Math.floor(Math.random() * 1e4);
   var checkout = sumup_('POST', '/checkouts', {
     checkout_reference: reference,
-    amount: round2_(total),
+    amount: total,
     currency: CURRENCY,
     merchant_code: cfg_('SUMUP_MERCHANT'),
     description: 'SANcha order ' + reference
   });
 
   // Stash the validated order so finalize can trust it (keyed by reference).
-  stashPending_(reference, { lines: lines, total: round2_(total), customer: req.customer || {} });
-  return { checkoutId: checkout.id, reference: reference, amount: round2_(total), currency: CURRENCY };
+  stashPending_(reference, {
+    lines: lines, subtotal: round2_(subtotal), shipping: round2_(shipping),
+    total: total, customer: req.customer || {}
+  });
+  return {
+    checkoutId: checkout.id, reference: reference,
+    subtotal: round2_(subtotal), shipping: round2_(shipping),
+    amount: total, currency: CURRENCY
+  };
+}
+
+/* UK delivery charge for a given subtotal. Free by default until the client
+ * sets SHIPPING_FLAT / SHIPPING_FREE_OVER above. */
+function shipping_(subtotal) {
+  if (!SHIPPING_FLAT) return 0;
+  if (SHIPPING_FREE_OVER != null && subtotal >= SHIPPING_FREE_OVER) return 0;
+  return SHIPPING_FLAT;
 }
 
 /* 2) Finalise after the card widget reports success.
