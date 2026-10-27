@@ -195,18 +195,112 @@ function popPending_(ref) {
 /* --- Emails --------------------------------------------------------------- */
 var FROM_NAME = 'SANcha Matcha';
 var REPLY_TO  = 'contact@sanchamatcha.co.uk';
+var SITE_URL  = 'https://sanchamatcha.co.uk';
+var LOGO_URL  = SITE_URL + '/assets/logo-cream.png';   // cream logo for the dark header
 // TODO go-live: send FROM a branded address (orders@sanchamatcha.co.uk) via a
-// verified Gmail "Send mail as" alias — add { from: ... } below once set up.
+// verified Gmail "Send mail as" alias — add { from: ... } to the sends below.
+// TODO client: approve / replace this thank-you line.
+var THANKYOU_COPY = 'Thank you for your order — every tin is whisked and packed with care. ' +
+  'We\'ll be in touch again when it\'s on its way to you.';
+// TODO client: real business details for the receipt footer (name, address, VAT no.).
+var BUSINESS_FOOTER = 'SANcha Matcha &middot; sanchamatcha.co.uk';
+
+// Brand palette (kept in sync with index.html :root)
+var C_GREEN = '#293D30', C_CREAM = '#FFF4D6', C_MAROON = '#6C2C25',
+    C_STONE = '#c9b79a', C_LINE = '#e7ddbe';
+
+function gbp_(n) { return '£' + (Number(n) || 0).toFixed(2); }
+
 function sendConfirmation_(co, pending) {
   var c = pending.customer || {};
   if (!c.email) return;
-  // TODO: on-brand HTML template (logo/colours) + the client's thank-you copy.
-  var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join('<br>');
-  GmailApp.sendEmail(c.email, 'Your SANcha order ' + co.checkout_reference, '', {
-    name: FROM_NAME,
-    replyTo: REPLY_TO,
-    htmlBody: 'Thank you for your order!<br><br>' + items + '<br><br>Total: £' + pending.total
-  });
+  GmailApp.sendEmail(c.email, 'Your SANcha order ' + co.checkout_reference,
+    confirmationText_(co, pending), {   // plain-text fallback
+      name: FROM_NAME,
+      replyTo: REPLY_TO,
+      htmlBody: confirmationHtml_(co, pending)
+    });
+}
+
+// Plain-text fallback for clients that don't render HTML.
+function confirmationText_(co, pending) {
+  var lines = (pending.lines || []).map(function (l) {
+    return '  ' + l.qty + ' x ' + l.name + '  ' + gbp_(l.price * l.qty);
+  }).join('\n');
+  var t = 'Thank you for your order!\n\nOrder ' + co.checkout_reference + '\n\n' + lines +
+    '\n\nSubtotal: ' + gbp_(pending.subtotal != null ? pending.subtotal : pending.total);
+  if (pending.shipping) t += '\nShipping: ' + gbp_(pending.shipping);
+  else if (pending.subtotal != null) t += '\nShipping: Free';
+  t += '\nTotal: ' + gbp_(pending.total) + '\n\n' + SITE_URL;
+  return t;
+}
+
+// On-brand HTML confirmation. Table layout + inline styles for email-client
+// compatibility; absolute image/URL paths; web-safe font fallbacks.
+function confirmationHtml_(co, pending) {
+  var c = pending.customer || {};
+  var rows = (pending.lines || []).map(function (l) {
+    return '<tr>' +
+      '<td style="padding:10px 0;border-bottom:1px solid ' + C_LINE + ';color:' + C_GREEN + ';font-size:15px;">' +
+        '<strong>' + l.qty + '&times;</strong> ' + escHtml_(l.name) + '</td>' +
+      '<td align="right" style="padding:10px 0;border-bottom:1px solid ' + C_LINE + ';color:' + C_GREEN + ';font-size:15px;white-space:nowrap;">' +
+        gbp_(l.price * l.qty) + '</td></tr>';
+  }).join('');
+
+  var hasBreak = pending.subtotal != null;
+  var shipTxt = pending.shipping ? gbp_(pending.shipping) : 'Free';
+  var totalsRows =
+    (hasBreak ? totalRow_('Subtotal', gbp_(pending.subtotal), false) +
+                totalRow_('Shipping', shipTxt, false) : '') +
+    totalRow_('Total', gbp_(pending.total), true);
+
+  var addr = [c.name, c.address, c.postcode].filter(function (x) { return x; })
+    .map(escHtml_).join('<br>');
+
+  return '' +
+  '<!doctype html><html><body style="margin:0;padding:0;background:' + C_LINE + ';">' +
+  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + C_LINE + ';padding:24px 0;">' +
+    '<tr><td align="center">' +
+      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:' + C_CREAM + ';border-radius:14px;overflow:hidden;font-family:Georgia,\'Times New Roman\',serif;">' +
+        // header
+        '<tr><td align="center" style="background:' + C_GREEN + ';padding:28px 24px;">' +
+          '<img src="' + LOGO_URL + '" alt="SANcha Matcha" width="150" style="display:block;border:0;max-width:150px;height:auto;"></td></tr>' +
+        // body
+        '<tr><td style="padding:32px 32px 8px;">' +
+          '<h1 style="margin:0 0 6px;color:' + C_GREEN + ';font-size:24px;font-weight:normal;">Thank you for your order</h1>' +
+          '<p style="margin:0 0 4px;color:' + C_MAROON + ';font-size:13px;letter-spacing:.08em;text-transform:uppercase;">Order ' + escHtml_(co.checkout_reference) + '</p>' +
+          '<p style="margin:16px 0 0;color:' + C_GREEN + ';font-size:15px;line-height:1.6;">' + escHtml_(THANKYOU_COPY) + '</p>' +
+        '</td></tr>' +
+        // order summary
+        '<tr><td style="padding:16px 32px 8px;">' +
+          '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + rows + totalsRows + '</table>' +
+        '</td></tr>' +
+        // delivery address
+        (addr ? '<tr><td style="padding:16px 32px;">' +
+          '<p style="margin:0 0 6px;color:' + C_MAROON + ';font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Delivering to</p>' +
+          '<p style="margin:0;color:' + C_GREEN + ';font-size:15px;line-height:1.5;">' + addr + '</p></td></tr>' : '') +
+        // footer
+        '<tr><td style="padding:24px 32px 32px;border-top:1px solid ' + C_LINE + ';">' +
+          '<p style="margin:0;color:' + C_GREEN + ';font-size:13px;line-height:1.6;">Questions? Just reply to this email and it\'ll reach us at ' + REPLY_TO + '.</p>' +
+          '<p style="margin:12px 0 0;color:' + C_STONE + ';font-size:12px;">' + BUSINESS_FOOTER + '</p>' +
+        '</td></tr>' +
+      '</table>' +
+    '</td></tr>' +
+  '</table></body></html>';
+}
+
+function totalRow_(label, value, bold) {
+  var w = bold ? 'bold' : 'normal';
+  var top = bold ? 'border-top:2px solid ' + C_GREEN + ';' : '';
+  var size = bold ? '17px' : '14px';
+  return '<tr>' +
+    '<td style="padding:8px 0;' + top + 'color:' + C_GREEN + ';font-size:' + size + ';font-weight:' + w + ';">' + label + '</td>' +
+    '<td align="right" style="padding:8px 0;' + top + 'color:' + C_GREEN + ';font-size:' + size + ';font-weight:' + w + ';white-space:nowrap;">' + value + '</td></tr>';
+}
+
+function escHtml_(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 function sendAlert_(co, pending) {
   var to = cfg_('ORDER_ALERT_TO');
