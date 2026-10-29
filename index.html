@@ -150,6 +150,9 @@
   .cart-done{text-align:center;padding:30px 0}
   .cart-done h4{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:30px;color:var(--forest);margin-bottom:10px}
   .cart-done p{color:#54544c;margin-bottom:22px}
+  .pay-spinner{width:40px;height:40px;margin:0 auto 20px;border:3px solid var(--line);border-top-color:var(--matcha-deep);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .email-fix{background:none;border:0;color:var(--maroon);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
 
   /* HERO */
   header.hero{padding:170px 0 90px}
@@ -758,6 +761,13 @@
       <div id="sumup-card"></div>
       <div class="cart-err" id="pay-err" hidden></div>
       <button class="cart-back" type="button" data-back="details">Back</button>
+    </div>
+    <div class="cart-step" data-step="processing" hidden>
+      <div class="cart-done">
+        <div class="pay-spinner" aria-hidden="true"></div>
+        <h4>Confirming your order…</h4>
+        <p>Payment received — please don't close this window.</p>
+      </div>
     </div>
     <div class="cart-step" data-step="done" hidden>
       <div class="cart-done">

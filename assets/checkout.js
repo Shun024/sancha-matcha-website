@@ -11,6 +11,9 @@
   // sandbox SumUp). Swap to the live deployment URL at go-live.
   var CHECKOUT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh5hnIxGmDFdqNi5kggKZtkIlWEtESaZixTJOQg_7-rGlmPsnS1hxdYPOU1kFLHbC_rA/exec";
 
+  // Customer-facing contact (matches the backend REPLY_TO).
+  var CONTACT_EMAIL = "contact@sanchamatcha.co.uk";
+
   /* ---- cart state (persisted) --------------------------------------------- */
   var CART_KEY = "sancha_cart";
   function getCart()  { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (_) { return []; } }
@@ -51,7 +54,7 @@
   function showStep(name) {
     var steps = document.querySelectorAll("#cart-drawer .cart-step");
     for (var i = 0; i < steps.length; i++) steps[i].hidden = steps[i].getAttribute("data-step") !== name;
-    var titles = { basket: "Your basket", details: "Delivery details", payment: "Payment", done: "Order confirmed" };
+    var titles = { basket: "Your basket", details: "Delivery details", payment: "Payment", processing: "Processing", done: "Order confirmed" };
     var t = el("cart-title"); if (t) t.textContent = titles[name] || "Your basket";
   }
 
@@ -90,7 +93,61 @@
       address:  f.elements["address"].value.trim(),
       postcode: f.elements["postcode"].value.trim()
     };
+    if (!validateDetails(customer)) return;
+    clearDetailsErr();
     startCheckout(customer);
+  }
+
+  /* ---- details validation (catch email / address typos) ------------------- */
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
+  var COMMON_DOMAINS = ["gmail.com","googlemail.com","yahoo.com","yahoo.co.uk","hotmail.com",
+    "hotmail.co.uk","outlook.com","live.com","icloud.com","me.com","aol.com","btinternet.com","sky.com"];
+  var _emailConfirmed = "";   // email the customer kept despite a typo nudge
+
+  function detailsErr(html, focusName) {
+    var e = el("details-err"); if (e) { e.hidden = false; e.innerHTML = html; }
+    if (focusName) { var inp = document.querySelector('#details-form [name="' + focusName + '"]'); if (inp) inp.focus(); }
+  }
+  function clearDetailsErr() { var e = el("details-err"); if (e) { e.hidden = true; e.textContent = ""; } }
+
+  function validateDetails(c) {
+    if (!EMAIL_RE.test(c.email)) {
+      detailsErr("Please enter a valid email address — that's where your order confirmation goes.", "email"); return false;
+    }
+    if (!UK_POSTCODE_RE.test(c.postcode)) {
+      detailsErr("Please enter a valid UK postcode (e.g. SW1A 1AA).", "postcode"); return false;
+    }
+    if (c.address.replace(/\s/g, "").length < 6) {
+      detailsErr("Please enter your full delivery address.", "address"); return false;
+    }
+    // Soft nudge for a likely mistyped email domain (e.g. gmial.com → gmail.com).
+    var sug = suggestEmail(c.email);
+    if (sug && _emailConfirmed !== c.email.toLowerCase()) {
+      _emailConfirmed = c.email.toLowerCase();   // 2nd press with same value = accept as-is
+      detailsErr('Did you mean <button type="button" class="email-fix" data-email="' + esc(sug) + '">' +
+        esc(sug) + '</button>? If your address is correct, press "Continue to payment" again.');
+      return false;
+    }
+    return true;
+  }
+
+  // Suggest a corrected domain if it's a close misspelling of a common provider.
+  function suggestEmail(email) {
+    var at = email.lastIndexOf("@"); if (at < 1) return null;
+    var dom = email.slice(at + 1).toLowerCase();
+    if (!dom || COMMON_DOMAINS.indexOf(dom) > -1) return null;
+    var best = null, bestD = 99;
+    COMMON_DOMAINS.forEach(function (d) { var dist = lev(dom, d); if (dist < bestD) { bestD = dist; best = d; } });
+    return (best && bestD > 0 && bestD <= 2) ? email.slice(0, at + 1) + best : null;
+  }
+  function lev(a, b) {   // Levenshtein distance
+    var m = a.length, n = b.length, i, j, d = [];
+    for (i = 0; i <= m; i++) d[i] = [i];
+    for (j = 0; j <= n; j++) d[0][j] = j;
+    for (i = 1; i <= m; i++) for (j = 1; j <= n; j++)
+      d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a.charAt(i-1) === b.charAt(j-1) ? 0 : 1));
+    return d[m][n];
   }
 
   function startCheckout(customer) {
@@ -140,6 +197,9 @@
   }
 
   function finalize(checkoutId) {
+    // Payment succeeded — swap the card form for a "confirming…" view while the
+    // backend records the order (SumUp status re-check + sheet writes + emails).
+    showStep("processing");
     post({ action: "finalizeOrder", checkoutId: checkoutId })
       .then(function (res) {
         console.log("[checkout] finalizeOrder response:", res);
@@ -149,10 +209,23 @@
             el("done-msg").textContent = "Your order (" + res.reference + ") is confirmed. A confirmation email is on its way.";
           showStep("done");
         } else {
-          payError(res && res.status ? "Payment status: " + res.status : "Couldn't confirm the order — please contact us.");
+          finalizeError(res && res.status ? "Status: " + res.status : null);
         }
       })
-      .catch(payError);
+      .catch(function (e) { console.error("[checkout]", e); finalizeError(null); });
+  }
+
+  // Payment succeeded but the backend couldn't confirm the order. NEVER send the
+  // customer back to pay again — reassure them and give a contact route.
+  function finalizeError(detail) {
+    showStep("processing");
+    var box = document.querySelector('[data-step="processing"] .cart-done');
+    if (box) box.innerHTML =
+      '<h4>Almost there</h4>' +
+      '<p>Your payment went through, but we hit a snag confirming your order automatically. ' +
+      'Don\'t worry — your payment is safe. Please email ' +
+      '<a href="mailto:' + CONTACT_EMAIL + '">' + CONTACT_EMAIL + '</a> and we\'ll sort it straight away.' +
+      (detail ? '<br><br><small style="color:#6a6a60">' + esc(detail) + '</small>' : '') + '</p>';
   }
 
   function payError(e) {
@@ -180,6 +253,12 @@
     var addb = t.closest(".add-btn");
     if (addb) { add(addb.getAttribute("data-id"), addb.getAttribute("data-name"), addb.getAttribute("data-price")); return; }
     if (t.closest(".notify-btn")) { location.hash = "#join"; return; }
+    var fix = t.closest(".email-fix");
+    if (fix) {
+      var em = document.querySelector('#details-form [name="email"]');
+      if (em) { em.value = fix.getAttribute("data-email"); em.focus(); }
+      _emailConfirmed = ""; clearDetailsErr(); return;
+    }
     if (t.closest("#cart-btn")) { open(); return; }
     if (t.classList.contains("cart-close")) { close(); return; }
     if (t.id === "cart-overlay") { close(); return; }
