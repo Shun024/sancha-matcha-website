@@ -86,7 +86,30 @@ is to move just this backend to **Cloudflare Workers** (the frontend/flow stays 
 - [ ] Shipping (UK rate), VAT handling, on-brand email template + client thank-you copy
 - [ ] Sold-out "notify me" email automation (waitlist)
 - [ ] End-to-end sandbox test (incl. card widget + amount=11 failure path), then live switch
+- [ ] *(optional)* Real address lookup/autocomplete — see "Optional go-live enhancements"
+
+## Optional go-live enhancements
+
+### Address lookup / autocomplete (postcode → pick your address)
+**What we have now:** the checkout validates the **email** (format + "did you mean gmail.com?"
+typo nudge) and the **UK postcode format**, and sanity-checks the address isn't blank. This catches
+the common typos — but it **cannot confirm an address actually exists / is deliverable**.
+
+**The upgrade:** wire a UK address-lookup API so the customer types their postcode, picks their
+exact address from a dropdown, and the fields auto-fill. Eliminates mistyped/undeliverable addresses
+and speeds up checkout.
+
+- **Providers (UK):** [Ideal Postcodes](https://ideal-postcodes.co.uk), [getAddress.io](https://getaddress.io),
+  [Loqate](https://www.loqate.com). All are pay-as-you-go/subscription (roughly ~£20/mo or a few
+  pence per lookup — client decides based on volume). Each gives a drop-in JS widget + an API key.
+- **How it'd integrate:** add a "Find address" postcode field above the current address box in the
+  details step (`index.html`), load the provider's widget in `assets/checkout.js`, and on select,
+  fill `address` + `postcode`. The free-text address box stays as a fallback / for edits. **No
+  backend change** — the backend already treats the address as free text. Client provides the API
+  key (stored in the frontend; these keys are domain-restricted, so that's expected/safe).
+- **Decision needed from client:** whether to buy this, and which provider. Low effort to add once
+  we have a key (~half a day). Format-checking is adequate for launch if they'd rather defer.
 
 ## Still needed from the client
 Sandbox key verified · shipping rate · VAT details · policy wordings · order-confirmation
-thank-you text · the inbox for new-order alerts.
+thank-you text · the inbox for new-order alerts · **(optional)** address-lookup provider + API key.
