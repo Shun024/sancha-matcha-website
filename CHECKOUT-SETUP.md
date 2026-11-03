@@ -57,10 +57,35 @@ changes nothing live — the deployed Apps Script web app has its own copy. To p
    confirmation email now shows sender **"SANcha Matcha"** with reply-to
    **contact@sanchamatcha.co.uk**, and the order-alert email's Reply goes to the customer.
 
-> Go-live note: to send FROM a branded address (e.g. `orders@sanchamatcha.co.uk`) rather than
-> the script owner's Gmail, add a verified **"Send mail as"** alias in that Gmail account
-> (Settings ▸ Accounts) and pass `{ from: '…' }` to `GmailApp.sendEmail` (see the `TODO` in
-> `Checkout.gs`). Until then the underlying sender address stays the owner's Gmail.
+> Go-live note — branded sender: `Checkout.gs` is already set to send FROM
+> `orders@sanchamatcha.co.uk` (`FROM_EMAIL`). It only takes effect once that address is a
+> **verified "Send mail as" alias** on the sending Gmail account (Gmail ▸ Settings ▸ Accounts
+> ▸ *Send mail as* ▸ add `orders@…` ▸ verify). Until then `fromOpt_()` safely detects the alias
+> is missing and falls back to the owner's address (emails still send, just not branded) — so
+> set up the alias when the mailbox is ready, no code change needed.
+
+### 5) Enable dispatch emails + back-in-stock notifications (run once)
+Both features live in `Checkout.gs` and need **one installable trigger** on the spreadsheet.
+After redeploying (§4):
+
+1. In the Apps Script editor, pick **`installTriggers`** from the function dropdown ▸ **Run**.
+   Authorize when prompted (adds the spreadsheet-edit + Gmail scopes). Safe to re-run.
+2. **Dispatch email (tracking):** the new orders go into the **Orders** tab, which now has
+   **`Tracking`** and **`Dispatched`** columns. When you post an order, paste the Royal Mail
+   tracking number into that order's **Tracking** cell — the customer automatically gets a
+   branded "your order's on its way" email with a tracking link, and **Dispatched** is stamped
+   so it never sends twice.
+   - ⚠️ **If the Orders tab already existed** before this update, it won't have the two new
+     columns. Add two headers to the right of `Currency`: **`Tracking`** then **`Dispatched`**
+     (exact spelling). New sheets get them automatically.
+3. **Back-in-stock:** when a shopper clicks *"Notify me when back in stock"* on a sold-out tin
+   and enters their email, they get an instant "you're on the list" email and a row is added to
+   an auto-created **Waitlist** tab (`Status = Waiting`). When you raise that product's **stock**
+   cell on the **Tins**/**Shop** tab from 0 back above 0, everyone currently *Waiting* for it
+   gets ONE "it's back" email and is flipped to `Notified` — so a later restock never re-emails
+   the same people (anyone who signs up after is waiting for the *next* restock).
+   - Only single-cell edits fire the blast (a bulk paste won't), and it only triggers on 0 → >0.
+   - Watch the Gmail send quota for big blasts (consumer Gmail ~100–500 recipients/day).
 
 ## Testing (sandbox)
 - Sandbox never moves real money. **An amount of exactly `11` always fails** by design — use it

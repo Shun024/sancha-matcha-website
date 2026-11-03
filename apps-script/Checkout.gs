@@ -25,20 +25,24 @@ var SUMUP_API = 'https://api.sumup.com/v0.1';
 var CURRENCY  = 'GBP';
 
 /* --- Shipping (UK) --------------------------------------------------------
- * CONFIRM WITH CLIENT, then set these. Defaults = free shipping (no change to
- * the total), so the checkout behaves exactly as before until a rate is set.
+ * Royal Mail: £3.75 flat, up to 2kg (~65 tins) — well beyond any realistic
+ * order, so a single flat rate is fine. Free delivery at/above £40 subtotal.
  *   SHIPPING_FLAT      flat delivery charge per order, in GBP (0 = free).
  *   SHIPPING_FREE_OVER subtotal at/above which delivery is free (null = never). */
-var SHIPPING_FLAT      = 0;      // TODO client: e.g. 3.95
-var SHIPPING_FREE_OVER = null;   // TODO client: e.g. 40  (free over £40)
+var SHIPPING_FLAT      = 3.75;   // Royal Mail flat, up to 2kg
+var SHIPPING_FREE_OVER = 40;     // free over £40
 
 /* --- VAT ------------------------------------------------------------------
- * CONFIRM WITH CLIENT. 'none' = not VAT-registered (no VAT line, current
- * behaviour). 'inc' = prices already include VAT (show a note, no maths).
- * 'add' = add VAT on top at the rate below. Set VAT_NUMBER for receipts. */
-var VAT_MODE   = 'none';         // TODO client: 'none' | 'inc' | 'add'
+ * Client is VAT-registered; prices already INCLUDE VAT ('inc' = show a note +
+ * the VAT number on receipts, no maths — the displayed price is the price paid).
+ * 'none' = not registered; 'add' = add VAT on top at the rate below.
+ * NOTE: VAT rate on the matcha itself is unconfirmed — loose tea is normally
+ * ZERO-rated UK food, so there may be no VAT element despite registration.
+ * We show the number + "incl. VAT" note and deliberately do NOT print a 20%
+ * breakdown until the client confirms the rate. */
+var VAT_MODE   = 'inc';          // 'none' | 'inc' | 'add'
 var VAT_RATE   = 0.20;           // used only when VAT_MODE === 'add'
-var VAT_NUMBER = '';             // TODO client: registration number for receipts
+var VAT_NUMBER = '526 9478 48';  // registration number for receipts
 
 function props_()   { return PropertiesService.getScriptProperties(); }
 function cfg_(k)     { return props_().getProperty(k) || ''; }
@@ -52,6 +56,7 @@ function doPost(e) {
     switch (req.action) {
       case 'createCheckout': return json_(createCheckout_(req));
       case 'finalizeOrder':  return json_(finalizeOrder_(req));
+      case 'notifyMe':       return json_(notifyMe_(req));
       default:               return json_({ error: 'unknown action' });
     }
   } catch (err) {
@@ -181,13 +186,15 @@ function decrementStock_(lines) {
 }
 
 /* --- Orders tab + pending stash ------------------------------------------- */
+var ORDERS_HEADER = ['Timestamp','Reference','Status','Name','Email','Items','Total','Currency','Tracking','Dispatched'];
 function recordOrder_(co, pending) {
   var ss = getSS_();
   var sh = ss.getSheetByName('Orders');
-  if (!sh) { sh = ss.insertSheet('Orders'); sh.appendRow(['Timestamp','Reference','Status','Name','Email','Items','Total','Currency']); }
+  if (!sh) { sh = ss.insertSheet('Orders'); sh.appendRow(ORDERS_HEADER); }
   var c = pending.customer || {};
   var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join(', ');
-  sh.appendRow([new Date(), co.checkout_reference, co.status, c.name || '', c.email || '', items, pending.total, co.currency || CURRENCY]);
+  // Tracking + Dispatched are filled later by the client (triggers the dispatch email).
+  sh.appendRow([new Date(), co.checkout_reference, co.status, c.name || '', c.email || '', items, pending.total, co.currency || CURRENCY, '', '']);
 }
 function stashPending_(ref, data) { props_().setProperty('PENDING_' + ref, JSON.stringify(data)); }
 function popPending_(ref) {
@@ -198,16 +205,28 @@ function popPending_(ref) {
 
 /* --- Emails --------------------------------------------------------------- */
 var FROM_NAME = 'SANcha Matcha';
+var FROM_EMAIL = 'orders@sanchamatcha.co.uk';          // branded sender (see fromOpt_)
 var REPLY_TO  = 'contact@sanchamatcha.co.uk';
 var SITE_URL  = 'https://sanchamatcha.co.uk';
 var LOGO_URL  = SITE_URL + '/assets/logo-cream.png';   // cream logo for the dark header
-// TODO go-live: send FROM a branded address (orders@sanchamatcha.co.uk) via a
-// verified Gmail "Send mail as" alias — add { from: ... } to the sends below.
 // TODO client: approve / replace this thank-you line.
 var THANKYOU_COPY = 'Thank you for your order — every tin is whisked and packed with care. ' +
   'We\'ll be in touch again when it\'s on its way to you.';
-// TODO client: real business details for the receipt footer (name, address, VAT no.).
-var BUSINESS_FOOTER = 'SANcha Matcha &middot; sanchamatcha.co.uk';
+// Business details for the receipt footer (legal name + registered address + VAT).
+var BUSINESS_FOOTER = 'VS Partners Ltd trading as SANcha &middot; ' +
+  '3rd Floor, 86-90 Paul Street, London, England, EC2A 4NE' +
+  (VAT_NUMBER ? ' &middot; VAT ' + VAT_NUMBER : '') + '<br>sanchamatcha.co.uk';
+
+/* Send FROM the branded orders@ address — but ONLY once it's been set up as a
+ * verified "Send mail as" alias on the sending Gmail account (Gmail ▸ Settings ▸
+ * Accounts ▸ Send mail as). Until then, including an unverified `from` throws, so
+ * we fall back to the account's own address and the branded FROM_NAME. */
+function fromOpt_() {
+  try {
+    if (FROM_EMAIL && GmailApp.getAliases().indexOf(FROM_EMAIL) > -1) return { from: FROM_EMAIL };
+  } catch (e) { /* no alias access → fall through */ }
+  return {};
+}
 
 // Brand palette (kept in sync with index.html :root)
 var C_GREEN = '#293D30', C_CREAM = '#FFF4D6', C_MAROON = '#6C2C25',
@@ -236,11 +255,11 @@ function sendConfirmation_(co, pending) {
   var c = pending.customer || {};
   if (!c.email) return;
   GmailApp.sendEmail(c.email, 'Your SANcha order ' + co.checkout_reference,
-    confirmationText_(co, pending), {   // plain-text fallback
+    confirmationText_(co, pending), Object.assign({   // plain-text fallback
       name: FROM_NAME,
       replyTo: REPLY_TO,
       htmlBody: confirmationHtml_(co, pending)
-    });
+    }, fromOpt_()));
 }
 
 // Plain-text fallback for clients that don't render HTML.
@@ -252,7 +271,9 @@ function confirmationText_(co, pending) {
     '\n\nSubtotal: ' + gbp_(pending.subtotal != null ? pending.subtotal : pending.total);
   if (pending.shipping) t += '\nShipping: ' + gbp_(pending.shipping);
   else if (pending.subtotal != null) t += '\nShipping: Free';
-  t += '\nTotal: ' + gbp_(pending.total) + '\n\n' + SITE_URL;
+  t += '\nTotal: ' + gbp_(pending.total);
+  if (VAT_MODE === 'inc') t += '\n\nAll prices include VAT' + (VAT_NUMBER ? ' (VAT no. ' + VAT_NUMBER + ')' : '') + '.';
+  t += '\n\n' + SITE_URL;
   return t;
 }
 
@@ -295,6 +316,8 @@ function confirmationHtml_(co, pending) {
         // order summary
         '<tr><td style="padding:16px 32px 8px;">' +
           '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + rows + totalsRows + '</table>' +
+          (VAT_MODE === 'inc' ? '<p style="margin:10px 0 0;color:' + C_STONE + ';font-size:12px;">All prices include VAT' +
+            (VAT_NUMBER ? ' &middot; VAT no. ' + escHtml_(VAT_NUMBER) : '') + '.</p>' : '') +
         '</td></tr>' +
         // delivery address
         (addr ? '<tr><td style="padding:16px 32px;">' +
@@ -332,7 +355,198 @@ function sendAlert_(co, pending) {
     'Reference: ' + co.checkout_reference +
     '\nCustomer: ' + (c.name || '') + ' <' + (c.email || '') + '>' +
     '\nItems: ' + items + '\nTotal: £' + pending.total,
-    { name: FROM_NAME, replyTo: c.email || REPLY_TO });
+    Object.assign({ name: FROM_NAME, replyTo: c.email || REPLY_TO }, fromOpt_()));
+}
+
+/* --- Back-in-stock waitlist (per product) ---------------------------------
+ * Separate from the general launch list (that posts to the forms project). Here
+ * each signup is tied to a SPECIFIC sold-out product so we can email exactly the
+ * people waiting on it when it's restocked. Stored in a "Waitlist" tab. */
+var WAITLIST_HEADER = ['Timestamp','ProductKey','Product','Name','Email','Status','Notified'];
+
+// doPost action: a customer asks to be told when a sold-out product is restocked.
+function notifyMe_(req) {
+  var email = String(req.email || '').trim();
+  var name  = String(req.name  || '').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('valid email required');
+
+  var p = loadProducts_()[normKey_(req.product || req.id || req.name)];
+  if (!p) throw new Error('unknown product');
+
+  var ss = getSS_(), sh = ss.getSheetByName('Waitlist');
+  if (!sh) { sh = ss.insertSheet('Waitlist'); sh.appendRow(WAITLIST_HEADER); }
+
+  // Dedup: if this email is already 'Waiting' for this product, don't add again.
+  var rows = sh.getDataRange().getValues();
+  for (var r = 1; r < rows.length; r++) {
+    if (normKey_(rows[r][1]) === p.key &&
+        String(rows[r][4]).trim().toLowerCase() === email.toLowerCase() &&
+        String(rows[r][5]).trim().toLowerCase() === 'waiting') {
+      return { ok: true, already: true };
+    }
+  }
+  sh.appendRow([new Date(), p.key, p.name, name, email, 'Waiting', '']);
+  try { sendWaitlistConfirm_(email, name, p.name); }
+  catch (mailErr) { console.error('waitlist confirm email failed: ' + mailErr); }
+  return { ok: true };
+}
+
+/* --- Installable onEdit: dispatch emails + restock notifications ----------
+ * ONE trigger on the product/orders spreadsheet. Run installTriggers() ONCE
+ * from the editor to create it (and grant the permissions).
+ *   - type a Royal Mail tracking number into Orders ▸ Tracking  → dispatch email
+ *   - raise a sold-out stock cell in Tins/Shop above 0          → back-in-stock blast
+ * Only single-cell edits fire (uses e.value / e.oldValue), so a paste or bulk
+ * edit can't accidentally trigger a blast. */
+function onSheetEdit_(e) {
+  try {
+    if (!e || !e.range) return;
+    var sh = e.range.getSheet(), tab = sh.getName();
+    if (tab === 'Orders') return onOrdersEdit_(e, sh);
+    if (tab === 'Tins' || tab === 'Shop') return onStockEdit_(e, sh);
+  } catch (err) { console.error('onSheetEdit_ failed: ' + err); }
+}
+
+// 0-based index of a header (case-insensitive), or -1.
+function headerIndex_(sh, name) {
+  return sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0]
+    .map(function (h) { return String(h).trim().toLowerCase(); })
+    .indexOf(String(name).toLowerCase());
+}
+
+// Dispatch email when a Tracking number is entered on an order not yet shipped.
+function onOrdersEdit_(e, sh) {
+  var iTrack = headerIndex_(sh, 'tracking');
+  if (iTrack < 0 || e.range.getColumn() !== iTrack + 1 || e.range.getRow() < 2) return;
+  var tracking = String(e.value || e.range.getValue() || '').trim();
+  if (!tracking) return;   // cleared, not set
+
+  var col = {};
+  sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0]
+    .forEach(function (h, i) { col[String(h).trim().toLowerCase()] = i; });
+  var row = sh.getRange(e.range.getRow(), 1, 1, sh.getLastColumn()).getValues()[0];
+
+  if (col.dispatched != null && String(row[col.dispatched]).trim()) return;  // already dispatched
+  var email = String(row[col.email] || '').trim();
+  if (!email) return;
+  sendDispatch_(email, {
+    name: row[col.name] || '', reference: row[col.reference] || '',
+    items: row[col.items] || '', tracking: tracking
+  });
+  if (col.dispatched != null) sh.getRange(e.range.getRow(), col.dispatched + 1).setValue(new Date());
+}
+
+// Back-in-stock blast when a sold-out item is restocked (stock 0/blank → >0).
+function onStockEdit_(e, sh) {
+  var iStock = headerIndex_(sh, 'stock');
+  if (iStock < 0 || e.range.getColumn() !== iStock + 1 || e.range.getRow() < 2) return;
+  var oldV = e.oldValue, newV = Number(e.value);
+  if (!(newV > 0)) return;
+  if (!(oldV === undefined || oldV === '' || Number(oldV) <= 0)) return;  // was in stock → not a restock
+
+  var iName = headerIndex_(sh, 'name'); if (iName < 0) iName = headerIndex_(sh, 'title');
+  if (iName < 0) return;
+  var name = String(sh.getRange(e.range.getRow(), iName + 1).getValue() || '').trim();
+  if (name) notifyWaitlist_(normKey_(name), name);
+}
+
+// Email everyone currently 'Waiting' for a product, then mark them 'Notified'
+// so a later restock won't email the same people again. New signups after this
+// come in as 'Waiting' and get the NEXT restock's email only.
+function notifyWaitlist_(productKey, productName) {
+  var sh = getSS_().getSheetByName('Waitlist');
+  if (!sh) return;
+  var values = sh.getDataRange().getValues();
+  for (var r = 1; r < values.length; r++) {
+    if (normKey_(values[r][1]) !== productKey) continue;
+    if (String(values[r][5]).trim().toLowerCase() !== 'waiting') continue;
+    var email = String(values[r][4] || '').trim(), name = String(values[r][3] || '').trim();
+    if (!email) continue;
+    try {
+      sendBackInStock_(email, name, productName);
+      sh.getRange(r + 1, 6).setValue('Notified');
+      sh.getRange(r + 1, 7).setValue(new Date());
+    } catch (mailErr) { console.error('back-in-stock email failed for ' + email + ': ' + mailErr); }
+  }
+}
+
+/* Run ONCE from the editor (Run ▸ installTriggers) to create the onEdit trigger
+ * and authorize it. Safe to re-run — clears any previous copy first. */
+function installTriggers() {
+  var id = cfg_('SHEET_ID');
+  if (!id) throw new Error('set SHEET_ID in Script properties first');
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'onSheetEdit_') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('onSheetEdit_').forSpreadsheet(id).onEdit().create();
+}
+
+/* --- Branded transactional emails (dispatch / waitlist) ------------------- */
+function royalMailTrack_(t) {
+  return 'https://www.royalmail.com/track-your-item#/tracking-results/' + encodeURIComponent(t);
+}
+function ctaButton_(href, label) {
+  return '<p style="margin:20px 0 0;"><a href="' + href + '" style="display:inline-block;background:' +
+    C_GREEN + ';color:' + C_CREAM + ';text-decoration:none;padding:12px 22px;border-radius:999px;font-size:15px;">' +
+    label + '</a></p>';
+}
+function firstName_(name) { return name ? ', ' + escHtml_(String(name).trim().split(/\s+/)[0]) : ''; }
+
+function sendDispatch_(email, o) {
+  var url = royalMailTrack_(o.tracking);
+  var inner =
+    '<h1 style="margin:0 0 6px;color:' + C_GREEN + ';font-size:24px;font-weight:normal;">Your order\'s on its way</h1>' +
+    (o.reference ? '<p style="margin:0 0 4px;color:' + C_MAROON + ';font-size:13px;letter-spacing:.08em;text-transform:uppercase;">Order ' + escHtml_(o.reference) + '</p>' : '') +
+    '<p style="margin:16px 0 0;color:' + C_GREEN + ';font-size:15px;line-height:1.6;">Good news' + firstName_(o.name) +
+      ' — your SANcha order has been dispatched via Royal Mail' + (o.items ? ' (' + escHtml_(o.items) + ')' : '') + '.</p>' +
+    '<p style="margin:16px 0 0;color:' + C_GREEN + ';font-size:15px;line-height:1.6;">Tracking number: <strong>' + escHtml_(o.tracking) + '</strong></p>' +
+    ctaButton_(url, 'Track your parcel');
+  GmailApp.sendEmail(email, 'Your SANcha order is on its way' + (o.reference ? ' (' + o.reference + ')' : ''),
+    'Your SANcha order has been dispatched via Royal Mail.\nTracking number: ' + o.tracking +
+    '\nTrack it: ' + url + '\n\n' + SITE_URL,
+    Object.assign({ name: FROM_NAME, replyTo: REPLY_TO, htmlBody: brandEmail_(inner) }, fromOpt_()));
+}
+
+function sendBackInStock_(email, name, product) {
+  var inner =
+    '<h1 style="margin:0 0 6px;color:' + C_GREEN + ';font-size:24px;font-weight:normal;">It\'s back in stock</h1>' +
+    '<p style="margin:0 0 4px;color:' + C_MAROON + ';font-size:13px;letter-spacing:.08em;text-transform:uppercase;">' + escHtml_(product) + '</p>' +
+    '<p style="margin:16px 0 0;color:' + C_GREEN + ';font-size:15px;line-height:1.6;">Good news' + firstName_(name) +
+      ' — <strong>' + escHtml_(product) + '</strong> is back in stock. Tins tend to go quickly, so grab yours while they last.</p>' +
+    ctaButton_(SITE_URL + '#tins', 'Shop now');
+  GmailApp.sendEmail(email, product + ' is back in stock — SANcha',
+    product + ' is back in stock! Shop now: ' + SITE_URL + '#tins\n\n' + SITE_URL,
+    Object.assign({ name: FROM_NAME, replyTo: REPLY_TO, htmlBody: brandEmail_(inner) }, fromOpt_()));
+}
+
+function sendWaitlistConfirm_(email, name, product) {
+  var inner =
+    '<h1 style="margin:0 0 6px;color:' + C_GREEN + ';font-size:24px;font-weight:normal;">You\'re on the list</h1>' +
+    '<p style="margin:0 0 4px;color:' + C_MAROON + ';font-size:13px;letter-spacing:.08em;text-transform:uppercase;">' + escHtml_(product) + '</p>' +
+    '<p style="margin:16px 0 0;color:' + C_GREEN + ';font-size:15px;line-height:1.6;">Thanks' + firstName_(name) +
+      ' — we\'ll email you the moment <strong>' + escHtml_(product) + '</strong> is back in stock. You only need to sign up once.</p>';
+  GmailApp.sendEmail(email, 'You\'re on the waiting list — SANcha',
+    'Thanks — we\'ll email you the moment ' + product + ' is back in stock.\n\n' + SITE_URL,
+    Object.assign({ name: FROM_NAME, replyTo: REPLY_TO, htmlBody: brandEmail_(inner) }, fromOpt_()));
+}
+
+// Shared on-brand HTML shell: dark header w/ cream logo, cream card, footer.
+function brandEmail_(innerHtml) {
+  return '' +
+  '<!doctype html><html><body style="margin:0;padding:0;background:' + C_LINE + ';">' +
+  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + C_LINE + ';padding:24px 0;">' +
+    '<tr><td align="center">' +
+      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:' + C_CREAM + ';border-radius:14px;overflow:hidden;font-family:Georgia,\'Times New Roman\',serif;">' +
+        '<tr><td align="center" style="background:' + C_GREEN + ';padding:28px 24px;">' +
+          '<img src="' + LOGO_URL + '" alt="SANcha Matcha" width="150" style="display:block;border:0;max-width:150px;height:auto;"></td></tr>' +
+        '<tr><td style="padding:32px 32px 24px;">' + innerHtml + '</td></tr>' +
+        '<tr><td style="padding:20px 32px 28px;border-top:1px solid ' + C_LINE + ';">' +
+          '<p style="margin:0;color:' + C_GREEN + ';font-size:13px;line-height:1.6;">Questions? Just reply to this email and it\'ll reach us at ' + REPLY_TO + '.</p>' +
+          '<p style="margin:12px 0 0;color:' + C_STONE + ';font-size:12px;">' + BUSINESS_FOOTER + '</p>' +
+        '</td></tr>' +
+      '</table>' +
+    '</td></tr>' +
+  '</table></body></html>';
 }
 
 /* --- utils ---------------------------------------------------------------- */

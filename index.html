@@ -250,6 +250,14 @@
   .tin-foot .sizes{font-size:13px;color:#6a6a60}
   .tin-foot .price{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:18px;font-style:normal;color:var(--muted)}
   .tin-buy{margin-top:18px;width:100%;text-align:center}   /* "Buy now" → SumUp link (sheet `buy_url`) */
+  /* inline "notify me when back in stock" form (expands from the sold-out button) */
+  .notify-form{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .notify-lead{font-size:14px;color:#6a6a60;margin:0}
+  .notify-email{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--charcoal);font-family:'Bitter','Bitter Fallback',serif;font-size:15px;outline:none;width:100%}
+  .notify-email:focus{border-color:var(--matcha-deep)}
+  .notify-send{width:100%;text-align:center}
+  .notify-msg{font-size:13.5px;color:var(--maroon);margin:0}
+  .notify-msg.ok{color:var(--matcha-deep)}
   /* product-logo variant of the tin card (real hand-drawn IKI/YUAN artwork) */
   .tin-logo{margin:-40px -40px 24px;border-radius:22px 22px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--cream)}
   .tin-logo img{width:100%;height:100%;object-fit:cover;display:block}
@@ -744,7 +752,7 @@
       <div id="cart-items"></div>
       <div class="cart-empty" id="cart-empty">Your basket is empty.</div>
       <div class="cart-subtotal" id="cart-sub-row" hidden><span>Subtotal</span><b id="cart-subtotal">£0.00</b></div>
-      <p class="cart-note" id="cart-note" hidden>Shipping calculated at the next step.</p>
+      <p class="cart-note" id="cart-note" hidden>UK delivery £3.75 &middot; free over £40. Prices include VAT.</p>
       <button class="btn btn-solid cart-full" id="to-details" type="button" disabled>Checkout</button>
     </div>
     <form class="cart-step" data-step="details" id="details-form" hidden novalidate>

@@ -154,6 +154,8 @@
     if (!getCart().length) return;
     if (el("pay-err")) el("pay-err").hidden = true;
     showStep("payment");
+    // Provisional total (subtotal only) until the server returns the real
+    // breakdown incl. shipping — then we overwrite it below.
     if (el("pay-summary")) el("pay-summary").innerHTML = "Total <b>" + money(total()) + "</b> · " + count() + " item(s)";
     var card = el("sumup-card");
     if (card) card.innerHTML = "<p style='color:#6a6a60;font-size:14px'>Loading secure payment…</p>";
@@ -162,6 +164,14 @@
         console.log("[checkout] createCheckout response:", res);
         if (!res || res.error) throw new Error((res && res.error) || "createCheckout failed");
         if (!res.checkoutId) throw new Error("No checkout id returned — please try again.");
+        // Real figures from the server (authoritative) — show shipping + the
+        // actual amount the card will be charged, so there are no surprises.
+        if (el("pay-summary")) {
+          var ship = res.shipping ? money(res.shipping) : "Free";
+          el("pay-summary").innerHTML =
+            "Subtotal " + money(res.subtotal) + " &middot; Shipping " + ship +
+            " &middot; Total <b>" + money(res.amount) + "</b>";
+        }
         if (card) card.innerHTML = "";
         mountWidget(res.checkoutId);
       })
@@ -246,13 +256,53 @@
     }).then(function (r) { return r.json(); });
   }
 
+  /* ---- back-in-stock notify (per product) --------------------------------- */
+  // Expands a sold-out tin's "Notify me" button into an inline email form that
+  // posts { action:"notifyMe", product } to the backend (records + confirms).
+  function openNotify(btn) {
+    if (btn.dataset.open) return;
+    btn.dataset.open = "1";
+    var id = btn.getAttribute("data-id"), name = btn.getAttribute("data-name") || "this tin";
+    var box = document.createElement("div");
+    box.className = "notify-form";
+    box.innerHTML =
+      '<p class="notify-lead">We\'ll email you when <b>' + esc(name) + '</b> is back.</p>' +
+      '<input type="email" class="notify-email" placeholder="you@example.com" aria-label="Email address" autocomplete="email">' +
+      '<button type="button" class="btn btn-solid notify-send">Notify me</button>' +
+      '<p class="notify-msg" hidden></p>';
+    btn.insertAdjacentElement("afterend", box);
+    btn.style.display = "none";   // .btn sets an explicit display, so [hidden] alone won't hide it
+    var email = box.querySelector(".notify-email"),
+        send  = box.querySelector(".notify-send"),
+        msg   = box.querySelector(".notify-msg");
+    function fail(m) { msg.hidden = false; msg.textContent = m; }
+    function submit() {
+      var v = (email.value || "").trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { fail("Please enter a valid email address."); email.focus(); return; }
+      send.disabled = true; send.textContent = "…"; msg.hidden = true;
+      post({ action: "notifyMe", product: id, email: v })
+        .then(function (res) {
+          if (!res || res.error) throw new Error((res && res.error) || "Couldn't sign you up — please try again.");
+          box.innerHTML = '<p class="notify-msg ok">✓ You\'re on the list — we\'ll email you when it\'s back.</p>';
+        })
+        .catch(function (e) {
+          send.disabled = false; send.textContent = "Notify me";
+          fail(typeof e === "string" ? e : (e && e.message) || "Something went wrong.");
+        });
+    }
+    send.addEventListener("click", submit);
+    email.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); submit(); } });
+    email.focus();
+  }
+
   /* ---- events (delegated) ------------------------------------------------- */
   document.addEventListener("click", function (e) {
     var t = e.target;
     if (!t || !t.closest) return;
     var addb = t.closest(".add-btn");
     if (addb) { add(addb.getAttribute("data-id"), addb.getAttribute("data-name"), addb.getAttribute("data-price")); return; }
-    if (t.closest(".notify-btn")) { location.hash = "#join"; return; }
+    var nb = t.closest(".notify-btn");
+    if (nb) { openNotify(nb); return; }
     var fix = t.closest(".email-fix");
     if (fix) {
       var em = document.querySelector('#details-form [name="email"]');
