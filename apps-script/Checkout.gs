@@ -362,6 +362,8 @@ function sendAlert_(co, pending) {
  * Separate from the general launch list (that posts to the forms project). Here
  * each signup is tied to a SPECIFIC sold-out product so we can email exactly the
  * people waiting on it when it's restocked. Stored in a "Waitlist" tab. */
+// Own tab — do NOT reuse the general launch-list "Waitlist" tab (different columns).
+var WAITLIST_TAB = 'Stock Waitlist';
 var WAITLIST_HEADER = ['Timestamp','ProductKey','Product','Name','Email','Status','Notified'];
 
 // doPost action: a customer asks to be told when a sold-out product is restocked.
@@ -373,8 +375,8 @@ function notifyMe_(req) {
   var p = loadProducts_()[normKey_(req.product || req.id || req.name)];
   if (!p) throw new Error('unknown product');
 
-  var ss = getSS_(), sh = ss.getSheetByName('Waitlist');
-  if (!sh) { sh = ss.insertSheet('Waitlist'); sh.appendRow(WAITLIST_HEADER); }
+  var ss = getSS_(), sh = ss.getSheetByName(WAITLIST_TAB);
+  if (!sh) { sh = ss.insertSheet(WAITLIST_TAB); sh.appendRow(WAITLIST_HEADER); }
 
   // Dedup: if this email is already 'Waiting' for this product, don't add again.
   var rows = sh.getDataRange().getValues();
@@ -454,7 +456,7 @@ function onStockEdit_(e, sh) {
 // so a later restock won't email the same people again. New signups after this
 // come in as 'Waiting' and get the NEXT restock's email only.
 function notifyWaitlist_(productKey, productName) {
-  var sh = getSS_().getSheetByName('Waitlist');
+  var sh = getSS_().getSheetByName(WAITLIST_TAB);
   if (!sh) return;
   var values = sh.getDataRange().getValues();
   for (var r = 1; r < values.length; r++) {

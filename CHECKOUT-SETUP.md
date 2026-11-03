@@ -80,7 +80,8 @@ After redeploying (§4):
      (exact spelling). New sheets get them automatically.
 3. **Back-in-stock:** when a shopper clicks *"Notify me when back in stock"* on a sold-out tin
    and enters their email, they get an instant "you're on the list" email and a row is added to
-   an auto-created **Waitlist** tab (`Status = Waiting`). When you raise that product's **stock**
+   an auto-created **Stock Waitlist** tab (`Status = Waiting`) — a separate tab from the general
+   launch-list `Waitlist`. When you raise that product's **stock**
    cell on the **Tins**/**Shop** tab from 0 back above 0, everyone currently *Waiting* for it
    gets ONE "it's back" email and is flipped to `Notified` — so a later restock never re-emails
    the same people (anyone who signs up after is waiting for the *next* restock).
