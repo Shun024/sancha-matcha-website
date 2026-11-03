@@ -267,20 +267,24 @@
     box.className = "notify-form";
     box.innerHTML =
       '<p class="notify-lead">We\'ll email you when <b>' + esc(name) + '</b> is back.</p>' +
+      '<input type="text" class="notify-name" placeholder="Your name" aria-label="Your name" autocomplete="name">' +
       '<input type="email" class="notify-email" placeholder="you@example.com" aria-label="Email address" autocomplete="email">' +
       '<button type="button" class="btn btn-solid notify-send">Notify me</button>' +
       '<p class="notify-msg" hidden></p>';
     btn.insertAdjacentElement("afterend", box);
     btn.style.display = "none";   // .btn sets an explicit display, so [hidden] alone won't hide it
-    var email = box.querySelector(".notify-email"),
+    var nameInput = box.querySelector(".notify-name"),
+        email = box.querySelector(".notify-email"),
         send  = box.querySelector(".notify-send"),
         msg   = box.querySelector(".notify-msg");
     function fail(m) { msg.hidden = false; msg.textContent = m; }
     function submit() {
+      var nm = (nameInput.value || "").trim();
       var v = (email.value || "").trim();
+      if (!nm) { fail("Please enter your name."); nameInput.focus(); return; }
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { fail("Please enter a valid email address."); email.focus(); return; }
       send.disabled = true; send.textContent = "…"; msg.hidden = true;
-      post({ action: "notifyMe", product: id, email: v })
+      post({ action: "notifyMe", product: id, name: nm, email: v })
         .then(function (res) {
           if (!res || res.error) throw new Error((res && res.error) || "Couldn't sign you up — please try again.");
           box.innerHTML = '<p class="notify-msg ok">✓ You\'re on the list — we\'ll email you when it\'s back.</p>';
@@ -291,8 +295,10 @@
         });
     }
     send.addEventListener("click", submit);
-    email.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); submit(); } });
-    email.focus();
+    function onEnter(e) { if (e.key === "Enter") { e.preventDefault(); submit(); } }
+    nameInput.addEventListener("keydown", onEnter);
+    email.addEventListener("keydown", onEnter);
+    nameInput.focus();
   }
 
   /* ---- events (delegated) ------------------------------------------------- */
