@@ -392,6 +392,24 @@
   .faq-item[open] summary::after{content:"–"}
   .faq-item p{margin:0;padding:0 0 26px;color:var(--charcoal);font-size:16px}
 </style>
+<script>
+/* Palette preview — override brand colours via URL params for quick exploration.
+   e.g.  ?yellow=ffefeb   (turns the page's light-yellow pink)   or
+         ?paper=ffefeb&maroon=6c2c25&matcha-deep=2e4034 (fine control).
+   Harmless when no param is present; this does NOT change the committed brand —
+   only the current view. Same idea as the existing ?tins_csv override. */
+(function () {
+  try {
+    var q = new URLSearchParams(location.search), root = document.documentElement;
+    function hex(v) { v = (v || "").trim().replace(/^#/, ""); return /^[0-9a-fA-F]{3,8}$/.test(v) ? "#" + v : null; }
+    // "yellow" shortcut = the page's light yellow (which is --paper and --lemon together).
+    var y = hex(q.get("yellow"));
+    if (y) { root.style.setProperty("--paper", y); root.style.setProperty("--lemon", y); }
+    ["matcha","matcha-deep","forest","cream","paper","charcoal","stone","muted","line","peach","blue","maroon","lemon"]
+      .forEach(function (name) { var c = hex(q.get(name)); if (c) root.style.setProperty("--" + name, c); });
+  } catch (e) {}
+})();
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
