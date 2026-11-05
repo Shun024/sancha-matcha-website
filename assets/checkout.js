@@ -150,8 +150,10 @@
     return d[m][n];
   }
 
+  var _lastCustomer = null;   // kept so a declined payment can retry with a fresh checkout
   function startCheckout(customer) {
     if (!getCart().length) return;
+    _lastCustomer = customer;
     if (el("pay-err")) el("pay-err").hidden = true;
     showStep("payment");
     // Provisional total (subtotal only) until the server returns the real
@@ -218,11 +220,26 @@
           if (res.reference && el("done-msg"))
             el("done-msg").textContent = "Your order (" + res.reference + ") is confirmed. A confirmation email is on its way.";
           showStep("done");
+        } else if (res && (res.status === "FAILED" || res.status === "EXPIRED")) {
+          // The card was DECLINED — no funds taken. Send them back to try again
+          // with a fresh checkout (the failed one can't be reused). Do NOT show
+          // the "your payment is safe" message — that's only for the ambiguous case.
+          declinedRetry(res.status);
         } else {
-          finalizeError(res && res.status ? "Status: " + res.status : null);
+          // Ambiguous (e.g. PAID but recording threw, or an unexpected status):
+          // the payment may have succeeded, so never send them to pay again.
+          finalizeError(res && res.status ? "Status: " + res.status : (res && res.error ? res.error : null));
         }
       })
       .catch(function (e) { console.error("[checkout]", e); finalizeError(null); });
+  }
+
+  // Declined payment → back to the payment step with a fresh checkout + a clear
+  // "try again" message. Safe: FAILED/EXPIRED means no money was taken.
+  function declinedRetry(status) {
+    if (_lastCustomer) startCheckout(_lastCustomer);
+    else showStep("payment");
+    payError("Your payment didn't go through (" + String(status).toLowerCase() + "). Please try again or use a different card.");
   }
 
   // Payment succeeded but the backend couldn't confirm the order. NEVER send the
