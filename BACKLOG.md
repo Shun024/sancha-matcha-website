@@ -55,6 +55,22 @@ To make it capture emails:
 - Needs from client: create the Sheet + Apps Script and give us the deployment URL.
 - Then update `handleSubscribe()` to POST instead of just clearing the field, and update the
   Privacy Policy if the storage/provider changes what data is held.
+- NOTE (rebrand branch): `handleSubscribe()` is now scaffolded to POST to a
+  `NEWSLETTER_ENDPOINT` constant (empty = validates + thanks the visitor but stores nothing).
+  Paste the deploy URL to activate.
+
+## Tins waiting list (client request, 2026-10-18) — parked
+Client wants a waiting list for the tins so customers can be emailed the moment they launch.
+Same mechanism/backend as the newsletter form above (one stored list):
+- Reuse the existing signup (hero "Join the launch list" → `#join` section, already scaffolded
+  to POST to `NEWSLETTER_ENDPOINT`). Add an in-context signup right by the tins and tag each
+  submission with a `source` field (e.g. `tin-waitlist`) so waitlist vs general signups are
+  distinguishable in the Sheet.
+- Blocked on the same backend: Google Sheet + Apps Script `doPost` (client creates + gives the
+  deploy URL), then paste it into `NEWSLETTER_ENDPOINT`. At launch, email the list via Gmail
+  mail-merge or a bulk tool.
+- Open decisions when picked up: capture method (Google Sheet vs a no-code email tool vs
+  mailto) and whether to deploy to the current live site now or only in the rebrand.
 
 ---
 
