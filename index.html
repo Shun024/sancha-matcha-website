@@ -261,33 +261,34 @@
   /* "View details" cue + clickable areas that open the product pop-up */
   .tin-view{display:inline-block;margin-bottom:14px;font-size:12.5px;letter-spacing:.04em;color:var(--maroon);cursor:pointer;border-bottom:1px solid currentColor;padding-bottom:1px}
   .tin-logo,.tin-top,.tin-head h3{cursor:pointer}
-  /* product detail pop-up panel */
-  .tin-modal{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;padding:24px}
-  .tin-modal.open{display:flex}
-  .tin-modal-backdrop{position:absolute;inset:0;background:rgba(30,43,34,.55)}
-  .tin-modal-panel{position:relative;z-index:1;width:min(880px,100%);max-height:90vh;overflow:auto;background:var(--paper);border-radius:24px;box-shadow:0 30px 80px -30px rgba(30,43,34,.65);display:grid;grid-template-columns:1fr 1fr}
-  .tin-modal-close{position:absolute;top:14px;right:16px;z-index:2;background:rgba(255,244,214,.92);border:1px solid var(--line);border-radius:50%;width:38px;height:38px;font-size:22px;line-height:1;cursor:pointer;color:var(--charcoal)}
-  .tin-modal-art{background:var(--cream);display:flex;align-items:center;justify-content:center;padding:30px;position:relative;min-height:320px}
-  .tin-modal-art img{width:100%;height:auto;display:block;border-radius:12px}
-  .tin-modal-art .tin{width:80%;aspect-ratio:3/4;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--cream)}
-  .tin-modal-art .tin .kanji{font-size:60px;font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif}
-  .tin-modal-art .tin .rom{font-size:20px;letter-spacing:.3em;margin-top:8px}
-  .tin-modal-body{padding:36px 36px 32px}
-  .tin-modal-kanji{font-size:20px;color:var(--maroon);margin-bottom:2px}
-  .tin-modal-body h3{font-size:34px;color:var(--matcha-deep);margin:0;line-height:1.05}
-  .tin-modal-body .sub{color:var(--muted);font-size:15px;margin:4px 0 16px}
-  .tin-modal-body .desc{font-size:15.5px;line-height:1.75;color:var(--charcoal);margin:0 0 16px}
-  .tin-modal-body .cultivars{margin:4px 0 2px}
-  .tin-modal-body .forwho{font-style:italic;color:var(--muted);font-size:14.5px;margin:12px 0 0}
-  .tin-modal-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:20px 0 20px;padding-top:16px;border-top:1px solid var(--line)}
-  .tin-modal-foot .sizes{font-size:13px;color:var(--muted)}
-  .tin-modal-foot .price{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:24px;color:var(--matcha-deep)}
-  .tin-modal-body .btn{width:100%;text-align:center}
-  @media(max-width:720px){
-    .tin-modal{padding:0}
-    .tin-modal-panel{grid-template-columns:1fr;border-radius:20px 20px 0 0;max-height:94vh;align-self:flex-end}
-    .tin-modal-art{min-height:200px;padding:24px}
-    .tin-modal-body{padding:26px 24px 30px}
+  /* separate product page — shown when ?tin=<slug> is in the URL */
+  .product-mode main{display:none}
+  #product-page{display:none}
+  .product-mode #product-page{display:block;padding:128px 0 96px}
+  .pp-back{display:inline-block;margin-bottom:30px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--matcha-deep);text-decoration:none;border-bottom:1px solid transparent}
+  .pp-back:hover{border-color:var(--matcha-deep)}
+  .pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .pp-art{background:var(--cream);border-radius:24px;display:flex;align-items:center;justify-content:center;padding:44px;position:relative;aspect-ratio:1/1}
+  .pp-art img{width:100%;height:auto;display:block;border-radius:12px}
+  .pp-art .tin{width:72%;aspect-ratio:3/4;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--cream)}
+  .pp-art .tin .kanji{font-size:64px;font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif}
+  .pp-art .tin .rom{font-size:22px;letter-spacing:.3em;margin-top:8px}
+  .pp-info{padding-top:10px}
+  .pp-kanji{font-size:22px;color:var(--maroon);margin-bottom:4px}
+  .pp-info h1{font-size:clamp(40px,5vw,56px);color:var(--matcha-deep);margin:0;line-height:1.02}
+  .pp-info .sub{color:var(--muted);font-size:16px;margin:8px 0 20px}
+  .pp-info .desc{font-size:17px;line-height:1.8;color:var(--charcoal);margin:0 0 20px}
+  .pp-info .cultivars{margin:6px 0 2px}
+  .pp-info .forwho{font-style:italic;color:var(--muted);font-size:15px;margin:14px 0 0}
+  .pp-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 22px;padding-top:18px;border-top:1px solid var(--line)}
+  .pp-foot .sizes{font-size:14px;color:var(--muted)}
+  .pp-foot .price{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:30px;color:var(--matcha-deep)}
+  .pp-info .btn{min-width:240px;text-align:center}
+  @media(max-width:860px){
+    .pp-grid{grid-template-columns:1fr;gap:30px}
+    .product-mode #product-page{padding:104px 0 70px}
+    .pp-art{aspect-ratio:16/10;padding:30px}
+    .pp-info .btn{width:100%}
   }
   /* product-logo variant of the tin card (real hand-drawn IKI/YUAN artwork) */
   .tin-logo{margin:-40px -40px 24px;border-radius:22px 22px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--cream)}
@@ -438,6 +439,8 @@
     if (y) { root.style.setProperty("--paper", y); root.style.setProperty("--lemon", y); }
     ["matcha","matcha-deep","forest","cream","paper","charcoal","stone","muted","line","peach","blue","maroon","lemon"]
       .forEach(function (name) { var c = hex(q.get(name)); if (c) root.style.setProperty("--" + name, c); });
+    // Separate product page: hide the homepage + show the product view before paint.
+    if (q.get("tin")) root.classList.add("product-mode");
   } catch (e) {}
 })();
 </script>
@@ -488,6 +491,9 @@
     </div>
   </div>
 </nav>
+
+<!-- Separate product page (filled by JS when ?tin=<slug> is in the URL) -->
+<section id="product-page"><div class="wrap" id="product-page-inner"></div></section>
 <script>
   // Mobile nav toggle (keyboard-accessible; closes on link click or Esc).
   (function(){
@@ -1154,28 +1160,36 @@
         });
         if (!rows.length) return; // nothing usable → keep the static fallback
         grid.innerHTML = rows.map(feed.render).join("");
+        if (feed.key === "tins" && productSlug) renderProductPage();   // feed drives the product page
       })
       .catch(function (err) { // offline / bad link / private sheet → keep fallback
         console.warn("[SANcha] '" + feed.key + "' sheet not loaded; showing built-in content.", err);
+        if (feed.key === "tins" && productSlug) renderProductPage();
       });
   });
 
-  // ---- product detail pop-up ------------------------------------------------
-  var tinModal = null;
-  function buildTinModal() {
-    tinModal = document.createElement("div");
-    tinModal.className = "tin-modal";
-    tinModal.setAttribute("aria-hidden", "true");
-    tinModal.innerHTML =
-      '<div class="tin-modal-backdrop"></div>' +
-      '<div class="tin-modal-panel" role="dialog" aria-modal="true">' +
-        '<button class="tin-modal-close" type="button" aria-label="Close">&times;</button>' +
-        '<div class="tin-modal-art"></div><div class="tin-modal-body"></div></div>';
-    document.body.appendChild(tinModal);
-  }
-  function openTinPanel(p) {
-    if (!p) return;
-    if (!tinModal) buildTinModal();
+  // ---- separate product page (?tin=<slug>) ---------------------------------
+  var productSlug = (params.get("tin") || "").trim().toLowerCase();
+
+  // Keep existing params (e.g. ?tins_csv on the preview) while setting/removing ?tin,
+  // so navigating to/from a product page preserves the feed override.
+  function urlWithTin(slug)  { var u = new URLSearchParams(location.search); u.set("tin", slug);  return location.pathname + "?" + u.toString(); }
+  function urlWithoutTin()   { var u = new URLSearchParams(location.search); u.delete("tin"); var s = u.toString(); return location.pathname + (s ? "?" + s : ""); }
+
+  function renderProductPage() {
+    var host = document.getElementById("product-page-inner");
+    if (!host) return;
+    document.documentElement.classList.add("product-mode");
+    // Homepage is hidden in product mode → repoint nav/logo anchors back to it.
+    document.querySelectorAll('nav a[href^="#"]').forEach(function (a) {
+      a.setAttribute("href", urlWithoutTin() + a.getAttribute("href"));
+    });
+    var back = '<a class="pp-back" href="' + urlWithoutTin() + '">&larr; All matcha</a>';
+    var p = TINS[productSlug];
+    if (!p) {
+      host.innerHTML = back + '<p style="color:var(--muted);font-size:17px">Sorry, we couldn\'t find that product.</p>';
+      document.title = "Matcha — SANcha"; return;
+    }
     var logo = imageUrl(p.image) || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
     var art = logo
       ? tinBadges(p) + '<img src="' + esc(logo) + '" alt="' + esc(p.name) + ' matcha">'
@@ -1183,8 +1197,6 @@
           esc(p.tin_from || "#7c8a63") + ',' + esc(p.tin_to || "#4c5541") + ')">' +
           '<div class="kanji">' + esc(p.kanji || "") + '</div>' +
           '<div class="rom">' + esc(p.roman || p.name) + '</div></div>';
-    tinModal.querySelector(".tin-modal-art").innerHTML = art;
-
     var priceNum = parseFloat(String(p.price || "").replace(/[^0-9.]/g, "")) || 0;
     var stock = (p.stock != null && String(p.stock).trim() !== "") ? parseInt(p.stock, 10) : null;
     var soldOut = stock != null && stock <= 0;
@@ -1192,39 +1204,32 @@
       ? '<button class="btn btn-solid add-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '" data-price="' + priceNum + '">Add to basket</button>'
       : (soldOut ? '<button class="btn btn-ghost notify-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '">Notify me when back in stock</button>' : "");
     var cultivars = pipes(p.cultivars).map(function (s) { return "<span>" + esc(s) + "</span>"; }).join("");
-    tinModal.querySelector(".tin-modal-body").innerHTML =
-      (p.kanji ? '<div class="tin-modal-kanji">' + esc(p.kanji) + '</div>' : "") +
-      '<h3>' + esc(p.name) + '</h3>' +
-      (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : "") +
-      (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : "") +
-      (cultivars ? '<div class="cultivars">' + cultivars + '</div>' : "") +
-      (p.for_who ? '<div class="forwho">' + esc(p.for_who) + '</div>' : "") +
-      '<div class="tin-modal-foot"><span class="sizes">' + esc(p.sizes || "") + '</span>' +
-        '<span class="price">' + esc(p.price || "") + '</span></div>' + buy;
+    host.innerHTML = back +
+      '<div class="pp-grid">' +
+        '<div class="pp-art">' + art + '</div>' +
+        '<div class="pp-info">' +
+          (p.kanji ? '<div class="pp-kanji">' + esc(p.kanji) + '</div>' : "") +
+          '<h1>' + esc(p.name) + '</h1>' +
+          (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : "") +
+          (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : "") +
+          (cultivars ? '<div class="cultivars">' + cultivars + '</div>' : "") +
+          (p.for_who ? '<div class="forwho">' + esc(p.for_who) + '</div>' : "") +
+          '<div class="pp-foot"><span class="sizes">' + esc(p.sizes || "") + '</span>' +
+            '<span class="price">' + esc(p.price || "") + '</span></div>' + buy +
+        '</div>' +
+      '</div>';
+    document.title = p.name + " — SANcha Matcha";
+    window.scrollTo(0, 0);
+  }
 
-    tinModal.classList.add("open");
-    tinModal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-  function closeTinPanel() {
-    if (!tinModal) return;
-    tinModal.classList.remove("open");
-    tinModal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
+  // Clicking a tin's image, title, or "View details" navigates to its own page.
   document.addEventListener("click", function (e) {
     var t = e.target; if (!t || !t.closest) return;
-    if (t.closest(".tin-modal-close") || t.classList.contains("tin-modal-backdrop")) { closeTinPanel(); return; }
-    // Adding to basket / notify from inside the pop-up → let checkout.js handle it, just close the panel.
-    if (tinModal && t.closest(".tin-modal") && t.closest(".add-btn")) { closeTinPanel(); return; }
-    // Open the pop-up from a tin's image, title, or the "View details" cue (not the buttons).
     var opener = t.closest(".tin-view, .tin-logo, .tin-top, .tin-head");
-    if (opener) {
-      var card = opener.closest(".tin-card");
-      if (card) openTinPanel(TINS[card.getAttribute("data-tin-key")]);
-    }
+    if (!opener) return;
+    var card = opener.closest(".tin-card"), slug = card && card.getAttribute("data-tin-key");
+    if (slug) { e.preventDefault(); location.href = urlWithTin(slug); }
   });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeTinPanel(); });
 })();
 </script>
 
