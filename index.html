@@ -260,7 +260,7 @@
   .notify-msg.ok{color:var(--matcha-deep)}
   /* "View details" cue + clickable areas that open the product pop-up */
   .tin-view{display:inline-block;margin-bottom:14px;font-size:12.5px;letter-spacing:.04em;color:var(--maroon);cursor:pointer;border-bottom:1px solid currentColor;padding-bottom:1px}
-  .tin-logo,.tin-top,.tin-head h3{cursor:pointer}
+  .tin-card{cursor:pointer}
   /* separate product page — shown when ?tin=<slug> is in the URL */
   .product-mode main{display:none}
   #product-page{display:none}
@@ -1222,12 +1222,12 @@
     window.scrollTo(0, 0);
   }
 
-  // Clicking a tin's image, title, or "View details" navigates to its own page.
+  // Clicking anywhere on a tin card opens its own page — except the add-to-basket
+  // / notify controls, which keep their own behaviour.
   document.addEventListener("click", function (e) {
     var t = e.target; if (!t || !t.closest) return;
-    var opener = t.closest(".tin-view, .tin-logo, .tin-top, .tin-head");
-    if (!opener) return;
-    var card = opener.closest(".tin-card"), slug = card && card.getAttribute("data-tin-key");
+    if (t.closest(".add-btn, .notify-btn, .notify-form")) return;
+    var card = t.closest(".tin-card"), slug = card && card.getAttribute("data-tin-key");
     if (slug) { e.preventDefault(); location.href = urlWithTin(slug); }
   });
 })();
