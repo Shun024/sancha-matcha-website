@@ -339,6 +339,20 @@
   .faq-item summary::after{content:"+";font-family:'Bitter','Bitter Fallback',serif;font-size:26px;line-height:1;color:var(--blue);transition:transform .25s}
   .faq-item[open] summary::after{content:"–"}
   .faq-item p{margin:0;padding:0 0 26px;color:var(--charcoal);font-size:16px}
+
+  /* =====================================================================
+     PRE-LAUNCH (TEMPORARY, added 2026-11-07 at client request) —
+     hides the Products, Shop, Wholesale & FAQ sections (plus their nav links,
+     the hero "Explore the matcha" button, and footer links) until launch day.
+     >>> TO RESTORE EVERYTHING ON LAUNCH DAY: delete this whole block. <<<
+     Nothing else needs changing — the sections/links are only hidden, not removed.
+     ===================================================================== */
+  #tins, #shop, #b2b, #faq,                       /* the four sections */
+  nav a[href="#tins"], nav a[href="#b2b"],        /* nav links: Matcha, Wholesale, Shop button */
+  .hero-actions a[href="#tins"],                  /* hero "Explore the matcha" CTA */
+  #foot-shop, .foot-grid a[href="#b2b"] {         /* footer Shop column + Wholesale Supply link */
+    display: none !important;
+  }
 </style>
 <script type="application/ld+json">
 {
@@ -538,7 +552,7 @@
   </div>
 </section>
 
-<section>
+<section id="shop">
   <div class="wrap">
     <div class="sec-head center">
       <span class="label">The Shop</span>
@@ -689,7 +703,7 @@
         <img src="assets/logo-cream.png" alt="SANcha" class="foot-logo">
         <p class="lead">High-quality matcha for clean, steady energy. Three friends, one better cup — London.</p>
       </div>
-      <div class="fcol"><h3>Shop</h3><a href="#tins">IKI &amp; YUAN Tins</a><a href="#tins">Merchandise</a><a href="#tins">Gift Cards</a></div>
+      <div class="fcol" id="foot-shop"><h3>Shop</h3><a href="#tins">IKI &amp; YUAN Tins</a><a href="#tins">Merchandise</a><a href="#tins">Gift Cards</a></div>
       <div class="fcol"><h3>Trade</h3><a href="#b2b">Wholesale Supply</a><a href="mailto:contact@sanchamatcha.co.uk">Bulk Enquiry</a><a href="#why">Why Matcha</a></div>
       <div class="fcol"><h3>Visit &amp; Follow</h3><a href="#visit">Westfield Store</a><a href="https://www.instagram.com/sanchamatchaa">Instagram</a><a href="https://sanchamatcha.co.uk">sanchamatcha.co.uk</a></div>
     </div>
