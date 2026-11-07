@@ -348,7 +348,7 @@
      Nothing else needs changing — the sections/links are only hidden, not removed.
      ===================================================================== */
   #tins, #shop, #b2b, #faq,                       /* the four sections */
-  nav a[href="#tins"], nav a[href="#b2b"],        /* nav links: Matcha, Wholesale, Shop button */
+  .nav-links li:has(a[href="#tins"]), .nav-links li:has(a[href="#b2b"]), .nav-cta[href="#tins"],   /* nav items: Matcha, Wholesale + Shop button (hide the whole <li> so the flex gap collapses) */
   .hero-actions a[href="#tins"],                  /* hero "Explore the matcha" CTA */
   #foot-shop, .foot-grid a[href="#b2b"] {         /* footer Shop column + Wholesale Supply link */
     display: none !important;
