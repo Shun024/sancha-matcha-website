@@ -341,18 +341,24 @@
   .faq-item p{margin:0;padding:0 0 26px;color:var(--charcoal);font-size:16px}
 
   /* =====================================================================
-     PRE-LAUNCH (TEMPORARY, added 2026-11-07 at client request) —
-     hides the Products, Shop, Wholesale & FAQ sections (plus their nav links,
-     the hero "Explore the matcha" button, and footer links) until launch day.
-     >>> TO RESTORE EVERYTHING ON LAUNCH DAY: delete this whole block. <<<
-     Nothing else needs changing — the sections/links are only hidden, not removed.
+     COMING SOON (TEMPORARY, 2026-11-07 at client request) — the live site is a
+     holding page until launch day: hide the whole site, show only #coming-soon.
+     The holding page still captures waiting-list signups.
+     >>> TO GO LIVE ON LAUNCH DAY: delete this whole CSS block AND the
+         <section id="coming-soon"> near the top of <body>. Nothing else. <<<
      ===================================================================== */
-  #tins, #shop, #b2b, #faq,                       /* the four sections */
-  .nav-links li:has(a[href="#tins"]), .nav-links li:has(a[href="#b2b"]), .nav-cta[href="#tins"],   /* nav items: Matcha, Wholesale + Shop button (hide the whole <li> so the flex gap collapses) */
-  .hero-actions a[href="#tins"],                  /* hero "Explore the matcha" CTA */
-  #foot-shop, .foot-grid a[href="#b2b"] {         /* footer Shop column + Wholesale Supply link */
-    display: none !important;
+  nav, main, footer { display: none !important; }
+  #coming-soon {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; min-height: 100dvh; text-align: center;
+    background: var(--forest); color: var(--cream); padding: 48px 24px;
   }
+  #coming-soon .cs-logo { width: 150px; height: auto; margin-bottom: 30px }
+  #coming-soon .cs-label { font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: var(--stone); margin-bottom: 18px }
+  #coming-soon h1 { font-size: clamp(42px,7vw,86px); color: #f3f0e4; margin: 0 0 20px; line-height: 1.04 }
+  #coming-soon .cs-lead { max-width: 500px; margin: 0 auto 34px; color: #d4d8c6; font-size: 17px; line-height: 1.7 }
+  #coming-soon .cs-ig { display: inline-block; margin-top: 28px; color: var(--stone); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid transparent }
+  #coming-soon .cs-ig:hover { border-color: var(--stone) }
 </style>
 <script type="application/ld+json">
 {
@@ -378,6 +384,26 @@
 </script>
 </head>
 <body id="top">
+
+<!-- ===================================================================
+     COMING SOON holding page (temporary, 2026-11-07). Shown instead of the
+     full site until launch day. TO GO LIVE: delete this <section> AND the
+     "COMING SOON" CSS block in <style>. Still captures waiting-list signups.
+     =================================================================== -->
+<section id="coming-soon">
+  <img src="assets/logo-cream.png" alt="SANcha" class="cs-logo">
+  <span class="cs-label">Launching Soon</span>
+  <h1>Something good<br>is brewing.</h1>
+  <p class="cs-lead">High-quality matcha for clean, steady energy — tins, wholesale and more, landing soon. Join the list and you'll be first to know the moment we launch.</p>
+  <form class="subscribe" onsubmit="return handleSubscribe(event)" novalidate>
+    <input type="text" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required>
+    <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
+    <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I'd like to receive SANcha launch updates. I can unsubscribe at any time.</span></label>
+    <button type="submit">Notify me at launch</button>
+  </form>
+  <a href="https://www.instagram.com/sanchamatchaa" class="cs-ig" target="_blank" rel="noopener">Follow @sanchamatchaa</a>
+</section>
 
 <nav>
   <div class="wrap nav-inner">
