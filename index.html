@@ -69,7 +69,7 @@
     --matcha-deep:#293D30;   /* primary brand green */
     --forest:#1e2b22;        /* darkest green — dark sections & hovers */
     --cream:#FFF4D6;         /* primary brand cream */
-    --paper:#FBEFBE;         /* page background — unified light yellow (matches --lemon) */
+    --paper:#FFFAEC;         /* page background (client-chosen warm cream) — matches --lemon */
     --charcoal:#293D30;      /* body text / footer (brand green) */
     --stone:#c9b79a;         /* warm tan — muted accents on dark */
     --muted:#6b6550;         /* muted body text on cream */
@@ -78,7 +78,7 @@
     --peach:#FFD9CF;
     --blue:#2B43BC;
     --maroon:#6C2C25;
-    --lemon:#FBEFBE;   /* soft light yellow */
+    --lemon:#FFFAEC;   /* warm cream (matches --paper) */
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -171,10 +171,10 @@
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
 
   /* MARQUEE */
-  .marquee{border-top:1px solid var(--blue);border-bottom:1px solid var(--blue);padding:20px 0;overflow:hidden;white-space:nowrap;background:var(--blue)}
+  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;overflow:hidden;white-space:nowrap;background:var(--paper)}
   .marquee-track{display:inline-block;animation:scroll 30s linear infinite}
-  .marquee-track span{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:26px;font-style:normal;color:var(--cream);margin:0 40px}
-  .marquee-track span::after{content:"◦";margin-left:44px;color:rgba(255,244,214,.55);font-style:normal}
+  .marquee-track span{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:26px;font-style:normal;color:var(--matcha-deep);margin:0 40px}
+  .marquee-track span::after{content:"◦";margin-left:44px;color:var(--stone);font-style:normal}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
   section{padding:110px 0}
@@ -291,7 +291,7 @@
     .pp-info .btn{width:100%}
   }
   /* product-logo variant of the tin card (real hand-drawn IKI/YUAN artwork) */
-  .tin-logo{margin:-40px -40px 24px;border-radius:22px 22px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--cream)}
+  .tin-logo{margin:-40px -40px 24px;border-radius:22px 22px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--paper)}
   .tin-logo img{width:100%;height:100%;object-fit:cover;display:block}
   .tin-head{margin-bottom:18px}
   .tin-head h3{font-size:32px;margin-bottom:4px}
@@ -539,6 +539,52 @@
   </div>
 </div>
 
+<section class="tins-sec" id="tins">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="label">Tinned Matcha · Our Hero Product</span>
+      <h2>Matcha should tell a story.</h2>
+      <p>Two distinct expressions of tea craftsmanship — one born from innovation and harmony, the other from purity and origin.</p>
+    </div>
+    <!-- Products below can be edited from a Google Sheet (see SHEET-SETUP.md).
+         When the sheet loads, these hard-coded cards are replaced automatically.
+         If the sheet is empty/unreachable, these stay as a safe fallback. -->
+    <div class="tins" id="tins-grid" data-sheet-products>
+      <div class="tin-card">
+        <div class="tin-badges"><span class="tin-badge">Signature Blend</span><span class="tin-badge is-new">New</span></div>
+        <div class="tin-top">
+          <div class="tin tin-iki"><div class="kanji">粋</div><div class="rom">IKI</div></div>
+          <div>
+            <h3>IKI</h3>
+            <div class="sub">Signature Blend</div>
+          </div>
+        </div>
+        <div class="tin-foot">
+          <span class="sizes">30g tin</span>
+          <span class="price">Price coming soon</span>
+        </div>
+      </div>
+      <div class="tin-card">
+        <div class="tin-badges"><span class="tin-badge">Single Cultivar</span><span class="tin-badge is-new">New</span></div>
+        <div class="tin-top">
+          <div class="tin tin-yuan"><div class="kanji">源</div><div class="rom">YUAN</div></div>
+          <div>
+            <h3>YUAN</h3>
+            <div class="sub">Single Cultivar</div>
+          </div>
+        </div>
+        <div class="tin-foot">
+          <span class="sizes">30g tin</span>
+          <span class="price">Price coming soon</span>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:44px">
+      <a href="#join" class="btn btn-solid">Join the waiting list</a>
+    </div>
+  </div>
+</section>
+
 <section class="benefits" id="why">
   <div class="wrap">
     <div class="sec-head center">
@@ -595,58 +641,6 @@
       <h2 style="font-size:clamp(34px,4.5vw,54px);margin:16px 0 22px">Chinese roots, refined craft.</h2>
       <p>We work directly with producers in <strong style="color:var(--maroon)">Zhejiang, China</strong>, using modern processing techniques inspired by Japanese methods — finely milled, high-grade matcha with the consistency to match.</p>
       <p>Matcha is often tied to Japan, but its origins trace back to China, where powdered tea was first developed; Japan later refined it into the matcha we know today. Our goal is to bring traditional knowledge together with modern quality control, for a consistent, high-quality cup every time.</p>
-    </div>
-  </div>
-</section>
-
-<section class="tins-sec" id="tins">
-  <div class="wrap">
-    <div class="sec-head center">
-      <span class="label">Tinned Matcha · Our Hero Product</span>
-      <h2>Matcha should tell a story.</h2>
-      <p>Two distinct expressions of tea craftsmanship — one born from innovation and harmony, the other from purity and origin.</p>
-    </div>
-    <!-- Products below can be edited from a Google Sheet (see SHEET-SETUP.md).
-         When the sheet loads, these hard-coded cards are replaced automatically.
-         If the sheet is empty/unreachable, these stay as a safe fallback. -->
-    <div class="tins" id="tins-grid" data-sheet-products>
-      <div class="tin-card">
-        <div class="tin-badges"><span class="tin-badge">Signature Blend</span><span class="tin-badge is-new">New</span></div>
-        <div class="tin-top">
-          <div class="tin tin-iki"><div class="kanji">粋</div><div class="rom">IKI</div></div>
-          <div>
-            <h3>IKI</h3>
-            <div class="sub">Signature Blend</div>
-          </div>
-        </div>
-        <p>Two exceptional cultivars, carefully blended into a layered, sophisticated cup — fresh greens, gentle sweetness and a lingering, silky finish. Our philosophy of Chinese and Japanese tea heritage in one tin.</p>
-        <div class="cultivars"><span>Longjing 43 · smooth &amp; nutty</span><span>Yabukita · rich umami</span></div>
-        <div class="forwho">For those who appreciate complexity, balance &amp; refinement.</div>
-        <div class="tin-foot">
-          <span class="sizes">30g tin · 500g coming soon</span>
-          <span class="price">Price coming soon</span>
-        </div>
-      </div>
-      <div class="tin-card">
-        <div class="tin-badges"><span class="tin-badge">Single Cultivar</span><span class="tin-badge is-new">New</span></div>
-        <div class="tin-top">
-          <div class="tin tin-yuan"><div class="kanji">源</div><div class="rom">YUAN</div></div>
-          <div>
-            <h3>YUAN</h3>
-            <div class="sub">Single Cultivar</div>
-          </div>
-        </div>
-        <p>Our pure expression of a single cultivar: Yabukita. Unblended and uncompromising — a clean, vibrant cup with pronounced umami, fresh vegetal notes and remarkable clarity. A return to the source.</p>
-        <div class="cultivars"><span>100% Yabukita</span><span>Single origin</span></div>
-        <div class="forwho">For those who seek authenticity &amp; a deeper connection to the leaf.</div>
-        <div class="tin-foot">
-          <span class="sizes">30g tin · 500g coming soon</span>
-          <span class="price">Price coming soon</span>
-        </div>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:44px">
-      <a href="#join" class="btn btn-solid">Join the waiting list</a>
     </div>
   </div>
 </section>
@@ -1026,7 +1020,6 @@
   function renderTin(p) {
     var tinKey = String(p.name || "").trim().toLowerCase();
     TINS[tinKey] = p;   // remember the full object so the pop-up can show everything
-    var cultivars = pipes(p.cultivars).map(function (s) { return "<span>" + esc(s) + "</span>"; }).join("");
     // Option 2 checkout: "Add to basket" when there's a numeric price + stock; sold-out otherwise.
     var priceNum = parseFloat(String(p.price || '').replace(/[^0-9.]/g, '')) || 0;
     var stock = (p.stock != null && String(p.stock).trim() !== '') ? parseInt(p.stock, 10) : null;
@@ -1037,11 +1030,10 @@
     } else if (soldOut) {
       buy = '<button class="btn btn-ghost tin-buy notify-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '">Notify me when back in stock</button>';
     }
+    // Simplified card: name + subtitle (above) and just size + price here; the full
+    // description / cultivars / "for who" live on the product detail page.
     var body =
         '<span class="tin-view">View details &rarr;</span>' +
-        (p.description ? '<p>' + esc(p.description) + '</p>' : '') +
-        (cultivars ? '<div class="cultivars">' + cultivars + '</div>' : '') +
-        (p.for_who ? '<div class="forwho">' + esc(p.for_who) + '</div>' : '') +
         '<div class="tin-foot"><span class="sizes">' + esc(p.sizes) + '</span>' +
           '<span class="price">' + esc(p.price) + '</span></div>' + buy;
 
