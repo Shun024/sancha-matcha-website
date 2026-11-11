@@ -551,7 +551,7 @@
          If the sheet is empty/unreachable, these stay as a safe fallback. -->
     <div class="tins" id="tins-grid" data-sheet-products>
       <div class="tin-card">
-        <div class="tin-badges"><span class="tin-badge">Signature Blend</span><span class="tin-badge is-new">New</span></div>
+        <div class="tin-badges"><span class="tin-badge is-new">New</span></div>
         <div class="tin-top">
           <div class="tin tin-iki"><div class="kanji">粋</div><div class="rom">IKI</div></div>
           <div>
@@ -565,7 +565,7 @@
         </div>
       </div>
       <div class="tin-card">
-        <div class="tin-badges"><span class="tin-badge">Single Cultivar</span><span class="tin-badge is-new">New</span></div>
+        <div class="tin-badges"><span class="tin-badge is-new">New</span></div>
         <div class="tin-top">
           <div class="tin tin-yuan"><div class="kanji">源</div><div class="rom">YUAN</div></div>
           <div>
@@ -1010,10 +1010,9 @@
   var TIN_BADGE_DEFAULTS = { iki:{badge:"Signature Blend",isNew:true}, yuan:{badge:"Single Cultivar",isNew:true} };
   function tinBadges(p){
     var key=(p.roman||p.name||"").toLowerCase(), def=TIN_BADGE_DEFAULTS[key]||{};
-    var badge=(p.badge&&p.badge.trim())||def.badge||"";
     var isNew = (p.new!=null && String(p.new).trim()!=="") ? /^(true|yes|1|new)$/i.test(String(p.new).trim()) : !!def.isNew;
-    var html=(badge?'<span class="tin-badge">'+esc(badge)+'</span>':'')+
-             (isNew?'<span class="tin-badge is-new">New</span>':'');
+    // Type badge (e.g. "Signature Blend") removed — it duplicated the card subtitle. Keep only "New".
+    var html=(isNew?'<span class="tin-badge is-new">New</span>':'');
     return html?'<div class="tin-badges">'+html+'</div>':'';
   }
 
