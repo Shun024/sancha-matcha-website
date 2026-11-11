@@ -272,6 +272,12 @@
   .pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
   .pp-art{background:var(--cream);border-radius:24px;display:flex;align-items:center;justify-content:center;padding:44px;position:relative;aspect-ratio:1/1}
   .pp-art img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px}
+  /* product-page image gallery thumbnails */
+  .pp-thumbs{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .pp-thumb{width:64px;height:64px;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--cream);cursor:pointer;transition:border-color .2s}
+  .pp-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .pp-thumb:hover{border-color:var(--matcha)}
+  .pp-thumb.active{border-color:var(--matcha-deep)}
   .pp-art .tin{width:72%;aspect-ratio:3/4;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--cream)}
   .pp-art .tin .kanji{font-size:64px;font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif}
   .pp-art .tin .rom{font-size:22px;letter-spacing:.3em;margin-top:8px}
@@ -1221,13 +1227,24 @@
       host.innerHTML = back + '<p style="color:var(--muted);font-size:17px">Sorry, we couldn\'t find that product.</p>';
       document.title = "Matcha — SANcha"; return;
     }
-    var logo = imageUrl(p.image) || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
-    var art = logo
-      ? tinBadges(p) + '<img src="' + esc(logo) + '" alt="' + esc(p.name) + ' matcha">'
+    // Gallery: main image + extras from sheet columns image, image2 … image6 (Drive links ok).
+    var gallery = [p.image, p.image2, p.image3, p.image4, p.image5, p.image6]
+      .filter(function (x) { return x && String(x).trim(); })
+      .map(function (x) { return imageUrl(x); });
+    if (!gallery.length) { var fb = TIN_LOGOS[(p.roman || p.name || "").toLowerCase()]; if (fb) gallery = [fb]; }
+    var mainImg = gallery[0] || "";
+    var art = mainImg
+      ? tinBadges(p) + '<img src="' + esc(mainImg) + '" alt="' + esc(p.name) + ' matcha">'
       : tinBadges(p) + '<div class="tin" style="background:linear-gradient(160deg,' +
           esc(p.tin_from || "#7c8a63") + ',' + esc(p.tin_to || "#4c5541") + ')">' +
           '<div class="kanji">' + esc(p.kanji || "") + '</div>' +
           '<div class="rom">' + esc(p.roman || p.name) + '</div></div>';
+    var thumbs = gallery.length > 1
+      ? '<div class="pp-thumbs">' + gallery.map(function (src, i) {
+          return '<button type="button" class="pp-thumb' + (i === 0 ? ' active' : '') + '" data-full="' + esc(src) + '">' +
+                 '<img src="' + esc(src) + '" alt="" loading="lazy"></button>';
+        }).join("") + '</div>'
+      : "";
     var priceNum = parseFloat(String(p.price || "").replace(/[^0-9.]/g, "")) || 0;
     var stock = (p.stock != null && String(p.stock).trim() !== "") ? parseInt(p.stock, 10) : null;
     var soldOut = stock != null && stock <= 0;
@@ -1243,7 +1260,7 @@
       .map(function (r) { return "<div><dt>" + r[0] + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("");
     host.innerHTML = back +
       '<div class="pp-grid">' +
-        '<div class="pp-art">' + art + '</div>' +
+        '<div class="pp-art-wrap"><div class="pp-art">' + art + '</div>' + thumbs + '</div>' +
         '<div class="pp-info">' +
           (p.kanji ? '<div class="pp-kanji">' + esc(p.kanji) + '</div>' : "") +
           '<h1>' + esc(p.name) + '</h1>' +
@@ -1263,6 +1280,15 @@
   // / notify controls, which keep their own behaviour.
   document.addEventListener("click", function (e) {
     var t = e.target; if (!t || !t.closest) return;
+    // Product-page gallery: clicking a thumbnail swaps the main image.
+    var thumb = t.closest(".pp-thumb");
+    if (thumb) {
+      var mainEl = document.querySelector("#product-page .pp-art img");
+      if (mainEl) mainEl.src = thumb.getAttribute("data-full");
+      Array.prototype.forEach.call(document.querySelectorAll("#product-page .pp-thumb"),
+        function (btn) { btn.classList.toggle("active", btn === thumb); });
+      return;
+    }
     if (t.closest(".add-btn, .notify-btn, .notify-form")) return;
     var card = t.closest(".tin-card"), slug = card && card.getAttribute("data-tin-key");
     if (slug) { e.preventDefault(); location.href = urlWithTin(slug); }
