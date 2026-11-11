@@ -95,7 +95,9 @@
   .btn-ghost:hover{background:var(--matcha-deep);color:var(--cream);border-color:var(--matcha-deep)}
 
   /* NAV */
-  nav{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--paper)}
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--paper);transition:box-shadow .3s}
+  /* seamless at the top; lifts off the page with a soft shadow once scrolled */
+  nav.scrolled{box-shadow:0 8px 24px -14px rgba(30,43,34,.4)}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:78px}
   .logo{height:56px;width:auto;display:block}
   .nav-links{display:flex;gap:34px;list-style:none}
@@ -507,6 +509,15 @@
     b.addEventListener('click',function(){set(!nav.classList.contains('open'));});
     nav.querySelectorAll('.nav-menu a').forEach(function(a){a.addEventListener('click',function(){set(false);});});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+  })();
+
+  // Header is seamless at the top; add a soft shadow once the page is scrolled.
+  (function(){
+    var nav=document.querySelector('nav');
+    if(!nav) return;
+    function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 8); }
+    onScroll();
+    window.addEventListener('scroll', onScroll, {passive:true});
   })();
 </script>
 
