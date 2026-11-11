@@ -233,7 +233,7 @@
   .tin-badge{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:5px 13px;border-radius:999px;background:var(--maroon);color:var(--peach);box-shadow:0 5px 12px -5px rgba(30,43,34,.55)}
   .tin-badge.is-new{background:var(--peach);color:var(--maroon)}
   .tins{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
-  .tin-card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:40px;transition:.4s;display:flex;flex-direction:column;position:relative}
+  .tin-card{background:var(--paper);border:1px solid transparent;border-radius:22px;padding:40px;transition:.4s;display:flex;flex-direction:column;position:relative}
   .tin-card:hover{box-shadow:0 30px 60px -34px rgba(40,51,26,.34);border-color:var(--matcha)}
   .tin-top{display:flex;gap:30px;align-items:center;margin-bottom:26px}
   .tin{width:118px;height:152px;border-radius:12px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f3f0e4;box-shadow:0 18px 34px -18px rgba(40,51,26,.6);position:relative}
@@ -271,7 +271,7 @@
   .pp-back:hover{border-color:var(--matcha-deep)}
   .pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
   .pp-art{background:var(--cream);border-radius:24px;display:flex;align-items:center;justify-content:center;padding:44px;position:relative;aspect-ratio:1/1}
-  .pp-art img{width:100%;height:auto;display:block;border-radius:12px}
+  .pp-art img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px}
   .pp-art .tin{width:72%;aspect-ratio:3/4;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--cream)}
   .pp-art .tin .kanji{font-size:64px;font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif}
   .pp-art .tin .rom{font-size:22px;letter-spacing:.3em;margin-top:8px}
@@ -289,12 +289,14 @@
   @media(max-width:860px){
     .pp-grid{grid-template-columns:1fr;gap:30px}
     .product-mode #product-page{padding:104px 0 70px}
-    .pp-art{aspect-ratio:16/10;padding:30px}
+    .pp-art{padding:30px}
     .pp-info .btn{width:100%}
   }
   /* product-logo variant of the tin card (real hand-drawn IKI/YUAN artwork) */
-  .tin-logo{margin:-40px -40px 24px;border-radius:22px 22px 0 0;overflow:hidden;aspect-ratio:4/3;background:var(--paper)}
-  .tin-logo img{width:100%;height:100%;object-fit:cover;display:block}
+  .tin-logo{margin:-40px -40px 24px;border-radius:22px 22px 0 0;overflow:hidden;aspect-ratio:1/1;background:var(--paper);position:relative}
+  .tin-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity .45s ease}
+  .tin-logo .tin-hover{opacity:0}                 /* second image, fades in on card hover */
+  .tin-card:hover .tin-logo .tin-hover{opacity:1}
   .tin-head{margin-bottom:18px}
   .tin-head h3{font-size:32px;margin-bottom:4px}
   .tin-head .sub{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
@@ -1040,17 +1042,19 @@
     } else if (soldOut) {
       buy = '<button class="btn btn-ghost tin-buy notify-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '">Notify me when back in stock</button>';
     }
-    // Simplified card: name + subtitle (above) and just size + price here; the full
-    // description / cultivars / "for who" live on the product detail page.
+    // Simplified card: name + subtitle (above), size + price here; full details on the
+    // product page (reached by clicking the card). Add-to-basket / notify below.
     var body =
-        '<span class="tin-view">View details &rarr;</span>' +
         '<div class="tin-foot"><span class="sizes">' + esc(p.sizes) + '</span>' +
           '<span class="price">' + esc(p.price) + '</span></div>' + buy;
 
     var logo = imageUrl(p.image) || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
+    // Optional second image that fades in on hover (sheet column "hover_image").
+    var hoverImg = p.hover_image ? imageUrl(p.hover_image) : "";
     if (logo) {
       return '<div class="tin-card" data-tin-key="' + esc(tinKey) + '">' + tinBadges(p) +
-          '<div class="tin-logo"><img src="' + esc(logo) + '" alt="' + esc(p.name) + ' matcha" loading="lazy"></div>' +
+          '<div class="tin-logo"><img src="' + esc(logo) + '" alt="' + esc(p.name) + ' matcha" loading="lazy">' +
+            (hoverImg ? '<img class="tin-hover" src="' + esc(hoverImg) + '" alt="" loading="lazy">' : '') + '</div>' +
           '<div class="tin-head"><h3>' + esc(p.name) + '</h3>' +
             (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : '') + '</div>' +
           body +
