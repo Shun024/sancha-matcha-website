@@ -282,6 +282,14 @@
   .pp-info .desc{font-size:17px;line-height:1.8;color:var(--charcoal);margin:0 0 20px}
   .pp-info .cultivars{margin:6px 0 2px}
   .pp-info .forwho{font-style:italic;color:var(--muted);font-size:15px;margin:14px 0 0}
+  /* "Meet your matcha" story + spec list on the product detail page */
+  .pp-meet-h{font-family:'Bitter','Bitter Fallback',serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--maroon);margin:26px 0 10px}
+  .pp-meet{font-size:15.5px;line-height:1.8;color:var(--charcoal);margin:0 0 22px}
+  .pp-spec{margin:0 0 4px;display:grid;gap:0}
+  .pp-spec>div{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line)}
+  .pp-spec>div:first-child{border-top:1px solid var(--line)}
+  .pp-spec dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0}
+  .pp-spec dd{font-size:15px;color:var(--charcoal);margin:0}
   .pp-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 22px;padding-top:18px;border-top:1px solid var(--line)}
   .pp-foot .sizes{font-size:14px;color:var(--muted)}
   .pp-foot .price{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:30px;color:var(--matcha-deep)}
@@ -1021,6 +1029,23 @@
   // Top-left product badges. Sheet columns `badge` (type label) + `new` (yes/no) override
   // these per-tin defaults. Type badge = red/pink; NEW badge = pink/red.
   var TIN_BADGE_DEFAULTS = { iki:{badge:"Signature Blend",isNew:true}, yuan:{badge:"Single Cultivar",isNew:true} };
+
+  // Product-detail-page copy. Per-tin defaults; sheet columns
+  // lede / meet / origin / harvest / cultivar / taste override these if present.
+  var TIN_DETAILS = {
+    iki: {
+      lede: "The matcha we serve in store. First-harvest Zhejiang tea with Longjing’s toasty depth and Yabukita’s savoury umami.",
+      meet: "Grown in Zhejiang, China and picked at first harvest, IKI pairs Longjing’s toasty, chestnut-sweet depth with Yabukita’s bright, savoury umami. Rich, vivid green, with an aroma of dark chocolate, built to stand up to milk, ice, or a straight whisk.",
+      origin: "Zhejiang, China", harvest: "First Harvest",
+      cultivar: "Longjing #43, Yabukita", taste: "Nutty, Toasty, Savoury, Bold bitter finish"
+    },
+    yuan: {
+      lede: "Single-cultivar Yabukita from Zhejiang, China. Smooth, savoury, and umami-rich.",
+      meet: "Grown in Zhejiang, China, YUAN is pure Yabukita with nothing blended in. Bright, savoury umami with a smooth, easy finish. A clean, approachable cup that’s easy to enjoy straight whisked or in a latte.",
+      origin: "Zhejiang, China", harvest: "First Harvest",
+      cultivar: "Yabukita", taste: "Savoury, Umami, Smooth"
+    }
+  };
   function tinBadges(p){
     var key=(p.roman||p.name||"").toLowerCase(), def=TIN_BADGE_DEFAULTS[key]||{};
     var isNew = (p.new!=null && String(p.new).trim()!=="") ? /^(true|yes|1|new)$/i.test(String(p.new).trim()) : !!def.isNew;
@@ -1209,7 +1234,13 @@
     var buy = (priceNum > 0 && !soldOut)
       ? '<button class="btn btn-solid add-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '" data-price="' + priceNum + '">Add to basket</button>'
       : (soldOut ? '<button class="btn btn-ghost notify-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '">Notify me when back in stock</button>' : "");
-    var cultivars = pipes(p.cultivars).map(function (s) { return "<span>" + esc(s) + "</span>"; }).join("");
+    var d = TIN_DETAILS[(p.roman || p.name || "").toLowerCase()] || {};
+    var lede = p.lede || d.lede || p.description || "";
+    var meet = p.meet || d.meet || "";
+    var specRows = [["Origin", p.origin || d.origin], ["Harvest", p.harvest || d.harvest],
+                    ["Cultivar", p.cultivar || d.cultivar], ["Taste", p.taste || d.taste]]
+      .filter(function (r) { return r[1]; })
+      .map(function (r) { return "<div><dt>" + r[0] + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("");
     host.innerHTML = back +
       '<div class="pp-grid">' +
         '<div class="pp-art">' + art + '</div>' +
@@ -1217,9 +1248,9 @@
           (p.kanji ? '<div class="pp-kanji">' + esc(p.kanji) + '</div>' : "") +
           '<h1>' + esc(p.name) + '</h1>' +
           (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : "") +
-          (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : "") +
-          (cultivars ? '<div class="cultivars">' + cultivars + '</div>' : "") +
-          (p.for_who ? '<div class="forwho">' + esc(p.for_who) + '</div>' : "") +
+          (lede ? '<p class="desc">' + esc(lede) + '</p>' : "") +
+          (meet ? '<h3 class="pp-meet-h">Meet your matcha</h3><p class="pp-meet">' + esc(meet) + '</p>' : "") +
+          (specRows ? '<dl class="pp-spec">' + specRows + '</dl>' : "") +
           '<div class="pp-foot"><span class="sizes">' + esc(p.sizes || "") + '</span>' +
             '<span class="price">' + esc(p.price || "") + '</span></div>' + buy +
         '</div>' +
