@@ -359,6 +359,8 @@
   #coming-soon .cs-red { color: var(--maroon) }   /* brand dark red */
   #coming-soon .cs-ig { display: inline-block; margin-top: 28px; color: var(--lemon); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid transparent }   /* brand yellow */
   #coming-soon .cs-ig:hover { border-color: var(--lemon) }
+  #coming-soon .cs-join-lead { max-width: 430px; margin: 6px auto 22px; color: #d4d8c6; font-size: 16px; line-height: 1.6 }
+  #coming-soon .cs-form { margin: 0 auto }
 </style>
 <script type="application/ld+json">
 {
@@ -394,6 +396,14 @@
   <img src="assets/logo-cream.png" alt="SANcha" class="cs-logo">
   <span class="cs-label">Launching Soon</span>
   <h1>Something <span class="cs-red">good</span><br>is brewing.</h1>
+  <p class="cs-join-lead">Join the waiting list — be first to know the moment we launch.</p>
+  <form class="subscribe cs-form" onsubmit="return handleSubscribe(event)" novalidate>
+    <input type="text" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required>
+    <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
+    <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I'd like to receive SANcha launch updates. I can unsubscribe at any time.</span></label>
+    <button type="submit">Join the waiting list</button>
+  </form>
   <a href="https://www.instagram.com/sanchamatchaa" class="cs-ig" target="_blank" rel="noopener">Follow @sanchamatchaa</a>
 </section>
 
