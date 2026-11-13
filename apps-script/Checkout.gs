@@ -215,6 +215,7 @@ var THANKYOU_COPY = 'Thank you for your order — every tin is whisked and packe
 // Business details for the receipt footer (legal name + registered address + VAT).
 var BUSINESS_FOOTER = 'VS Partners Ltd trading as SANcha &middot; ' +
   '3rd Floor, 86-90 Paul Street, London, England, EC2A 4NE' +
+  ' &middot; Company No. 16185759' +
   (VAT_NUMBER ? ' &middot; VAT ' + VAT_NUMBER : '') + '<br>sanchamatcha.co.uk';
 
 /* Send FROM the branded orders@ address — but ONLY once it's been set up as a
