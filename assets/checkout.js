@@ -7,9 +7,10 @@
 (function () {
   "use strict";
 
-  // Checkout Apps Script "/exec" URL. Currently the SANDBOX deployment (test sheet +
-  // sandbox SumUp). Swap to the live deployment URL at go-live.
-  var CHECKOUT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh5hnIxGmDFdqNi5kggKZtkIlWEtESaZixTJOQg_7-rGlmPsnS1hxdYPOU1kFLHbC_rA/exec";
+  // Checkout Apps Script "/exec" URL. Now the orders@ deployment (runs under
+  // orders@sanchamatcha.co.uk → emails send from orders@; reads the original sheet).
+  // Still the SANDBOX SumUp key — swap to the live key in Script Properties at go-live.
+  var CHECKOUT_ENDPOINT = "https://script.google.com/macros/s/AKfycbz05KCR_iDY4XhawaiE6Sh1tDdgsCr1-VcX7iMdqnqn9YXWgjAKEXMWUaDQelgDx-J6Gg/exec";
 
   // Customer-facing contact (matches the backend REPLY_TO).
   var CONTACT_EMAIL = "contact@sanchamatcha.co.uk";
