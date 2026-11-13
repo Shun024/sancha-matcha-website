@@ -334,7 +334,7 @@
       _emailConfirmed = ""; clearDetailsErr(); return;
     }
     if (t.closest("#cart-btn")) { open(); return; }
-    if (t.classList.contains("cart-close")) { close(); return; }
+    if (t.classList.contains("cart-close") || t.closest("[data-close]")) { close(); return; }
     if (t.id === "cart-overlay") { close(); return; }
     if (t.id === "to-details") { startDetails(); return; }
     if (t.getAttribute("data-back")) { showStep(t.getAttribute("data-back")); return; }

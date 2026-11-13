@@ -152,6 +152,7 @@
   .cart-done{text-align:center;padding:30px 0}
   .cart-done h4{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:30px;color:var(--forest);margin-bottom:10px}
   .cart-done p{color:#54544c;margin-bottom:22px}
+  .cart-done .btn{padding-top:20px;padding-bottom:20px}   /* taller Done button; font size unchanged */
   .pay-spinner{width:40px;height:40px;margin:0 auto 20px;border:3px solid var(--line);border-top-color:var(--matcha-deep);border-radius:50%;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   .email-fix{background:none;border:0;color:var(--maroon);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
@@ -865,7 +866,7 @@
       <div class="cart-done">
         <h4>Thank you!</h4>
         <p id="done-msg">Your order is confirmed. A confirmation email is on its way.</p>
-        <button class="btn btn-solid cart-full cart-close" type="button">Done</button>
+        <button class="btn btn-solid cart-full" data-close type="button">Done</button>
       </div>
     </div>
   </div>
