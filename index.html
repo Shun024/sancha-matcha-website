@@ -170,7 +170,7 @@
   .hero-tags div{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5f5f57;display:flex;align-items:center;gap:9px}
   .hero-tags i{width:6px;height:6px;border-radius:50%;background:var(--blue)}
   .emblem-stage{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1}
-  .emblem{width:90%;max-width:460px;aspect-ratio:775/717;animation:float 7s ease-in-out infinite;filter:drop-shadow(0 30px 50px rgba(40,51,26,.28))}
+  .emblem{width:100%;max-width:540px;aspect-ratio:775/717;animation:float 7s ease-in-out infinite;filter:drop-shadow(0 30px 50px rgba(40,51,26,.28))}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
 
   /* MARQUEE */
@@ -294,11 +294,11 @@
   .pp-kanji{font-size:22px;color:var(--maroon);margin-bottom:4px}
   .pp-info h1{font-size:clamp(40px,5vw,56px);color:var(--matcha-deep);margin:0;line-height:1.02}
   .pp-info .sub{color:var(--muted);font-size:16px;margin:8px 0 20px}
-  .pp-info .desc{font-size:17px;line-height:1.8;color:var(--charcoal);margin:0 0 20px}
+  .pp-info .desc{font-size:17px;line-height:1.8;color:var(--charcoal);margin:0 0 20px;font-style:italic}
   .pp-info .cultivars{margin:6px 0 2px}
   .pp-info .forwho{font-style:italic;color:var(--muted);font-size:15px;margin:14px 0 0}
   /* "Meet your matcha" story + spec list on the product detail page */
-  .pp-meet-h{font-family:'Bitter','Bitter Fallback',serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--maroon);margin:26px 0 10px}
+  .pp-meet-h{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:20px;letter-spacing:.02em;text-transform:uppercase;color:var(--maroon);margin:26px 0 10px}
   .pp-meet{font-size:15.5px;line-height:1.8;color:var(--charcoal);margin:0 0 22px}
   .pp-spec{margin:0 0 4px;display:grid;gap:0}
   .pp-spec>div{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line)}
@@ -416,6 +416,9 @@
   .fcol h3{font-family:'Bitter','Bitter Fallback',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px;color:var(--stone)}
   .fcol a{display:block;color:#c3bfb3;text-decoration:none;font-size:14px;margin-bottom:11px;transition:.3s}
   .fcol a:hover{color:var(--matcha)}
+  .foot-social{display:flex;gap:14px;margin-top:4px}
+  .foot-social a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin:0;border:1px solid #43433c;border-radius:50%;color:#c3bfb3;transition:.3s}
+  .foot-social a:hover{color:var(--forest);background:var(--cream);border-color:var(--cream)}
   .foot-bottom{border-top:1px solid #43433c;padding-top:26px;display:flex;justify-content:space-between;font-size:12px;color:#a3a08d;letter-spacing:.06em;flex-wrap:wrap;gap:8px}
 
   @media(max-width:900px){
@@ -551,11 +554,10 @@
   <div class="wrap hero-grid">
     <div>
       <span class="label">High-quality matcha · direct from tea farms in Zhejiang, China to London</span>
-      <h1>A daily ritual, <em>without</em> the crash.</h1>
-      <p class="lead">SANcha is matcha made for real life — clean, steady energy from a cleaner cup. No jitters, no 3pm slump. Just calm focus, the way three of us wished coffee could be.</p>
+      <h1>Premium matcha, <em>priced for everyday</em>.</h1>
+      <p class="lead">Great matcha shouldn&rsquo;t cost more just because everyone wants the same origin. We found it in China instead.</p>
       <div class="hero-actions">
-        <a href="#join" class="btn btn-solid">Join the launch list</a>
-        <a href="#tins" class="btn btn-line">Explore the matcha</a>
+        <a href="#tins" class="btn btn-solid">Explore the matcha</a>
       </div>
       <div class="hero-tags">
         <div><i></i>Clean, sustained energy</div>
@@ -614,9 +616,6 @@
           <span class="price">Price coming soon</span>
         </div>
       </div>
-    </div>
-    <div style="text-align:center;margin-top:44px">
-      <a href="#join" class="btn btn-solid">Join the waiting list</a>
     </div>
   </div>
 </section>
@@ -718,7 +717,6 @@
       <h2>Matcha for your menu.</h2>
       <p>We supply cafés, restaurants and businesses with the same high-grade matcha powder we pour ourselves — consistent, finely milled, and ready to scale with you.</p>
       <p>Tell us a little about your business below and we'll be in touch with pricing and samples.</p>
-      <p class="b2b-alt">Prefer email? <a href="mailto:business@sanchamatcha.co.uk?subject=Wholesale%20enquiry">business@sanchamatcha.co.uk</a></p>
     </div>
     <!-- Fields come from the "WholesaleForm" sheet tab when configured (see SHEET-UPDATES.md);
          the fields below are the built-in fallback until then. Responses post to the sheet. -->
@@ -784,7 +782,7 @@
       </details>
       <details class="faq-item">
         <summary>Do you offer wholesale or trade supply?</summary>
-        <p>Yes. We supply cafés and businesses with high-quality matcha in 500g, 1kg and 10kg-plus formats. See the wholesale section above or email <a href="mailto:business@sanchamatcha.co.uk?subject=Wholesale%20enquiry">business@sanchamatcha.co.uk</a>.</p>
+        <p>Yes. We supply cafés and businesses with high-quality matcha in 500g, 1kg and 10kg-plus formats. See the wholesale section above and send us an enquiry through the form.</p>
       </details>
       <details class="faq-item">
         <summary>Who is behind SANcha?</summary>
@@ -802,27 +800,12 @@
     {"@type":"Question","name":"Will matcha give me the caffeine jitters?","acceptedAnswer":{"@type":"Answer","text":"No. Matcha gives clean, steady energy: its caffeine is balanced by an amino acid called L-theanine, so you get calm focus without the spike and crash of coffee — no jitters, no 3pm slump."}},
     {"@type":"Question","name":"How do I prepare matcha?","acceptedAnswer":{"@type":"Answer","text":"Sift about half a teaspoon (1–2g) into a bowl, add a little hot — not boiling — water, and whisk in a zig-zag until frothy. Top up with water or your milk of choice, hot or iced."}},
     {"@type":"Question","name":"Where can I buy SANcha matcha?","acceptedAnswer":{"@type":"Answer","text":"Shop our IKI & YUAN tins online, visit us at our Westfield store, or catch us at our pop-ups — follow @sanchamatchaa on Instagram for the latest dates."}},
-    {"@type":"Question","name":"Do you offer wholesale or trade supply?","acceptedAnswer":{"@type":"Answer","text":"Yes. We supply cafés and businesses with high-quality matcha in 500g, 1kg and 10kg-plus formats. See the wholesale section or email business@sanchamatcha.co.uk."}},
+    {"@type":"Question","name":"Do you offer wholesale or trade supply?","acceptedAnswer":{"@type":"Answer","text":"Yes. We supply cafés and businesses with high-quality matcha in 500g, 1kg and 10kg-plus formats. See the wholesale section and send us an enquiry through the form."}},
     {"@type":"Question","name":"Who is behind SANcha?","acceptedAnswer":{"@type":"Answer","text":"SANcha was founded by three friends in London who wanted matcha made for real life — the everyday cup they wished coffee could be. SAN + CHA means three tea, for the three of us."}}
   ]
 }
 </script>
 
-<section class="cta" id="join">
-  <div class="wrap">
-    <img src="assets/emblem-bowl-cream.png" alt="" aria-hidden="true" class="cta-emblem">
-    <span class="label" style="color:#cdd6b5">Tins waiting list</span>
-    <h2>Join the waiting list.</h2>
-    <p>Our matcha tins are launching soon. Pop your name and email below and we'll let you know the moment they're available — you'll be first in line.</p>
-    <form class="subscribe" onsubmit="return handleSubscribe(event)" novalidate>
-      <input type="text" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required>
-      <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
-      <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I'd like to receive SANcha Matcha product launch emails and occasional updates. I can unsubscribe at any time.</span></label>
-      <button type="submit">Join the waiting list</button>
-    </form>
-  </div>
-</section>
 </main>
 
 <!-- Basket + SumUp checkout drawer -->
@@ -880,8 +863,13 @@
         <p class="lead">High-quality matcha for clean, steady energy. Three friends, one better cup — London.</p>
       </div>
       <div class="fcol"><h3>Shop</h3><a href="#tins">IKI &amp; YUAN Tins</a><a href="#tins">Merchandise</a><a href="#tins">Gift Cards</a></div>
-      <div class="fcol"><h3>Trade</h3><a href="#b2b">Wholesale Supply</a><a href="mailto:business@sanchamatcha.co.uk">Bulk Enquiry</a><a href="#why">Why Matcha</a></div>
-      <div class="fcol"><h3>Visit &amp; Follow</h3><a href="#visit">Westfield Store</a><a href="https://www.instagram.com/sanchamatchaa">Instagram</a><a href="https://sanchamatcha.co.uk">sanchamatcha.co.uk</a></div>
+      <div class="fcol"><h3>Trade</h3><a href="#b2b">Wholesale Supply</a><a href="#why">Why Matcha</a></div>
+      <div class="fcol"><h3>Visit &amp; Follow</h3><a href="#visit">Westfield Store</a><a href="https://sanchamatcha.co.uk">sanchamatcha.co.uk</a>
+        <div class="foot-social">
+          <a href="https://www.instagram.com/sanchamatchaa" target="_blank" rel="noopener" aria-label="SANcha on Instagram"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.tiktok.com/@sanchamatchaa" target="_blank" rel="noopener" aria-label="SANcha on TikTok"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-1-.3 4.3 4.3 0 0 1-1.8-2.9h-2.6v11.3a2.3 2.3 0 1 1-1.9-2.3V8.9a5 5 0 1 0 4.5 5V8.4a6.6 6.6 0 0 0 3.8 1.2V7a4.3 4.3 0 0 1-1-.2z"/></svg></a>
+        </div>
+      </div>
     </div>
     <div class="foot-bottom">
       <span>© 2026 SANcha · London</span>
@@ -963,12 +951,6 @@
     return false;
   }
 
-  // Deep-link: focus the first field when someone arrives via a "Join the waiting list" link.
-  document.addEventListener('click',function(e){
-    var a=e.target.closest && e.target.closest('a[href="#join"]'); if(!a) return;
-    var inp=document.querySelector('.subscribe input[name="name"]');
-    if(inp) setTimeout(function(){ try{inp.focus({preventScroll:true});}catch(_){inp.focus();} },500);
-  });
 </script>
 <script>
 (function () {
