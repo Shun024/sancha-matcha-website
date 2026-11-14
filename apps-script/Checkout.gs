@@ -211,7 +211,8 @@ var SITE_URL  = 'https://sanchamatcha.co.uk';
 var LOGO_URL  = SITE_URL + '/assets/logo-cream.png';   // cream logo for the dark header
 // TODO client: approve / replace this thank-you line.
 var THANKYOU_COPY = 'Thank you for your order — every tin is whisked and packed with care. ' +
-  'We\'ll be in touch again when it\'s on its way to you.';
+  'Orders are dispatched within 1–2 working days and usually arrive in 2–3 days with Royal Mail. ' +
+  'We\'ll email you tracking as soon as it\'s on its way.';
 // Business details for the receipt footer (legal name + registered address + VAT).
 var BUSINESS_FOOTER = 'VS Partners Ltd trading as SANcha &middot; ' +
   '3rd Floor, 86-90 Paul Street, London, England, EC2A 4NE' +
