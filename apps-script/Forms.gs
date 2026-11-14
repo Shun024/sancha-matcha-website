@@ -25,6 +25,23 @@ var REPLY_TO  = 'contact@sanchamatcha.co.uk';
 var FROM_NAME = 'SANcha Matcha';
 var SITE_URL  = 'https://sanchamatcha.co.uk';
 
+// Branded sender per form type. For these to actually send FROM these addresses,
+// this project must RUN UNDER a Workspace account that has each one set up as a
+// verified "Send mail as" alias (Gmail ▸ Settings ▸ Accounts). Until an alias
+// exists, fromFor_ falls back to the account's own address so mail still sends.
+var FROM_BY_KIND = {
+  contact:   'contact@sanchamatcha.co.uk',
+  returns:   'returns@sanchamatcha.co.uk',
+  wholesale: 'business@sanchamatcha.co.uk'
+};
+function fromFor_(kind) {
+  try {
+    var addr = FROM_BY_KIND[kind];
+    if (addr && GmailApp.getAliases().indexOf(addr) > -1) return { from: addr };
+  } catch (e) { /* no alias access → fall through */ }
+  return {};
+}
+
 // Run ONCE from the editor (Run ▸ authorizeEmail) to grant the Gmail send
 // permission and confirm it works — the form auto-replies need this. It emails a
 // confirmation to you (the script owner). Approve the Gmail prompt when asked.
@@ -105,7 +122,7 @@ function autoReply_(p, subject, kind) {
     }[kind] || 'Thanks — we’ve received your message and will be in touch shortly.';
     GmailApp.sendEmail(to, subject + ' — SANcha',
       hi + '\n\n' + line + '\n\n— SANcha Matcha\n' + SITE_URL,
-      { name: FROM_NAME, replyTo: REPLY_TO });
+      Object.assign({ name: FROM_NAME, replyTo: REPLY_TO }, fromFor_(kind)));
   } catch (err) {
     console.error('auto-reply failed: ' + err);
   }
