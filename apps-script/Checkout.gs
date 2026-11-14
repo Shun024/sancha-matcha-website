@@ -211,8 +211,9 @@ var SITE_URL  = 'https://sanchamatcha.co.uk';
 var LOGO_URL  = SITE_URL + '/assets/logo-cream.png';   // cream logo for the dark header
 // TODO client: approve / replace this thank-you line.
 var THANKYOU_COPY = 'Thank you for your order — every tin is whisked and packed with care. ' +
-  'Orders are dispatched within 1–2 working days and usually arrive in 2–3 days with Royal Mail. ' +
   'We\'ll email you tracking as soon as it\'s on its way.';
+// Shown as a dedicated "Delivery" line on the receipt.
+var DELIVERY_ESTIMATE = 'Dispatched within 1–2 working days &middot; Royal Mail delivery in 2–3 days';
 // Business details for the receipt footer (legal name + registered address + VAT).
 var BUSINESS_FOOTER = 'VS Partners Ltd trading as SANcha &middot; ' +
   '3rd Floor, 86-90 Paul Street, London, England, EC2A 4NE' +
@@ -275,6 +276,7 @@ function confirmationText_(co, pending) {
   else if (pending.subtotal != null) t += '\nShipping: Free';
   t += '\nTotal: ' + gbp_(pending.total);
   if (VAT_MODE === 'inc') t += '\n\nAll prices include VAT' + (VAT_NUMBER ? ' (VAT no. ' + VAT_NUMBER + ')' : '') + '.';
+  t += '\n\nDelivery: ' + DELIVERY_ESTIMATE.replace(/&middot;/g, '·');
   t += '\n\n' + SITE_URL;
   return t;
 }
@@ -321,6 +323,10 @@ function confirmationHtml_(co, pending) {
           (VAT_MODE === 'inc' ? '<p style="margin:10px 0 0;color:' + C_STONE + ';font-size:12px;">All prices include VAT' +
             (VAT_NUMBER ? ' &middot; VAT no. ' + escHtml_(VAT_NUMBER) : '') + '.</p>' : '') +
         '</td></tr>' +
+        // delivery estimate
+        '<tr><td style="padding:16px 32px 0;">' +
+          '<p style="margin:0 0 6px;color:' + C_MAROON + ';font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Delivery</p>' +
+          '<p style="margin:0;color:' + C_GREEN + ';font-size:15px;line-height:1.5;">' + DELIVERY_ESTIMATE + '</p></td></tr>' +
         // delivery address
         (addr ? '<tr><td style="padding:16px 32px;">' +
           '<p style="margin:0 0 6px;color:' + C_MAROON + ';font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Delivering to</p>' +
