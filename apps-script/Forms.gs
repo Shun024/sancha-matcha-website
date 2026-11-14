@@ -25,6 +25,14 @@ var REPLY_TO  = 'contact@sanchamatcha.co.uk';
 var FROM_NAME = 'SANcha Matcha';
 var SITE_URL  = 'https://sanchamatcha.co.uk';
 
+// Version marker — open the web app's /exec URL in a browser to confirm THIS code
+// is the deployed version. If you see this text, the latest forms code is live.
+function doGet() {
+  return ContentService.createTextOutput(
+    'SANcha forms backend v2 — routes: waitlist, wholesale, contact, returns (with auto-replies). ' +
+    'If you can read this, the latest code is deployed.');
+}
+
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
