@@ -25,6 +25,16 @@ var REPLY_TO  = 'contact@sanchamatcha.co.uk';
 var FROM_NAME = 'SANcha Matcha';
 var SITE_URL  = 'https://sanchamatcha.co.uk';
 
+// Run ONCE from the editor (Run ▸ authorizeEmail) to grant the Gmail send
+// permission and confirm it works — the form auto-replies need this. It emails a
+// confirmation to you (the script owner). Approve the Gmail prompt when asked.
+function authorizeEmail() {
+  var me = Session.getActiveUser().getEmail();
+  GmailApp.sendEmail(me, 'SANcha forms — email authorised ✓',
+    'If you received this, the forms script can now send auto-reply emails to customers.\n\n— SANcha Matcha',
+    { name: FROM_NAME, replyTo: REPLY_TO });
+}
+
 // Version marker — open the web app's /exec URL in a browser to confirm THIS code
 // is the deployed version. If you see this text, the latest forms code is live.
 function doGet() {
