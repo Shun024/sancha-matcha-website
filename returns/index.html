@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Returns — SANcha</title>
+<meta name="description" content="Request a return or exchange for your SANcha order.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#293D30">
+<link rel="canonical" href="https://sanchamatcha.co.uk/returns/">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="apple-touch-icon" href="../assets/favicon.png">
+<style>
+  @font-face{font-family:'SuperWaffles';font-style:normal;font-weight:400 700;font-display:swap;src:url(../assets/fonts/superwaffles.woff2) format('woff2')}
+  @font-face{font-family:'Fredoka';font-style:normal;font-weight:400 700;font-display:swap;src:url(../assets/fonts/fredoka-latin.woff2) format('woff2')}
+  @font-face{font-family:'Bitter';font-style:normal;font-weight:400 700;font-display:swap;src:url(../assets/fonts/bitter-latin.woff2) format('woff2')}
+  :root{--forest:#1e2b22;--matcha-deep:#293D30;--cream:#FFF4D6;--paper:#FFF4D6;--charcoal:#293D30;--line:#e7ddbe;--muted:#6b6550}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Bitter',serif;background:var(--paper);color:var(--charcoal);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:680px;margin:0 auto;padding:0 28px}
+  header{border-bottom:1px solid var(--line);padding:22px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between}
+  header a.brand{font-family:'SuperWaffles','Fredoka',sans-serif;font-size:24px;color:var(--forest);text-decoration:none;letter-spacing:.02em}
+  header a.back{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--matcha-deep);text-decoration:none}
+  header a.back:hover{color:var(--forest)}
+  main{padding:56px 0 80px}
+  h1{font-family:'SuperWaffles','Fredoka',sans-serif;font-weight:500;font-size:clamp(34px,5vw,50px);color:var(--forest);line-height:1.05}
+  p.intro{margin:16px 0 8px;font-size:16px;color:#4f4f47}
+  form{position:relative;display:flex;flex-direction:column;gap:14px;margin-top:28px}
+  label{font-size:13px;letter-spacing:.04em;color:var(--muted);margin-bottom:-6px}
+  input,textarea{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:var(--charcoal);font-family:'Bitter',serif;font-size:15px;outline:none;width:100%}
+  input:focus,textarea:focus{border-color:var(--matcha-deep)}
+  textarea{resize:vertical;min-height:100px}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+  button{margin-top:6px;background:var(--matcha-deep);color:var(--cream);border:0;border-radius:14px;padding:16px 20px;font-family:'Bitter',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s;align-self:flex-start;min-width:220px}
+  button:hover{background:var(--forest)}
+  .form-msg{font-size:15px;color:var(--matcha-deep);margin-top:4px}
+  .note{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);margin-top:26px}
+  footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--muted)}
+  footer a{color:var(--matcha-deep);text-decoration:none;margin-right:18px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="brand" href="/">SANcha</a>
+  <a class="back" href="/">&larr; Back to site</a>
+</div></header>
+
+<main><div class="wrap">
+  <h1>Returns &amp; exchanges</h1>
+  <p class="intro">Something not right with your order? Fill in the form below and our team will be in touch with the next steps. Please see our full returns terms within the <a href="/terms/">Terms of Sale</a>.</p>
+
+  <form onsubmit="return handleReturn(event)" novalidate>
+    <label for="r-order">Order number</label>
+    <input id="r-order" name="Order number" placeholder="e.g. SANCHA-12345" required>
+    <label for="r-name">Full name</label>
+    <input id="r-name" name="Name" autocomplete="name" placeholder="Your name" required>
+    <label for="r-email">Email</label>
+    <input id="r-email" type="email" name="Email" autocomplete="email" placeholder="you@example.com" required>
+    <label for="r-items">Item(s) you'd like to return</label>
+    <input id="r-items" name="Items" placeholder="e.g. 1 × IKI 30g" required>
+    <label for="r-reason">Reason for the return</label>
+    <textarea id="r-reason" name="Reason" placeholder="Tell us what went wrong or why you'd like to return it" required></textarea>
+    <input type="text" name="company_hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button type="submit">Submit return request</button>
+    <p class="form-msg" hidden></p>
+  </form>
+
+  <div class="note">We aim to respond to return requests within 1–2 working days. Please keep your items unused and in their original packaging until you hear from us.</div>
+</div></main>
+
+<footer><div class="wrap">
+  <a href="/">Home</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/returns/">Returns</a>
+  <span>&copy; 2026 SANcha &middot; London</span>
+</div></footer>
+
+<script>
+  // Returns request -> forms Apps Script (same endpoint as the site forms), source=returns-request.
+  var FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbw-Wit-9V4262qIhXQUdnjn1gs784VFdzur_IIOZZH1kfBO60tvOQPZkEgLHTNmBIQ/exec";
+  function handleReturn(e){
+    e.preventDefault();
+    var f=e.target;
+    if(f.elements['company_hp'] && f.elements['company_hp'].value){return false;}   // honeypot
+    if(!f.checkValidity()){ f.reportValidity(); return false; }
+    var btn=f.querySelector('button[type="submit"]'), msg=f.querySelector('.form-msg');
+    var done=function(){ f.reset(); if(btn){btn.style.display='none';} if(msg){msg.hidden=false;msg.textContent="Thanks — we've received your return request and will be in touch within 1–2 working days ✓";} };
+    if(FORM_ENDPOINT){
+      if(btn){btn.textContent='…';btn.disabled=true;}
+      var data=new URLSearchParams();
+      Array.prototype.forEach.call(f.elements,function(el){
+        if(!el.name || el.name==='company_hp' || !el.value) return;
+        data.append(el.name, el.value);
+      });
+      data.append('source','returns-request');
+      fetch(FORM_ENDPOINT,{method:'POST',mode:'no-cors',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data})
+        .then(done)
+        .catch(function(){ if(btn){btn.textContent='Try again';btn.disabled=false;} });
+    } else { done(); }
+    return false;
+  }
+</script>
+</body>
+</html>

@@ -378,6 +378,17 @@
   .visit{background:var(--paper)}
   .visit-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
   .visit-grid.visit-solo{grid-template-columns:1fr;max-width:620px;margin:0 auto}
+  /* contact form (light theme, Visit section) */
+  .contact-block .contact-h{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:30px;color:var(--forest);margin-bottom:8px}
+  .contact-block .contact-sub{color:#5c5c53;font-size:15px;margin-bottom:18px}
+  .contact-form{position:relative;display:flex;flex-direction:column;gap:12px}
+  .contact-form input,.contact-form textarea{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--charcoal);font-family:'Bitter','Bitter Fallback',serif;font-size:15px;outline:none;width:100%}
+  .contact-form input:focus,.contact-form textarea:focus{border-color:var(--matcha-deep)}
+  .contact-form textarea{resize:vertical;min-height:110px}
+  .contact-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+  .contact-form button{margin-top:4px;background:var(--matcha-deep);color:var(--cream);border:0;border-radius:14px;padding:15px 20px;font-family:'Bitter','Bitter Fallback',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s}
+  .contact-form button:hover{background:var(--forest)}
+  .form-msg{font-size:14px;color:var(--matcha-deep);margin:0}
   .flagship{background:var(--cream);border:1px solid var(--line);border-radius:20px;padding:44px}
   .flagship .tag{display:inline-block;background:var(--maroon);color:var(--cream);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border-radius:30px;margin-bottom:18px}
   .flagship h3{font-size:34px;margin-bottom:8px}
@@ -742,7 +753,7 @@
       <span class="label">Find Us</span>
       <h2>Come say hello.</h2>
     </div>
-    <div class="visit-grid visit-solo">
+    <div class="visit-grid">
       <div class="flagship">
         <span class="tag">Flagship Store</span>
         <h3>Westfield, Shepherd's Bush</h3>
@@ -751,6 +762,18 @@
           <div class="h"><div class="d">Mon – Sat</div><div class="v">10am – 9pm</div></div>
           <div class="h"><div class="d">Sunday</div><div class="v">12pm – 6pm</div></div>
         </div>
+      </div>
+      <div class="contact-block">
+        <h3 class="contact-h">Get in touch</h3>
+        <p class="contact-sub">Questions, feedback or anything else — drop us a message and we'll get back to you.</p>
+        <form class="contact-form" onsubmit="return handleContact(event)" novalidate>
+          <input name="Name" placeholder="Your name" aria-label="Your name" autocomplete="name" required>
+          <input type="email" name="Email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
+          <textarea name="Message" placeholder="How can we help?" aria-label="Message" required></textarea>
+          <input type="text" name="company_hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit">Send message</button>
+          <p class="form-msg" hidden></p>
+        </form>
       </div>
     </div>
   </div>
@@ -873,7 +896,7 @@
     </div>
     <div class="foot-bottom">
       <span>© 2026 SANcha · London</span>
-      <span class="foot-legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></span>
+      <span class="foot-legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/returns/">Returns</a></span>
       <span>Concept design · Style 01 — Zen Minimal</span>
     </div>
   </div>
@@ -950,6 +973,39 @@
     }
     return false;
   }
+
+  // Generic form submit for the contact + returns forms. Posts every named field
+  // (label = column) + a `source` tag; the forms Apps Script routes it to a tab and
+  // sends an auto-reply. `okText` is the confirmation shown in the form's .form-msg.
+  function submitSimpleForm(e, source, okText){
+    e.preventDefault();
+    var f=e.target;
+    if(f.elements['company_hp'] && f.elements['company_hp'].value){return false;}   // honeypot
+    if(!f.checkValidity()){ f.reportValidity(); return false; }
+    var btn=f.querySelector('button[type="submit"]'), msg=f.querySelector('.form-msg');
+    var done=function(){ f.reset(); if(btn){btn.style.display='none';} if(msg){msg.hidden=false;msg.textContent=okText;} };
+    if(FORM_ENDPOINT){
+      if(btn){btn.textContent='…';btn.disabled=true;}
+      var data=new URLSearchParams();
+      Array.prototype.forEach.call(f.elements,function(el){
+        if(!el.name || el.name==='company_hp') return;
+        if((el.type==='checkbox'||el.type==='radio') && !el.checked) return;
+        if(!el.value) return;
+        data.append(el.name, el.value);
+      });
+      data.append('source',source);
+      fetch(FORM_ENDPOINT,{method:'POST',mode:'no-cors',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data})
+        .then(done)
+        .catch(function(){ if(btn){btn.textContent='Try again';btn.disabled=false;} });
+    } else {
+      console.warn(source+': FORM_ENDPOINT is empty — not stored yet.');
+      done();
+    }
+    return false;
+  }
+  function handleContact(e){ return submitSimpleForm(e,'contact',"Thanks — we've got your message and will reply soon ✓"); }
+  function handleReturn(e){ return submitSimpleForm(e,'returns-request',"Thanks — we've received your return request and will be in touch ✓"); }
 
 </script>
 <script>
