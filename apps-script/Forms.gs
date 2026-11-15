@@ -1,25 +1,37 @@
 /**
  * SANcha — website forms backend (Google Apps Script).
  *
- * This is the SEPARATE forms project (NOT the checkout). It is container-bound to
- * the content spreadsheet and handles ALL website form submissions through one
- * doPost, routed by the `source` field:
+ * This is the SEPARATE forms project (NOT the checkout). It handles ALL website
+ * form submissions through one doPost, routed by the `source` field:
  *   tins-waitlist     -> "Waitlist" tab            (no auto-reply)
  *   wholesale-enquiry -> "Wholesale Enquiries" tab (+ auto-reply)
  *   contact           -> "Contact" tab             (+ auto-reply)
  *   returns-request   -> "Returns" tab             (+ auto-reply)
  *
- * This file is the SOURCE OF TRUTH. To apply changes: open the forms Apps Script
- * project (Extensions ▸ Apps Script on the content sheet), paste this whole file
- * over the existing Code.gs, save, then Deploy ▸ Manage deployments ▸ edit the
- * existing web app ▸ New version ▸ Deploy (keeps the same /exec URL, so nothing on
- * the website changes). On the first run after adding the emails you'll be asked
- * to authorise the Gmail (gmail.send) scope — approve it, or the auto-replies
- * silently won't send.
+ * RUNS EITHER WAY (see getSS_):
+ *   • STANDALONE under contact@ (RECOMMENDED for go-live) — set a Script Property
+ *     SHEET_ID = <the content sheet's id>. Running under the domain Workspace
+ *     account makes auto-replies send FROM contact@ (DKIM-aligned → inbox, not
+ *     spam), and returns@/business@ send-as aliases become usable.
+ *   • CONTAINER-BOUND (the original dev setup) — no SHEET_ID property; it uses the
+ *     spreadsheet it is bound to.
+ *
+ * This file is the SOURCE OF TRUTH. To apply changes: paste this whole file over
+ * the project's Code.gs, save, then Deploy ▸ Manage deployments ▸ edit the web app
+ * ▸ New version ▸ Deploy (keeps the same /exec URL). On the first run after adding
+ * the emails you'll be asked to authorise the Gmail (gmail.send) + Sheets scopes —
+ * approve them, or the auto-replies silently won't send.
  *
  * Auto-reply emails are BEST-EFFORT: a mail failure never fails the save.
- * They send FROM whatever account owns/runs this project (reply-to contact@).
+ * They send FROM the branded alias per form type (reply-to contact@).
  */
+
+// Returns the content spreadsheet. Standalone (contact@): reads SHEET_ID from
+// Script Properties. Container-bound (dev): falls back to the bound spreadsheet.
+function getSS_() {
+  var id = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
+  return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActiveSpreadsheet();
+}
 
 var REPLY_TO  = 'contact@sanchamatcha.co.uk';
 var FROM_NAME = 'SANcha Matcha';
@@ -62,7 +74,7 @@ function doGet() {
 
 function doPost(e) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var ss = getSS_();
     var p = (e && e.parameter) || {};
     switch (p.source) {
       case 'wholesale-enquiry':
