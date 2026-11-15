@@ -342,13 +342,20 @@
       });
   });
 
-  // ---- separate product page (?tin=<slug>) ---------------------------------
-  var productSlug = (params.get("tin") || "").trim().toLowerCase();
+  // ---- separate product page: /matcha/<slug>/ (or legacy ?tin=<slug>) --------
+  var productSlug = (function () {
+    var m = location.pathname.match(/\/matcha\/([^\/]+)\/?$/);
+    return (m ? decodeURIComponent(m[1]) : (params.get("tin") || "")).trim().toLowerCase();
+  })();
 
-  // Keep existing params (e.g. ?tins_csv on the preview) while setting/removing ?tin,
-  // so navigating to/from a product page preserves the feed override.
-  function urlWithTin(slug)  { var u = new URLSearchParams(location.search); u.set("tin", slug);  return location.pathname + "?" + u.toString(); }
-  function urlWithoutTin()   { var u = new URLSearchParams(location.search); u.delete("tin"); var s = u.toString(); return location.pathname + (s ? "?" + s : ""); }
+  // Build URLs relative to the site root so they work at the domain root AND under
+  // a subpath (e.g. the /sancha-preview/ preview). Preserves ?tins_csv overrides.
+  function siteRoot() {
+    var m = location.pathname.match(/^(.*\/)matcha\/[^\/]+\/?$/);
+    return (m ? m[1] : location.pathname.replace(/[^\/]*$/, "")) || "/";
+  }
+  function urlForTin(slug) { return siteRoot() + "matcha/" + encodeURIComponent(slug) + "/" + location.search; }
+  function urlHome()       { return siteRoot() + location.search; }
 
   // Product-page gallery state + navigation (arrows / thumbnails / keyboard).
   var PP_GALLERY = [], PP_INDEX = 0;
@@ -367,11 +374,9 @@
     var host = document.getElementById("product-page-inner");
     if (!host) return;
     document.documentElement.classList.add("product-mode");
-    // Homepage is hidden in product mode → repoint nav/logo anchors back to it.
-    document.querySelectorAll('nav a[href^="#"]').forEach(function (a) {
-      a.setAttribute("href", urlWithoutTin() + a.getAttribute("href"));
-    });
-    var back = '<a class="pp-back" href="' + urlWithoutTin() + '">&larr; All matcha</a>';
+    // Nav/footer links are already absolute + site-wide (injected by site.js), so no
+    // repointing is needed. Just build the "all matcha" link back to the homepage.
+    var back = '<a class="pp-back" href="' + urlHome() + '#tins">&larr; All matcha</a>';
     var p = TINS[productSlug];
     if (!p) {
       host.innerHTML = back + '<p style="color:var(--muted);font-size:17px">Sorry, we couldn\'t find that product.</p>';
@@ -448,7 +453,7 @@
     }
     if (t.closest(".add-btn, .notify-btn, .notify-form")) return;
     var card = t.closest(".tin-card"), slug = card && card.getAttribute("data-tin-key");
-    if (slug) { e.preventDefault(); location.href = urlWithTin(slug); }
+    if (slug) { e.preventDefault(); location.href = urlForTin(slug); }
   });
 
   // Keyboard: left/right arrows page the product gallery (when on a product page).
