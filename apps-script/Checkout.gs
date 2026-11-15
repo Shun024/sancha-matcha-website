@@ -33,16 +33,18 @@ var SHIPPING_FLAT      = 3.75;   // Royal Mail flat, up to 2kg
 var SHIPPING_FREE_OVER = 40;     // free over £40
 
 /* --- VAT ------------------------------------------------------------------
- * Client is VAT-registered; prices already INCLUDE VAT ('inc' = show a note +
- * the VAT number on receipts, no maths — the displayed price is the price paid).
+ * Client is VAT-registered; prices already INCLUDE VAT ('inc' = the displayed
+ * price is the price paid — no maths adds anything on top).
  * 'none' = not registered; 'add' = add VAT on top at the rate below.
- * NOTE: VAT rate on the matcha itself is unconfirmed — loose tea is normally
- * ZERO-rated UK food, so there may be no VAT element despite registration.
- * We show the number + "incl. VAT" note and deliberately do NOT print a 20%
- * breakdown until the client confirms the rate. */
+ * CONFIRMED 2026-11-15: the matcha is STANDARD-RATED at 20%, VAT-inclusive. So
+ * receipts now show the VAT element included in the total (gross × 20/120),
+ * alongside the VAT number — proper for a VAT-registered business. */
 var VAT_MODE   = 'inc';          // 'none' | 'inc' | 'add'
-var VAT_RATE   = 0.20;           // used only when VAT_MODE === 'add'
+var VAT_RATE   = 0.20;           // 20% — used to add ('add') or to show the included element ('inc')
 var VAT_NUMBER = '526 9478 48';  // registration number for receipts
+
+// VAT amount already contained in a VAT-inclusive gross (e.g. £30 incl → £5.00 at 20%).
+function vatIncluded_(gross) { return (Number(gross) || 0) * VAT_RATE / (1 + VAT_RATE); }
 
 function props_()   { return PropertiesService.getScriptProperties(); }
 function cfg_(k)     { return props_().getProperty(k) || ''; }
@@ -275,7 +277,8 @@ function confirmationText_(co, pending) {
   if (pending.shipping) t += '\nShipping: ' + gbp_(pending.shipping);
   else if (pending.subtotal != null) t += '\nShipping: Free';
   t += '\nTotal: ' + gbp_(pending.total);
-  if (VAT_MODE === 'inc') t += '\n\nAll prices include VAT' + (VAT_NUMBER ? ' (VAT no. ' + VAT_NUMBER + ')' : '') + '.';
+  if (VAT_MODE === 'inc') t += '\n\nIncludes VAT (' + Math.round(VAT_RATE * 100) + '%): ' + gbp_(vatIncluded_(pending.total)) +
+    (VAT_NUMBER ? '\nVAT no. ' + VAT_NUMBER : '');
   t += '\n\nDelivery: ' + DELIVERY_ESTIMATE.replace(/&middot;/g, '·');
   t += '\n\n' + SITE_URL;
   return t;
@@ -320,8 +323,9 @@ function confirmationHtml_(co, pending) {
         // order summary
         '<tr><td style="padding:16px 32px 8px;">' +
           '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + rows + totalsRows + '</table>' +
-          (VAT_MODE === 'inc' ? '<p style="margin:10px 0 0;color:' + C_STONE + ';font-size:12px;">All prices include VAT' +
-            (VAT_NUMBER ? ' &middot; VAT no. ' + escHtml_(VAT_NUMBER) : '') + '.</p>' : '') +
+          (VAT_MODE === 'inc' ? '<p style="margin:10px 0 0;color:' + C_STONE + ';font-size:12px;">Includes VAT (' +
+            Math.round(VAT_RATE * 100) + '%): ' + gbp_(vatIncluded_(pending.total)) +
+            (VAT_NUMBER ? ' &middot; VAT no. ' + escHtml_(VAT_NUMBER) : '') + '</p>' : '') +
         '</td></tr>' +
         // delivery estimate
         '<tr><td style="padding:16px 32px 0;">' +
