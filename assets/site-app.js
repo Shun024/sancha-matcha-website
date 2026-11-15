@@ -7,7 +7,7 @@
   // enquiries go to a "Wholesale Enquiries" tab with one column per question (adding a new
   // question adds a new column automatically). While empty, forms validate + thank the
   // visitor but do NOT store anything yet.
-  var FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbw-Wit-9V4262qIhXQUdnjn1gs784VFdzur_IIOZZH1kfBO60tvOQPZkEgLHTNmBIQ/exec";
+  var FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwtkNq6TlNUQs-lNE_40Q0Ikm03GZuTHOYd8octUnMnZIvsY9-M4DyPOtzooybksyvpoA/exec";
 
   function handleSubscribe(e){
     e.preventDefault();
