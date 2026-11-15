@@ -63,7 +63,7 @@
           '</div>' +
           '<div class="foot-bottom">' +
             '<span>© 2026 SANcha · London</span>' +
-            '<span class="foot-legal"><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/returns/">Returns</a></span>' +
+            '<span class="foot-legal"><a href="/faq/">FAQ</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/returns/">Returns</a></span>' +
             '<span>Concept design · Style 01 — Zen Minimal</span>' +
           '</div>' +
         '</div>' +

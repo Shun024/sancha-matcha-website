@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Story — Good Matcha, More Accessible · SANcha</title>
+<meta name="description" content="Three friends in London set out to make good matcha more accessible. We travelled to China, tasted and tested, and that's how SANcha began.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#293D30">
+<link rel="canonical" href="https://sanchamatcha.co.uk/our-story/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SANcha">
+<meta property="og:title" content="Our Story — Good Matcha, More Accessible · SANcha">
+<meta property="og:description" content="Three friends in London set out to make good matcha more accessible. That's how SANcha began.">
+<meta property="og:url" content="https://sanchamatcha.co.uk/our-story/">
+<meta property="og:image" content="https://sanchamatcha.co.uk/assets/og-image.png">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sanchamatcha.co.uk/assets/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/favicon.png?v=2">
+<link rel="apple-touch-icon" href="/assets/favicon.png?v=2">
+<link rel="preload" href="/assets/fonts/superwaffles.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/bitter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<script>
+/* Palette preview — override brand colours via URL params (harmless with no param). */
+(function () {
+  try {
+    var q = new URLSearchParams(location.search), root = document.documentElement;
+    function hex(v) { v = (v || "").trim().replace(/^#/, ""); return /^[0-9a-fA-F]{3,8}$/.test(v) ? "#" + v : null; }
+    var y = hex(q.get("yellow"));
+    if (y) { root.style.setProperty("--paper", y); root.style.setProperty("--lemon", y); }
+    ["matcha","matcha-deep","forest","cream","paper","charcoal","stone","muted","line","peach","blue","maroon","lemon"]
+      .forEach(function (name) { var c = hex(q.get(name)); if (c) root.style.setProperty("--" + name, c); });
+  } catch (e) {}
+})();
+</script>
+</head>
+<body id="top">
+
+<div id="site-nav"></div>
+
+<main>
+<section class="story" id="story">
+  <div class="wrap story-grid story-solo">
+    <div class="story-copy">
+      <span class="label">Our Story</span>
+      <h2>Good matcha shouldn't have to come at a high price.</h2>
+      <p>Finding good-quality matcha in the UK at an affordable price isn't always easy. As matcha became more popular, we started thinking about why it had to be this way — and whether there was another way to enjoy good matcha without paying more and more for it.</p>
+      <p>Japan has long been at the heart of matcha, and as demand continues to grow, sourcing becomes increasingly competitive. We started wondering: what if we looked beyond Japan?</p>
+      <p>That question led us to China.</p>
+      <p>With a long history of tea cultivation of its own, China felt like a place worth exploring. So we travelled there, visited tea farms, learnt more about the people and culture behind the tea, and most importantly, tasted and tested the matcha ourselves.</p>
+      <p>We didn't want to choose a product based on its origin alone. We wanted to find matcha we genuinely enjoyed, that met our standards for quality and taste, and that we could bring to more people at a price that felt fair.</p>
+      <p>That's how SANcha began.</p>
+      <p>We're here to make good matcha more accessible, to keep exploring what matcha can be, and to share what we discover along the way.</p>
+      <div class="sig">Good matcha, more accessible. That's what SANcha is all about.</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="/assets/site.js"></script>
+<script src="/assets/site-app.js"></script>
+<script src="https://gateway.sumup.com/gateway/ecom/card/v2/sdk.js"></script>
+<script src="/assets/checkout.js"></script>
+</body>
+</html>
