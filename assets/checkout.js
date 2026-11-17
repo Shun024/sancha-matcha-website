@@ -56,7 +56,7 @@
   function showStep(name) {
     var steps = document.querySelectorAll("#cart-drawer .cart-step");
     for (var i = 0; i < steps.length; i++) steps[i].hidden = steps[i].getAttribute("data-step") !== name;
-    var titles = { basket: "Your basket", details: "Delivery details", payment: "Payment", processing: "Processing", done: "Order confirmed" };
+    var titles = { basket: "Your basket", details: "Delivery details", payment: "Review your order", processing: "Processing", done: "Order confirmed" };
     var t = el("cart-title"); if (t) t.textContent = titles[name] || "Your basket";
   }
 
@@ -83,7 +83,7 @@
     if (el("cart-subtotal"))el("cart-subtotal").textContent = money(total());
   }
 
-  // Compact item list (with thumbnail) shown on the payment step, above the totals.
+  // Compact item list (with thumbnail) shown in the review, above the totals.
   function paySummaryItems() {
     return getCart().map(function (x) {
       return '<div class="pay-line">' +
@@ -91,6 +91,39 @@
         '<div class="pay-nm"><b>' + esc(x.name) + '</b><span>Qty ' + x.qty + '</span></div>' +
         '<div class="pay-lp">' + money(x.price * x.qty) + '</div></div>';
     }).join("");
+  }
+
+  // Client-side shipping estimate for the review (server is authoritative and
+  // overwrites it the moment createCheckout responds). Mirrors the backend rule.
+  var SHIP_FLAT = 3.75, SHIP_FREE_OVER = 40, SHIP_LABEL = "Royal Mail Tracked 48 · 2–3 days";
+  function estShipping(sub) { return sub >= SHIP_FREE_OVER ? 0 : SHIP_FLAT; }
+
+  // "Review your order" block shown before card entry. `res` = createCheckout
+  // response when available (authoritative figures), else null (provisional estimate).
+  function renderReview(res) {
+    var c = _lastCustomer || {};
+    var hasServer = res && res.subtotal != null;
+    var sub   = hasServer ? res.subtotal : total();
+    var shipN = hasServer ? (res.shipping || 0) : estShipping(sub);
+    var tot   = hasServer ? res.amount : (sub + shipN);
+    var shipTxt = shipN ? money(shipN) : "Free";
+    var change = '<button type="button" class="rev-change" data-back="details">Change</button>';
+    var shipTo = [c.name, c.address, c.postcode].filter(function (x) { return x; }).map(esc).join("<br>");
+    return '' +
+      '<div class="review">' +
+        '<div class="rev-sec"><div class="rev-top"><span class="rev-k">Contact</span>' + change + '</div>' +
+          '<div class="rev-v">' + esc(c.email || "") + '</div></div>' +
+        '<div class="rev-sec"><span class="rev-k">Your order</span>' + paySummaryItems() + '</div>' +
+        '<div class="rev-sec"><div class="rev-top"><span class="rev-k">Ship to</span>' + change + '</div>' +
+          '<div class="rev-v">' + shipTo + '</div>' +
+          '<div class="rev-ship"><span>' + SHIP_LABEL + '</span><b>' + shipTxt + '</b></div></div>' +
+        '<div class="rev-totals">' +
+          '<div class="rev-line"><span>Subtotal</span><span>' + money(sub) + '</span></div>' +
+          '<div class="rev-line"><span>Shipping</span><span>' + shipTxt + '</span></div>' +
+          '<div class="rev-line rev-grand"><span>Total</span><b>' + money(tot) + '</b></div></div>' +
+        '<div class="rev-sec rev-pay"><span class="rev-k">Payment</span>' +
+          '<div class="rev-note">Pay securely by card, Apple&nbsp;Pay or Google&nbsp;Pay below.</div></div>' +
+      '</div>';
   }
 
   /* ---- checkout flow ------------------------------------------------------ */
@@ -169,10 +202,9 @@
     _lastCustomer = customer;
     if (el("pay-err")) el("pay-err").hidden = true;
     showStep("payment");
-    // Provisional total (subtotal only) until the server returns the real
-    // breakdown incl. shipping — then we overwrite it below.
-    if (el("pay-summary")) el("pay-summary").innerHTML = paySummaryItems() +
-      '<div class="pay-totals">Total <b>' + money(total()) + "</b> · " + count() + " item(s)</div>";
+    // Provisional review (client-side shipping estimate) until the server returns
+    // the authoritative breakdown — then we re-render it below.
+    if (el("pay-summary")) el("pay-summary").innerHTML = renderReview(null);
     var card = el("sumup-card");
     if (card) card.innerHTML = "<p style='color:#6a6a60;font-size:14px'>Loading secure payment…</p>";
     post({ action: "createCheckout", cart: getCart(), customer: customer })
@@ -182,12 +214,7 @@
         if (!res.checkoutId) throw new Error("No checkout id returned — please try again.");
         // Real figures from the server (authoritative) — show shipping + the
         // actual amount the card will be charged, so there are no surprises.
-        if (el("pay-summary")) {
-          var ship = res.shipping ? money(res.shipping) : "Free";
-          el("pay-summary").innerHTML = paySummaryItems() +
-            '<div class="pay-totals">Subtotal ' + money(res.subtotal) + " &middot; Shipping " + ship +
-            " &middot; Total <b>" + money(res.amount) + "</b></div>";
-        }
+        if (el("pay-summary")) el("pay-summary").innerHTML = renderReview(res);
         if (card) card.innerHTML = "";
         mountWidget(res.checkoutId);
       })

@@ -117,7 +117,20 @@
   .pay-line .pay-nm b{display:block;font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-weight:500;font-size:15px;color:var(--forest)}
   .pay-line .pay-nm>span{font-size:12px;color:#6a6a60}
   .pay-line .pay-lp{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:15px;color:var(--maroon);white-space:nowrap}
-  .pay-totals{margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
+  /* Review-your-order block (before card entry) */
+  .rev-sec{padding:12px 0;border-bottom:1px solid var(--line)}
+  .rev-top{display:flex;align-items:center;justify-content:space-between}
+  .rev-k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--maroon)}
+  .rev-v{margin-top:5px;font-size:14px;color:var(--charcoal);line-height:1.5}
+  .rev-change{background:none;border:0;padding:0;font-size:13px;color:var(--matcha-deep);text-decoration:underline;cursor:pointer}
+  .rev-ship{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:13px;color:#6a6a60}
+  .rev-ship b{color:var(--charcoal);font-weight:600;white-space:nowrap}
+  .rev-totals{padding:12px 0}
+  .rev-line{display:flex;justify-content:space-between;font-size:14px;color:#54544c;padding:3px 0}
+  .rev-line.rev-grand{margin-top:6px;padding-top:10px;border-top:1px solid var(--line);font-size:16px;color:var(--forest)}
+  .rev-line.rev-grand b{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;color:var(--maroon)}
+  .rev-pay{border-bottom:0}
+  .rev-note{margin-top:5px;font-size:13px;color:#6a6a60}
   .cart-done{text-align:center;padding:30px 0}
   .cart-done h4{font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:30px;color:var(--forest);margin-bottom:10px}
   .cart-done p{color:#54544c;margin-bottom:22px}
