@@ -83,6 +83,16 @@
     if (el("cart-subtotal"))el("cart-subtotal").textContent = money(total());
   }
 
+  // Compact item list (with thumbnail) shown on the payment step, above the totals.
+  function paySummaryItems() {
+    return getCart().map(function (x) {
+      return '<div class="pay-line">' +
+        (x.image ? '<div class="cart-thumb pay-thumb"><img src="' + esc(x.image) + '" alt="" loading="lazy"></div>' : '') +
+        '<div class="pay-nm"><b>' + esc(x.name) + '</b><span>Qty ' + x.qty + '</span></div>' +
+        '<div class="pay-lp">' + money(x.price * x.qty) + '</div></div>';
+    }).join("");
+  }
+
   /* ---- checkout flow ------------------------------------------------------ */
   function startDetails() { if (getCart().length) showStep("details"); }
 
@@ -161,7 +171,8 @@
     showStep("payment");
     // Provisional total (subtotal only) until the server returns the real
     // breakdown incl. shipping — then we overwrite it below.
-    if (el("pay-summary")) el("pay-summary").innerHTML = "Total <b>" + money(total()) + "</b> · " + count() + " item(s)";
+    if (el("pay-summary")) el("pay-summary").innerHTML = paySummaryItems() +
+      '<div class="pay-totals">Total <b>' + money(total()) + "</b> · " + count() + " item(s)</div>";
     var card = el("sumup-card");
     if (card) card.innerHTML = "<p style='color:#6a6a60;font-size:14px'>Loading secure payment…</p>";
     post({ action: "createCheckout", cart: getCart(), customer: customer })
@@ -173,9 +184,9 @@
         // actual amount the card will be charged, so there are no surprises.
         if (el("pay-summary")) {
           var ship = res.shipping ? money(res.shipping) : "Free";
-          el("pay-summary").innerHTML =
-            "Subtotal " + money(res.subtotal) + " &middot; Shipping " + ship +
-            " &middot; Total <b>" + money(res.amount) + "</b>";
+          el("pay-summary").innerHTML = paySummaryItems() +
+            '<div class="pay-totals">Subtotal ' + money(res.subtotal) + " &middot; Shipping " + ship +
+            " &middot; Total <b>" + money(res.amount) + "</b></div>";
         }
         if (card) card.innerHTML = "";
         mountWidget(res.checkoutId);
