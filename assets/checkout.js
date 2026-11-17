@@ -20,9 +20,10 @@
   function getCart()  { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (_) { return []; } }
   function saveCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); renderCount(); renderDrawer(); }
   function find(c, id){ for (var i = 0; i < c.length; i++) if (c[i].id === id) return c[i]; return null; }
-  function add(id, name, price) {
+  function add(id, name, price, image) {
     var c = getCart(), r = find(c, id);
-    if (r) r.qty++; else c.push({ id: id, name: name, price: Number(price) || 0, qty: 1 });
+    if (r) { r.qty++; if (image && !r.image) r.image = image; }
+    else c.push({ id: id, name: name, price: Number(price) || 0, qty: 1, image: image || "" });
     saveCart(c); open();
   }
   function setQty(id, qty) {
@@ -66,6 +67,7 @@
     var c = getCart();
     wrap.innerHTML = c.map(function (x) {
       return '<div class="cart-line">' +
+        (x.image ? '<div class="cart-thumb"><img src="' + esc(x.image) + '" alt="" loading="lazy"></div>' : '') +
         '<div class="nm"><b>' + esc(x.name) + '</b><span>' + money(x.price) + ' each</span>' +
           '<button class="cart-rm" data-rm="' + esc(x.id) + '">Remove</button></div>' +
         '<div class="qty"><button data-dec="' + esc(x.id) + '" aria-label="Decrease">&minus;</button>' +
@@ -324,7 +326,7 @@
     var t = e.target;
     if (!t || !t.closest) return;
     var addb = t.closest(".add-btn");
-    if (addb) { add(addb.getAttribute("data-id"), addb.getAttribute("data-name"), addb.getAttribute("data-price")); return; }
+    if (addb) { add(addb.getAttribute("data-id"), addb.getAttribute("data-name"), addb.getAttribute("data-price"), addb.getAttribute("data-image")); return; }
     var nb = t.closest(".notify-btn");
     if (nb) { openNotify(nb); return; }
     var fix = t.closest(".email-fix");

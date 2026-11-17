@@ -204,9 +204,11 @@
     var priceNum = parseFloat(String(p.price || '').replace(/[^0-9.]/g, '')) || 0;
     var stock = (p.stock != null && String(p.stock).trim() !== '') ? parseInt(p.stock, 10) : null;
     var soldOut = stock != null && stock <= 0;
+    // Image used both for the card and as the basket line thumbnail.
+    var cartImg = imageUrl(p.image) || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
     var buy = '';
     if (priceNum > 0 && !soldOut) {
-      buy = '<button class="btn btn-solid tin-buy add-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '" data-price="' + priceNum + '">Add to basket</button>';
+      buy = '<button class="btn btn-solid tin-buy add-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '" data-price="' + priceNum + '" data-image="' + esc(cartImg) + '">Add to basket</button>';
     } else if (soldOut) {
       buy = '<button class="btn btn-ghost tin-buy notify-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '">Notify me when back in stock</button>';
     }
@@ -216,7 +218,7 @@
         '<div class="tin-foot"><span class="sizes">' + esc(p.sizes) + '</span>' +
           '<span class="price">' + esc(p.price) + '</span></div>' + buy;
 
-    var logo = imageUrl(p.image) || TIN_LOGOS[(p.roman || p.name || "").toLowerCase()] || "";
+    var logo = cartImg;
     // Optional second image that fades in on hover (sheet column "hover_image").
     var hoverImg = p.hover_image ? imageUrl(p.hover_image) : "";
     if (logo) {
@@ -411,7 +413,7 @@
     var stock = (p.stock != null && String(p.stock).trim() !== "") ? parseInt(p.stock, 10) : null;
     var soldOut = stock != null && stock <= 0;
     var buy = (priceNum > 0 && !soldOut)
-      ? '<button class="btn btn-solid add-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '" data-price="' + priceNum + '">Add to basket</button>'
+      ? '<button class="btn btn-solid add-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '" data-price="' + priceNum + '" data-image="' + esc(mainImg) + '">Add to basket</button>'
       : (soldOut ? '<button class="btn btn-ghost notify-btn" data-id="' + esc(p.name) + '" data-name="' + esc(p.name) + '">Notify me when back in stock</button>' : "");
     var d = TIN_DETAILS[(p.roman || p.name || "").toLowerCase()] || {};
     var lede = p.lede || d.lede || p.description || "";
