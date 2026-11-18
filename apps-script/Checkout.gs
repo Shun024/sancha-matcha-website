@@ -26,11 +26,11 @@ var CURRENCY  = 'GBP';
 
 /* --- Shipping (UK) --------------------------------------------------------
  * Royal Mail: £3.75 flat, up to 2kg (~65 tins) — well beyond any realistic
- * order, so a single flat rate is fine. Free delivery at/above £40 subtotal.
+ * order, so a single flat rate is fine. Free delivery at/above £50 subtotal.
  *   SHIPPING_FLAT      flat delivery charge per order, in GBP (0 = free).
  *   SHIPPING_FREE_OVER subtotal at/above which delivery is free (null = never). */
 var SHIPPING_FLAT      = 3.75;   // Royal Mail flat, up to 2kg
-var SHIPPING_FREE_OVER = 40;     // free over £40
+var SHIPPING_FREE_OVER = 50;     // free over £50
 
 /* --- VAT ------------------------------------------------------------------
  * Client is VAT-registered; prices already INCLUDE VAT ('inc' = the displayed

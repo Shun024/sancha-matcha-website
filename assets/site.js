@@ -81,7 +81,8 @@
             '<div id="cart-items"></div>' +
             '<div class="cart-empty" id="cart-empty">Your basket is empty.</div>' +
             '<div class="cart-subtotal" id="cart-sub-row" hidden><span>Subtotal</span><b id="cart-subtotal">£0.00</b></div>' +
-            '<p class="cart-note" id="cart-note" hidden>UK delivery £3.75 &middot; free over £40. Prices include VAT.</p>' +
+            '<div class="ship-bar" id="ship-bar" hidden></div>' +
+            '<p class="cart-note" id="cart-note" hidden>UK delivery £3.75 &middot; free over £50. Prices include VAT.</p>' +
             '<button class="btn btn-solid cart-full" id="to-details" type="button" disabled>Checkout</button>' +
           '</div>' +
           '<form class="cart-step" data-step="details" id="details-form" hidden novalidate>' +

@@ -81,6 +81,7 @@
     if (el("cart-note"))    el("cart-note").hidden    = !has;
     if (el("to-details"))   el("to-details").disabled = !has;
     if (el("cart-subtotal"))el("cart-subtotal").textContent = money(total());
+    renderShipBar();
   }
 
   // Compact item list (with thumbnail) shown in the review, above the totals.
@@ -95,8 +96,24 @@
 
   // Client-side shipping estimate for the review (server is authoritative and
   // overwrites it the moment createCheckout responds). Mirrors the backend rule.
-  var SHIP_FLAT = 3.75, SHIP_FREE_OVER = 40, SHIP_LABEL = "Royal Mail Tracked 48 · 2–3 days";
+  var SHIP_FLAT = 3.75, SHIP_FREE_OVER = 50, SHIP_LABEL = "Royal Mail Tracked 48 · 2–3 days";
   function estShipping(sub) { return sub >= SHIP_FREE_OVER ? 0 : SHIP_FLAT; }
+
+  // Free-shipping progress bar shown in the basket: how much more to spend to unlock
+  // free UK delivery, with a filled track. Updates on every cart change.
+  function renderShipBar() {
+    var bar = el("ship-bar"); if (!bar) return;
+    if (!getCart().length) { bar.hidden = true; return; }
+    bar.hidden = false;
+    var sub = total(), remaining = SHIP_FREE_OVER - sub;
+    var pct = Math.max(0, Math.min(100, Math.round(sub / SHIP_FREE_OVER * 100)));
+    bar.innerHTML =
+      '<div class="ship-bar-msg">' + (remaining > 0
+        ? 'Spend <b>' + money(remaining) + '</b> more for <b>free UK shipping</b>'
+        : 'You&rsquo;ve unlocked <b>free UK shipping</b> &#127881;') + '</div>' +
+      '<div class="ship-bar-track"><div class="ship-bar-fill' + (remaining > 0 ? '' : ' is-full') +
+        '" style="width:' + pct + '%"></div></div>';
+  }
 
   // "Review your order" block shown before card entry. `res` = createCheckout
   // response when available (authoritative figures), else null (provisional estimate).
