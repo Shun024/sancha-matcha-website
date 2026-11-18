@@ -39,7 +39,10 @@
   input[type=file]::file-selector-button{font-family:'Bitter',serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--matcha-deep);color:var(--cream);border:0;border-radius:9px;padding:9px 14px;margin-right:12px;cursor:pointer}
   .file-help{font-size:13px;color:var(--muted);margin:-6px 0 0}
   .file-list{font-size:13px;color:var(--charcoal);margin:-4px 0 0;display:flex;flex-direction:column;gap:4px}
+  .file-list span{display:flex;align-items:center;gap:8px}
   .file-list .bad{color:#9a3024}
+  .file-rm{background:none;border:0;color:#9a9a90;font-size:16px;line-height:1;cursor:pointer;padding:0 2px;min-width:auto;margin:0}
+  .file-rm:hover{color:#9a3024;background:none}
   .file-err{font-size:14px;color:#9a3024;margin:-4px 0 0}
   .note{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);margin-top:26px}
   footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--muted)}
@@ -89,19 +92,38 @@
   var FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwtkNq6TlNUQs-lNE_40Q0Ikm03GZuTHOYd8octUnMnZIvsY9-M4DyPOtzooybksyvpoA/exec";
   var MAX_FILES = 5, MAX_EACH = 20 * 1024 * 1024, MAX_TOTAL = 30 * 1024 * 1024;
 
-  // Show the chosen files + flag any that are too big/too many.
+  // Accumulate files across multiple picks (a file input normally REPLACES its
+  // selection each time). We keep our own list and keep the input in sync so
+  // `required` validation + submit see every file.
   var fileInput = document.getElementById('r-evidence'), fileList = document.getElementById('r-filelist');
+  var picked = [];
   function fmtMB(b){ return (b/1048576).toFixed(1) + ' MB'; }
-  function listFiles(){
-    var fs = fileInput.files;
-    if(!fs.length){ fileList.hidden = true; fileList.innerHTML=''; return; }
+  function syncInput(){
+    try { var dt = new DataTransfer(); picked.forEach(function(f){ dt.items.add(f); }); fileInput.files = dt.files; }
+    catch(e){ /* very old browser without DataTransfer — submit still uses `picked` */ }
+  }
+  function renderList(){
+    if(!picked.length){ fileList.hidden = true; fileList.innerHTML=''; return; }
     fileList.hidden = false;
-    fileList.innerHTML = Array.prototype.map.call(fs, function(f){
+    fileList.innerHTML = picked.map(function(f,i){
       var bad = f.size > MAX_EACH;
-      return '<span class="'+(bad?'bad':'')+'">'+ (bad?'⚠ ':'• ') + f.name.replace(/[<>]/g,'') + ' ('+fmtMB(f.size)+')' + (bad?' — too large':'') + '</span>';
+      return '<span class="'+(bad?'bad':'')+'">'+ (bad?'⚠ ':'• ') + f.name.replace(/[<>]/g,'') + ' ('+fmtMB(f.size)+')' + (bad?' — too large':'') +
+        ' <button type="button" class="file-rm" data-i="'+i+'" aria-label="Remove '+f.name.replace(/[<>"]/g,'')+'">&times;</button></span>';
     }).join('');
   }
-  if(fileInput) fileInput.addEventListener('change', listFiles);
+  function addFiles(list){
+    Array.prototype.forEach.call(list, function(f){
+      var dup = picked.some(function(p){ return p.name===f.name && p.size===f.size && p.lastModified===f.lastModified; });
+      if(!dup && picked.length < MAX_FILES) picked.push(f);
+    });
+    syncInput(); renderList();
+  }
+  function resetFiles(){ picked = []; syncInput(); renderList(); }
+  if(fileInput) fileInput.addEventListener('change', function(){ addFiles(fileInput.files); });
+  if(fileList) fileList.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('.file-rm') : null;
+    if(b){ picked.splice(+b.getAttribute('data-i'), 1); syncInput(); renderList(); }
+  });
 
   function readFile(file){
     return new Promise(function(res,rej){
@@ -122,7 +144,7 @@
     var btn=f.querySelector('button[type="submit"]'), msg=f.querySelector('.form-msg');
     var old=document.querySelector('.file-err'); if(old) old.remove();
 
-    var files = fileInput.files;
+    var files = picked;
     if(!files.length){ showErr('Please attach at least one photo or video of the fault or damage.'); return false; }
     if(files.length > MAX_FILES){ showErr('Please attach at most '+MAX_FILES+' files.'); return false; }
     var total=0, i;
@@ -132,7 +154,7 @@
     }
     if(total > MAX_TOTAL){ showErr('Your files add up to '+fmtMB(total)+' — please keep the total under 30 MB (shorter video clips help).'); return false; }
 
-    var done=function(){ f.reset(); listFiles(); if(btn){btn.style.display='none';} if(msg){msg.hidden=false;msg.textContent="Thanks — we've received your return request and evidence, and will be in touch within 1–2 working days ✓";} };
+    var done=function(){ f.reset(); resetFiles(); if(btn){btn.style.display='none';} if(msg){msg.hidden=false;msg.textContent="Thanks — we've received your return request and evidence, and will be in touch within 1–2 working days ✓";} };
     if(!FORM_ENDPOINT){ done(); return false; }
 
     if(btn){btn.textContent='Uploading…';btn.disabled=true;}
