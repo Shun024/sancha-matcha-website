@@ -133,8 +133,9 @@ function saveReturnEvidence_(p) {
       var bytes = Utilities.base64Decode(f.data);
       var blob = Utilities.newBlob(bytes, f.type || 'application/octet-stream', f.name || ('evidence-' + (i + 1)));
       var file = sub.createFile(blob);
-      // Viewable by anyone in the company domain who has the link (kept off the open web).
-      try { file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW); } catch (sh) {}
+      // Viewable by anyone who has the link (the links live only in the private
+      // Returns sheet). Lets staff open evidence from any account, no domain juggling.
+      try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (sh) {}
       links.push(file.getUrl());
     } catch (fe) { console.error('evidence file ' + (i + 1) + ' failed: ' + fe); }
   });
