@@ -86,6 +86,13 @@ function doPost(e) {
         autoReply_(p, 'We’ve received your message', 'contact');
         break;
       case 'returns-request':
+        // Save any uploaded photo/video evidence to Drive first; store the links
+        // (not the base64) in the sheet. Best-effort — a file error never fails the save.
+        try {
+          var links = saveReturnEvidence_(p);
+          if (links.length) p.Evidence = links.join('\n');
+        } catch (ev) { console.error('evidence save failed: ' + ev); }
+        delete p.evidence_json;   // never write the raw base64 into the sheet
         saveDynamic(ss, 'Returns', p);
         autoReply_(p, 'We’ve received your return request', 'returns');
         break;
@@ -102,6 +109,40 @@ function saveWaitlist(ss, p) {
   var sh = ss.getSheetByName('Waitlist');
   if (!sh) { sh = ss.insertSheet('Waitlist'); sh.appendRow(['Timestamp', 'Name', 'Email', 'Consent']); }
   sh.appendRow([new Date(), p.name || '', p.email || '', p.consent || '']);
+}
+
+// --- Returns evidence (photos/videos) ------------------------------------
+// The returns form sends `evidence_json` = a JSON array of { name, type, data }
+// where `data` is base64. We decode each, save it to a Drive folder, and return
+// the file links to store in the sheet. Requires the Drive scope — on the first
+// run after adding this you'll be re-prompted to authorise (then redeploy).
+var RETURNS_FOLDER = 'SANcha Returns Evidence';
+function saveReturnEvidence_(p) {
+  var raw = p.evidence_json;
+  if (!raw) return [];
+  var files;
+  try { files = JSON.parse(raw); } catch (e) { return []; }
+  if (!files || !files.length) return [];
+  var parent = getOrCreateFolder_(RETURNS_FOLDER);
+  var who = String(p['Order number'] || p.Name || 'return').replace(/[^\w \-]/g, '').trim() || 'return';
+  var stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || 'Europe/London', 'yyyy-MM-dd HH:mm');
+  var sub = parent.createFolder(who + ' — ' + stamp);
+  var links = [];
+  files.forEach(function (f, i) {
+    try {
+      var bytes = Utilities.base64Decode(f.data);
+      var blob = Utilities.newBlob(bytes, f.type || 'application/octet-stream', f.name || ('evidence-' + (i + 1)));
+      var file = sub.createFile(blob);
+      // Viewable by anyone in the company domain who has the link (kept off the open web).
+      try { file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW); } catch (sh) {}
+      links.push(file.getUrl());
+    } catch (fe) { console.error('evidence file ' + (i + 1) + ' failed: ' + fe); }
+  });
+  return links;
+}
+function getOrCreateFolder_(name) {
+  var it = DriveApp.getFoldersByName(name);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(name);
 }
 
 // Writes one column per submitted field. Add a new form field and a new column
