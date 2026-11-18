@@ -255,19 +255,21 @@
         (p.description ? '<p>' + esc(p.description) + '</p>' : '') +
         (p.note ? '<span class="soon">' + esc(p.note) + '</span>' : '') +
         (p.buy_url ? '<a class="btn btn-solid tin-buy" href="' + esc(p.buy_url) + '" target="_blank" rel="noopener">Buy now</a>' : '');
+    // Optional "link" column makes the whole card a link (e.g. Tinned Matcha → #tins).
+    var tag = p.link ? "a" : "div", attr = p.link ? ' href="' + esc(p.link) + '"' : "";
     // `image` column (photo or Google Drive link) takes priority; else the icon preset.
     var img = imageUrl(p.image);
     if (img) {
-      return '<div class="cat">' +
+      return "<" + tag + ' class="cat"' + attr + '>' +
           '<div class="cat-img"><img src="' + esc(img) + '" alt="' + esc(p.title) + '" loading="lazy"></div>' +
           head +
-        '</div>';
+        "</" + tag + ">";
     }
     var paths = SHOP_ICONS[(p.icon || "tin").toLowerCase()] || SHOP_ICONS.tin;
-    return '<div class="cat">' +
+    return "<" + tag + ' class="cat"' + attr + '>' +
         '<svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">' + paths + '</svg>' +
         head +
-      '</div>';
+      "</" + tag + ">";
   }
 
   function renderWholesale(p) {
