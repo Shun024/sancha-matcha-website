@@ -145,6 +145,17 @@ function getOrCreateFolder_(name) {
   return it.hasNext() ? it.next() : DriveApp.createFolder(name);
 }
 
+// Run ONCE from the editor (Run ▸ setupReturnsEvidence) BEFORE redeploying. It
+// forces the Drive-permission prompt (which the returns upload needs) and creates
+// the "SANcha Returns Evidence" folder so you can see it. After approving Drive,
+// Deploy ▸ Manage deployments ▸ New version so the web app picks up the Drive scope
+// — without that redeploy the live form saves the row but silently skips the files.
+function setupReturnsEvidence() {
+  var f = getOrCreateFolder_(RETURNS_FOLDER);
+  Logger.log('Returns evidence folder ready: ' + f.getUrl());
+  return f.getUrl();
+}
+
 // Writes one column per submitted field. Add a new form field and a new column
 // appears here automatically — nothing to edit in this script.
 function saveDynamic(ss, tabName, p) {
