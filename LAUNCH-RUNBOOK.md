@@ -86,12 +86,31 @@ git push origin main
 ## 6. Real live smoke test — one low-value order, then refund  **[DEV + CLIENT]**
 
 - [ ] Place a **real** small order on the live site with a real card.
+- [ ] On the **Review your order** step, confirm the summary is correct: contact, item(s) +
+      thumbnail, ship-to address, "Royal Mail Tracked 48 · 2–3 days" + shipping cost, and the
+      Subtotal/Shipping/Total.
 - [ ] Confirm: payment shows in the **SumUp dashboard**; **confirmation email from orders@**
       (check it's in inbox); a row appears in **Orders**; **stock decremented** by the qty.
 - [ ] Enter a **tracking number** on that order row → **dispatch email** arrives (one only —
       the duplicate dev trigger was removed).
 - [ ] **Refund** the test order in the SumUp dashboard.
 - [ ] Reset that product's stock back up by the test qty.
+
+### 6a. Apple Pay / Google Pay check (real devices)  **[DEV]**
+
+Wallets are **not** a dashboard toggle for our API+widget — SumUp's hosted `SumUpCard` widget
+surfaces them automatically when the device/browser + account support it. Check on the **live
+domain** (`sanchamatcha.co.uk`), not the github.io preview:
+
+- [ ] **Google Pay** — open the **Payment** step in **Chrome** (desktop or Android) with a card
+      saved to Google Pay → the **Google Pay** button appears in the widget. Pay a low-value
+      order with it → verify as above → **refund**.
+- [ ] **Apple Pay** — open the **Payment** step on an **iPhone in Safari** with a card in Wallet
+      → the **Apple Pay** button appears. (Apple Pay is domain-bound, so it needs the real live
+      domain — it won't show on the preview. If it doesn't appear, confirm the domain is
+      registered under SumUp ▸ Apple Pay settings, then retry.) Pay → verify → **refund**.
+- [ ] If a wallet still doesn't surface with everything enabled, flag it — the widget may need
+      explicit `applePay`/`googlePay` flags in `mountWidget` (assets/checkout.js).
 
 ## 7. Forms + back-in-stock final check  **[DEV]**
 
