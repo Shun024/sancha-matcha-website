@@ -234,6 +234,7 @@
   .tin-yuan{background:linear-gradient(160deg,#9aac66,#586a2c)}
   .tin-top h3{font-size:32px;margin-bottom:4px}
   .tin-top .sub{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .tin-serve{font-family:'Bitter','Bitter Fallback',serif;font-style:italic;font-size:13.5px;color:var(--muted);margin-top:5px}
   .tin-card>p{color:#5c5c53;font-size:15.5px;margin-bottom:18px}
   .cultivars{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
   .cultivars span{border:1px solid var(--line);border-radius:30px;padding:6px 14px;font-size:12px;letter-spacing:.06em;color:var(--matcha-deep)}

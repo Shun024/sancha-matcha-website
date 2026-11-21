@@ -192,14 +192,19 @@
   function tinBadges(p){
     var key=(p.roman||p.name||"").toLowerCase(), def=TIN_BADGE_DEFAULTS[key]||{};
     var isNew = (p.new!=null && String(p.new).trim()!=="") ? /^(true|yes|1|new)$/i.test(String(p.new).trim()) : !!def.isNew;
-    // Type badge (e.g. "Signature Blend") removed — it duplicated the card subtitle. Keep only "New".
-    var html=(isNew?'<span class="tin-badge is-new">New</span>':'');
+    // Type badge (e.g. "Signature Blend" / "Single Cultivar") from the sheet `badge`
+    // column, falling back to the per-tin default. Plus the optional "New" badge.
+    var type = (p.badge!=null && String(p.badge).trim()!=="") ? String(p.badge).trim() : (def.badge||"");
+    var html = (type?'<span class="tin-badge">'+esc(type)+'</span>':'') +
+               (isNew?'<span class="tin-badge is-new">New</span>':'');
     return html?'<div class="tin-badges">'+html+'</div>':'';
   }
 
   function renderTin(p) {
     var tinKey = String(p.name || "").trim().toLowerCase();
     TINS[tinKey] = p;   // remember the full object so the pop-up can show everything
+    // IKI is the matcha served in the physical store — small italic note under its name.
+    var serveNote = (tinKey === "iki") ? '<div class="tin-serve">the matcha we serve in store</div>' : '';
     // Option 2 checkout: "Add to basket" when there's a numeric price + stock; sold-out otherwise.
     var priceNum = parseFloat(String(p.price || '').replace(/[^0-9.]/g, '')) || 0;
     var stock = (p.stock != null && String(p.stock).trim() !== '') ? parseInt(p.stock, 10) : null;
@@ -226,7 +231,7 @@
           '<div class="tin-logo"><img src="' + esc(logo) + '" alt="' + esc(p.name) + ' matcha" loading="lazy">' +
             (hoverImg ? '<img class="tin-hover" src="' + esc(hoverImg) + '" alt="" loading="lazy">' : '') + '</div>' +
           '<div class="tin-head"><h3>' + esc(p.name) + '</h3>' +
-            (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : '') + '</div>' +
+            (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : '') + serveNote + '</div>' +
           body +
         '</div>';
     }
@@ -239,7 +244,7 @@
             '<div class="rom">' + esc(p.roman || p.name) + '</div>' +
           '</div>' +
           '<div><h3>' + esc(p.name) + '</h3>' +
-            (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : '') + '</div>' +
+            (p.subtitle ? '<div class="sub">' + esc(p.subtitle) + '</div>' : '') + serveNote + '</div>' +
         '</div>' +
         body +
       '</div>';
