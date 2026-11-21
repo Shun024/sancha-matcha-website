@@ -188,7 +188,7 @@ function decrementStock_(lines) {
 }
 
 /* --- Orders tab + pending stash ------------------------------------------- */
-var ORDERS_HEADER = ['Timestamp','Reference','Status','Name','Email','Items','Total','Currency','Tracking','Dispatched'];
+var ORDERS_HEADER = ['Timestamp','Reference','Status','Name','Email','Phone','Address','Postcode','Items','Total','Currency','Tracking','Dispatched'];
 function recordOrder_(co, pending) {
   var ss = getSS_();
   var sh = ss.getSheetByName('Orders');
@@ -196,7 +196,7 @@ function recordOrder_(co, pending) {
   var c = pending.customer || {};
   var items = (pending.lines || []).map(function (l) { return l.qty + '× ' + l.name; }).join(', ');
   // Tracking + Dispatched are filled later by the client (triggers the dispatch email).
-  sh.appendRow([new Date(), co.checkout_reference, co.status, c.name || '', c.email || '', items, pending.total, co.currency || CURRENCY, '', '']);
+  sh.appendRow([new Date(), co.checkout_reference, co.status, c.name || '', c.email || '', c.phone || '', c.address || '', c.postcode || '', items, pending.total, co.currency || CURRENCY, '', '']);
 }
 function stashPending_(ref, data) { props_().setProperty('PENDING_' + ref, JSON.stringify(data)); }
 function popPending_(ref) {
@@ -366,6 +366,8 @@ function sendAlert_(co, pending) {
   GmailApp.sendEmail(to, 'New SANcha order ' + co.checkout_reference,
     'Reference: ' + co.checkout_reference +
     '\nCustomer: ' + (c.name || '') + ' <' + (c.email || '') + '>' +
+    '\nPhone: ' + (c.phone || '') +
+    '\nShip to: ' + (c.address || '') + ', ' + (c.postcode || '') +
     '\nItems: ' + items + '\nTotal: £' + pending.total,
     Object.assign({ name: FROM_NAME, replyTo: c.email || REPLY_TO }, fromOpt_()));
 }

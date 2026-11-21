@@ -88,6 +88,7 @@
           '<form class="cart-step" data-step="details" id="details-form" hidden novalidate>' +
             '<label class="wf-field"><span class="wf-q">Full name</span><input name="name" autocomplete="name" required></label>' +
             '<label class="wf-field"><span class="wf-q">Email</span><input type="email" name="email" autocomplete="email" required></label>' +
+            '<label class="wf-field"><span class="wf-q">Contact number</span><input type="tel" name="phone" inputmode="tel" autocomplete="tel" required></label>' +
             '<label class="wf-field"><span class="wf-q">Delivery address</span><textarea name="address" rows="3" autocomplete="street-address" required></textarea></label>' +
             '<label class="wf-field"><span class="wf-q">Postcode</span><input name="postcode" autocomplete="postal-code" required></label>' +
             '<div class="cart-err" id="details-err" hidden></div>' +

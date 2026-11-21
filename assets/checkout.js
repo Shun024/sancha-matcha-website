@@ -153,6 +153,7 @@
     var customer = {
       name:     f.elements["name"].value.trim(),
       email:    f.elements["email"].value.trim(),
+      phone:    f.elements["phone"].value.trim(),
       address:  f.elements["address"].value.trim(),
       postcode: f.elements["postcode"].value.trim()
     };
@@ -177,6 +178,9 @@
   function validateDetails(c) {
     if (!EMAIL_RE.test(c.email)) {
       detailsErr("Please enter a valid email address — that's where your order confirmation goes.", "email"); return false;
+    }
+    if (c.phone.replace(/[^\d]/g, "").length < 10) {
+      detailsErr("Please enter a valid contact number — the courier may need it for delivery.", "phone"); return false;
     }
     if (!UK_POSTCODE_RE.test(c.postcode)) {
       detailsErr("Please enter a valid UK postcode (e.g. SW1A 1AA).", "postcode"); return false;
