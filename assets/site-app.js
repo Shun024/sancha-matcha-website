@@ -379,6 +379,16 @@
       function (btn, n) { btn.classList.toggle("active", n === PP_INDEX); });
   }
 
+  // Preparation steps + ingredients shown on every matcha product page. Sheet
+  // columns `instructions` (steps split on "|" or newlines) and `ingredients`
+  // override these defaults per product.
+  var PREP_STEPS_DEFAULT = [
+    "Sift 4g of matcha and add 40ml of 70°C water.",
+    "Whisk with a “W” or a “M” motion until a fine layer of foam forms.",
+    "Enjoy it with 120ml of water or milk of your choice."
+  ];
+  var INGREDIENTS_DEFAULT = "100% matcha green tea powder";
+
   function renderProductPage() {
     var host = document.getElementById("product-page-inner");
     if (!host) return;
@@ -429,6 +439,9 @@
                     ["Cultivar", p.cultivar || d.cultivar], ["Taste", p.taste || d.taste]]
       .filter(function (r) { return r[1]; })
       .map(function (r) { return "<div><dt>" + r[0] + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("");
+    var steps = (p.instructions ? String(p.instructions).split(/\s*\|\s*|\n+/) : PREP_STEPS_DEFAULT)
+      .map(function (s) { return String(s).trim(); }).filter(Boolean);
+    var ingredients = (p.ingredients && String(p.ingredients).trim()) || INGREDIENTS_DEFAULT;
     host.innerHTML = back +
       '<div class="pp-grid">' +
         '<div class="pp-art-wrap"><div class="pp-art">' + art + '</div>' + thumbs + '</div>' +
@@ -439,6 +452,9 @@
           (lede ? '<p class="desc">' + esc(lede) + '</p>' : "") +
           (meet ? '<h3 class="pp-meet-h">Meet your matcha</h3><p class="pp-meet">' + esc(meet) + '</p>' : "") +
           (specRows ? '<dl class="pp-spec">' + specRows + '</dl>' : "") +
+          (steps.length ? '<h3 class="pp-meet-h">Instructions</h3><ol class="pp-steps">' +
+            steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol>' : "") +
+          (ingredients ? '<h3 class="pp-meet-h">Ingredients</h3><p class="pp-meet">' + esc(ingredients) + '</p>' : "") +
           '<div class="pp-foot"><span class="sizes">' + esc(p.sizes || "") + '</span>' +
             '<span class="price">' + esc(p.price || "") + '</span></div>' + buy +
         '</div>' +
