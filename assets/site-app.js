@@ -452,9 +452,9 @@
           (lede ? '<p class="desc">' + esc(lede) + '</p>' : "") +
           (meet ? '<h3 class="pp-meet-h">Meet your matcha</h3><p class="pp-meet">' + esc(meet) + '</p>' : "") +
           (specRows ? '<dl class="pp-spec">' + specRows + '</dl>' : "") +
-          (steps.length ? '<h3 class="pp-meet-h">Instructions</h3><ol class="pp-steps">' +
-            steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol>' : "") +
-          (ingredients ? '<h3 class="pp-meet-h">Ingredients</h3><p class="pp-meet">' + esc(ingredients) + '</p>' : "") +
+          (steps.length ? '<details class="pp-acc"><summary>Instructions</summary><ol class="pp-steps">' +
+            steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol></details>' : "") +
+          (ingredients ? '<details class="pp-acc"><summary>Ingredients</summary><p class="pp-meet">' + esc(ingredients) + '</p></details>' : "") +
           '<div class="pp-foot"><span class="sizes">' + esc(p.sizes || "") + '</span>' +
             '<span class="price">' + esc(p.price || "") + '</span></div>' + buy +
         '</div>' +

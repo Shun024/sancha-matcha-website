@@ -292,6 +292,11 @@
   .pp-meet{font-size:15.5px;line-height:1.8;color:var(--charcoal);margin:0 0 22px}
   .pp-steps{margin:0 0 22px;padding-left:20px;font-size:15.5px;line-height:1.8;color:var(--charcoal)}
   .pp-steps li{margin-bottom:8px;padding-left:4px}
+  .pp-acc{border-top:1px solid var(--line)}
+  .pp-acc summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;font-family:'SuperWaffles','Fredoka','Fredoka Fallback',sans-serif;font-size:20px;letter-spacing:.02em;text-transform:uppercase;color:var(--maroon)}
+  .pp-acc summary::-webkit-details-marker{display:none}
+  .pp-acc summary::after{content:"+";font-family:'Bitter','Bitter Fallback',serif;font-size:24px;line-height:1;color:var(--maroon)}
+  .pp-acc[open] summary::after{content:"–"}
   .pp-spec{margin:0 0 4px;display:grid;gap:0}
   .pp-spec>div{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line)}
   .pp-spec>div:first-child{border-top:1px solid var(--line)}
