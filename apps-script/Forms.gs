@@ -269,17 +269,21 @@ function launchFrom_() { return fromFor_('contact'); }
 function sendLaunchEmail_(to, name) {
   var first = (name || '').split(/\s+/)[0];
   var hi = first ? ('Hi ' + first + ',') : 'Hi there,';
-  var unsub = '<p style="margin:16px 0 0;color:#8a8168;font-size:12px;line-height:1.6;">You\'re receiving this because you joined the SANcha waitlist. ' +
-              'Don\'t want launch updates? Just reply with &ldquo;unsubscribe&rdquo; and we\'ll take you off the list.</p>';
+  // Rounded, bold web-safe stack (the brand's SuperWaffles display font can't load
+  // in email, so this is the closest widely-supported fallback).
+  var DISP = "'Trebuchet MS','Segoe UI',Verdana,Arial,sans-serif";
   var inner =
-    '<h1 style="margin:0 0 10px;color:#293D30;font-size:26px;font-weight:normal;">We\'re live &#127861;</h1>' +
-    '<p style="margin:0 0 14px;color:#293D30;font-size:15px;line-height:1.7;">' + esc_(hi) + '</p>' +
-    '<p style="margin:0 0 14px;color:#293D30;font-size:15px;line-height:1.7;">Thank you for waiting. The SANcha shop is now open &mdash; our ceremonial-grade ' +
-    '<strong>IKI</strong> and <strong>YUAN</strong> matcha, in 30g tins, are ready to order with UK delivery.</p>' +
-    '<p style="margin:0 0 24px;color:#293D30;font-size:15px;line-height:1.7;">As one of the first to join us, you\'re first to shop.</p>' +
-    '<p style="margin:0 0 6px;"><a href="' + SITE_URL + '/#tins" ' +
-      'style="display:inline-block;background:#293D30;color:#FFF4D6;text-decoration:none;padding:14px 30px;border-radius:40px;font-size:14px;letter-spacing:.08em;">Shop the matcha</a></p>' +
-    unsub;
+    '<p style="margin:0 0 14px;color:#c9b79a;font-size:13px;letter-spacing:.28em;text-transform:uppercase;">The wait is over</p>' +
+    '<h1 style="margin:0 0 22px;font-family:' + DISP + ';font-size:52px;line-height:1.05;font-weight:bold;color:#FFF4D6;">' +
+      'We&rsquo;re <span style="color:#6C2C25;">live!</span></h1>' +
+    '<p style="margin:0 0 16px;color:#FFF4D6;font-size:16px;line-height:1.8;">' + esc_(hi) + '</p>' +
+    '<p style="margin:0 0 16px;color:#FFF4D6;font-size:16px;line-height:1.8;">Thank you for waiting. The SANcha shop is now open &mdash; our ceremonial-grade ' +
+    '<strong style="color:#FFF4D6;">IKI</strong> and <strong style="color:#FFF4D6;">YUAN</strong> matcha, in 30g tins, are ready to order with UK delivery.</p>' +
+    '<p style="margin:0 0 30px;color:#FFF4D6;font-size:16px;line-height:1.8;">As one of the first to join us, you&rsquo;re first to shop.</p>' +
+    '<p style="margin:0 0 30px;"><a href="' + SITE_URL + '/#tins" ' +
+      'style="display:inline-block;background:#FFF4D6;color:#293D30;text-decoration:none;padding:16px 38px;border-radius:40px;font-size:14px;letter-spacing:.12em;text-transform:uppercase;font-weight:bold;">Shop the matcha</a></p>' +
+    '<p style="margin:0;color:#c9b79a;font-size:13px;letter-spacing:.22em;text-transform:uppercase;">Follow ' +
+      '<a href="https://instagram.com/sanchamatchaa" style="color:#c9b79a;text-decoration:none;">@sanchamatchaa</a></p>';
   GmailApp.sendEmail(to, LAUNCH_SUBJECT,
     hi + '\n\nThank you for waiting. The SANcha shop is now open. Our IKI and YUAN matcha (30g tins) are ready to order with UK delivery.\n\n' +
       'Shop now: ' + SITE_URL + '/#tins\n\n- SANcha Matcha\n\n' +
@@ -292,21 +296,22 @@ function esc_(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// Branded wrapper — mirrors the checkout/back-in-stock emails (dark header with
-// the cream logo, cream card, reply-to footer).
+// Launch wrapper — full dark-green canvas echoing the Coming Soon page: cream logo,
+// centred hero, stone footer. (Separate from the cream-card checkout emails.)
 function launchHtml_(innerHtml) {
   var LOGO = SITE_URL + '/assets/logo-cream.png';
   return '' +
-  '<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;padding:0;background:#e7ddbe;">' +
-  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e7ddbe;padding:24px 0;">' +
+  '<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;padding:0;background:#293D30;">' +
+  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#293D30;padding:8px 0 24px;">' +
     '<tr><td align="center">' +
-      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFF4D6;border-radius:14px;overflow:hidden;font-family:Georgia,\'Times New Roman\',serif;">' +
-        '<tr><td align="center" style="background:#293D30;padding:28px 24px;">' +
-          '<img src="' + LOGO + '" alt="SANcha Matcha" width="150" style="display:block;border:0;max-width:150px;height:auto;"></td></tr>' +
-        '<tr><td style="padding:32px 32px 24px;">' + innerHtml + '</td></tr>' +
-        '<tr><td style="padding:20px 32px 28px;border-top:1px solid #e7ddbe;">' +
-          '<p style="margin:0;color:#293D30;font-size:13px;line-height:1.6;">Questions? Just reply to this email and it\'ll reach us at ' + REPLY_TO + '.</p>' +
-          '<p style="margin:12px 0 0;color:#c9b79a;font-size:12px;">VS Partners Ltd, trading as SANcha &middot; 3rd Floor, 86-90 Paul Street, London, EC2A 4NE</p>' +
+      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#293D30;font-family:Georgia,\'Times New Roman\',serif;">' +
+        '<tr><td align="center" style="padding:40px 24px 8px;">' +
+          '<img src="' + LOGO + '" alt="SANcha Matcha" width="170" style="display:block;border:0;max-width:170px;height:auto;"></td></tr>' +
+        '<tr><td align="center" style="padding:20px 36px 40px;">' + innerHtml + '</td></tr>' +
+        '<tr><td style="padding:22px 36px 34px;border-top:1px solid rgba(255,244,214,.18);">' +
+          '<p style="margin:0;color:#FFF4D6;font-size:13px;line-height:1.6;">Questions? Just reply to this email and it\'ll reach us at ' + REPLY_TO + '.</p>' +
+          '<p style="margin:12px 0 0;color:#c9b79a;font-size:12px;line-height:1.6;">You\'re receiving this because you joined the SANcha waitlist. Reply &ldquo;unsubscribe&rdquo; to opt out.</p>' +
+          '<p style="margin:10px 0 0;color:#c9b79a;font-size:12px;">VS Partners Ltd, trading as SANcha &middot; 3rd Floor, 86-90 Paul Street, London, EC2A 4NE</p>' +
         '</td></tr>' +
       '</table>' +
     '</td></tr>' +
