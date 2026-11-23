@@ -211,7 +211,7 @@ function autoReply_(p, subject, kind) {
  * list is larger, run across days — already-sent rows are skipped automatically.
  * ========================================================================= */
 
-var LAUNCH_SUBJECT = 'SANcha is live — shop IKI & YUAN now';
+var LAUNCH_SUBJECT = 'SANcha is live - shop IKI & YUAN now';
 // Columns added to the Waitlist tab on first blast so re-runs don't double-send.
 var LAUNCH_SENT_COL_HEADER = 'Launch Sent';
 
@@ -272,17 +272,17 @@ function sendLaunchEmail_(to, name) {
   var unsub = '<p style="margin:16px 0 0;color:#8a8168;font-size:12px;line-height:1.6;">You\'re receiving this because you joined the SANcha waitlist. ' +
               'Don\'t want launch updates? Just reply with &ldquo;unsubscribe&rdquo; and we\'ll take you off the list.</p>';
   var inner =
-    '<h1 style="margin:0 0 10px;color:#293D30;font-size:26px;font-weight:normal;">We\'re live 🍵</h1>' +
+    '<h1 style="margin:0 0 10px;color:#293D30;font-size:26px;font-weight:normal;">We\'re live &#127861;</h1>' +
     '<p style="margin:0 0 14px;color:#293D30;font-size:15px;line-height:1.7;">' + esc_(hi) + '</p>' +
-    '<p style="margin:0 0 14px;color:#293D30;font-size:15px;line-height:1.7;">Thank you for waiting. The SANcha shop is now open — our ceremonial-grade ' +
+    '<p style="margin:0 0 14px;color:#293D30;font-size:15px;line-height:1.7;">Thank you for waiting. The SANcha shop is now open &mdash; our ceremonial-grade ' +
     '<strong>IKI</strong> and <strong>YUAN</strong> matcha, in 30g tins, are ready to order with UK delivery.</p>' +
     '<p style="margin:0 0 24px;color:#293D30;font-size:15px;line-height:1.7;">As one of the first to join us, you\'re first to shop.</p>' +
     '<p style="margin:0 0 6px;"><a href="' + SITE_URL + '/#tins" ' +
       'style="display:inline-block;background:#293D30;color:#FFF4D6;text-decoration:none;padding:14px 30px;border-radius:40px;font-size:14px;letter-spacing:.08em;">Shop the matcha</a></p>' +
     unsub;
   GmailApp.sendEmail(to, LAUNCH_SUBJECT,
-    hi + '\n\nThank you for waiting. The SANcha shop is now open — our IKI and YUAN matcha (30g tins) are ready to order with UK delivery.\n\n' +
-      'Shop now: ' + SITE_URL + '/#tins\n\n— SANcha Matcha\n\n' +
+    hi + '\n\nThank you for waiting. The SANcha shop is now open. Our IKI and YUAN matcha (30g tins) are ready to order with UK delivery.\n\n' +
+      'Shop now: ' + SITE_URL + '/#tins\n\n- SANcha Matcha\n\n' +
       'You joined the SANcha waitlist; reply "unsubscribe" to opt out.',
     Object.assign({ name: FROM_NAME, replyTo: REPLY_TO, htmlBody: launchHtml_(inner) }, launchFrom_()));
 }
@@ -297,7 +297,7 @@ function esc_(s) {
 function launchHtml_(innerHtml) {
   var LOGO = SITE_URL + '/assets/logo-cream.png';
   return '' +
-  '<!doctype html><html><body style="margin:0;padding:0;background:#e7ddbe;">' +
+  '<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;padding:0;background:#e7ddbe;">' +
   '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e7ddbe;padding:24px 0;">' +
     '<tr><td align="center">' +
       '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFF4D6;border-radius:14px;overflow:hidden;font-family:Georgia,\'Times New Roman\',serif;">' +
@@ -306,7 +306,7 @@ function launchHtml_(innerHtml) {
         '<tr><td style="padding:32px 32px 24px;">' + innerHtml + '</td></tr>' +
         '<tr><td style="padding:20px 32px 28px;border-top:1px solid #e7ddbe;">' +
           '<p style="margin:0;color:#293D30;font-size:13px;line-height:1.6;">Questions? Just reply to this email and it\'ll reach us at ' + REPLY_TO + '.</p>' +
-          '<p style="margin:12px 0 0;color:#c9b79a;font-size:12px;">VS Partners Ltd, trading as SANcha · 3rd Floor, 86-90 Paul Street, London, EC2A 4NE</p>' +
+          '<p style="margin:12px 0 0;color:#c9b79a;font-size:12px;">VS Partners Ltd, trading as SANcha &middot; 3rd Floor, 86-90 Paul Street, London, EC2A 4NE</p>' +
         '</td></tr>' +
       '</table>' +
     '</td></tr>' +
