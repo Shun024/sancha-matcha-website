@@ -192,3 +192,123 @@ function autoReply_(p, subject, kind) {
     console.error('auto-reply failed: ' + err);
   }
 }
+
+/* =========================================================================
+ * LAUNCH BLAST — one-off "SANcha is live" email to the Waitlist tab.
+ *
+ * HOW TO SEND ON LAUNCH DAY (from the Apps Script editor of THIS forms project):
+ *   1. Make sure the project RUNS UNDER contact@ (Workspace) with contact@ set up
+ *      as a verified "Send mail as" alias — so mail sends FROM contact@ (not the
+ *      owner's personal address). See fromFor_ / FROM_BY_KIND above.
+ *   2. Run ▸ previewLaunchBlast  → sends ONE test email to you (the script owner)
+ *      so you can eyeball the design before blasting the list.
+ *   3. Happy? Run ▸ sendLaunchBlast  → emails everyone on the Waitlist tab who has
+ *      NOT already been sent (tracked in a "Launch Sent" column, so re-running is
+ *      safe and never double-emails). It also skips rows whose Consent is an
+ *      explicit "no"/"false"/"0".
+ *
+ * Gmail sending caps apply (~500/day consumer, ~1500–2000/day Workspace). If the
+ * list is larger, run across days — already-sent rows are skipped automatically.
+ * ========================================================================= */
+
+var LAUNCH_SUBJECT = 'SANcha is live — shop IKI & YUAN now';
+// Columns added to the Waitlist tab on first blast so re-runs don't double-send.
+var LAUNCH_SENT_COL_HEADER = 'Launch Sent';
+
+function previewLaunchBlast() {
+  var me = Session.getActiveUser().getEmail();
+  sendLaunchEmail_(me, '');   // empty name → "Hi there,"
+  Logger.log('Preview sent to ' + me + ' (from: ' + (launchFrom_().from || me) + ')');
+}
+
+function sendLaunchBlast() {
+  var sh = getSS_().getSheetByName('Waitlist');
+  if (!sh) { Logger.log('No Waitlist tab found.'); return; }
+  var rng = sh.getDataRange(), values = rng.getValues();
+  if (values.length < 2) { Logger.log('Waitlist is empty.'); return; }
+
+  var head = values[0].map(function (h) { return String(h).trim().toLowerCase(); });
+  var iEmail = head.indexOf('email'), iName = head.indexOf('name'),
+      iConsent = head.indexOf('consent'), iSent = head.indexOf(LAUNCH_SENT_COL_HEADER.toLowerCase());
+
+  // Ensure a "Launch Sent" column exists.
+  if (iSent === -1) {
+    iSent = head.length;
+    sh.getRange(1, iSent + 1).setValue(LAUNCH_SENT_COL_HEADER);
+  }
+
+  var sent = 0, skipped = 0, failed = 0, seen = {};
+  for (var r = 1; r < values.length; r++) {
+    var email = String(values[r][iEmail] || '').trim();
+    var already = iSent < values[r].length ? String(values[r][iSent] || '').trim() : '';
+    var consent = iConsent > -1 ? String(values[r][iConsent] || '').trim().toLowerCase() : '';
+    var key = email.toLowerCase();
+
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { skipped++; continue; }
+    if (already) { skipped++; continue; }                      // already emailed
+    if (/^(no|false|0|unsubscribed|opt-out)$/.test(consent)) { skipped++; continue; }
+    if (seen[key]) { skipped++; continue; }                    // dup within the sheet
+    seen[key] = true;
+
+    try {
+      sendLaunchEmail_(email, String(values[r][iName] || '').trim());
+      sh.getRange(r + 1, iSent + 1).setValue(new Date());      // stamp sent
+      sent++;
+      Utilities.sleep(400);                                    // gentle pacing
+    } catch (e) {
+      failed++;
+      console.error('launch blast failed for ' + email + ': ' + e);
+    }
+  }
+  Logger.log('Launch blast done — sent: ' + sent + ', skipped: ' + skipped + ', failed: ' + failed);
+}
+
+// From contact@ when the alias is available (same rule as the form auto-replies).
+function launchFrom_() { return fromFor_('contact'); }
+
+function sendLaunchEmail_(to, name) {
+  var first = (name || '').split(/\s+/)[0];
+  var hi = first ? ('Hi ' + first + ',') : 'Hi there,';
+  var unsub = '<p style="margin:16px 0 0;color:#8a8168;font-size:12px;line-height:1.6;">You\'re receiving this because you joined the SANcha waitlist. ' +
+              'Don\'t want launch updates? Just reply with &ldquo;unsubscribe&rdquo; and we\'ll take you off the list.</p>';
+  var inner =
+    '<h1 style="margin:0 0 10px;color:#293D30;font-size:26px;font-weight:normal;">We\'re live 🍵</h1>' +
+    '<p style="margin:0 0 14px;color:#293D30;font-size:15px;line-height:1.7;">' + esc_(hi) + '</p>' +
+    '<p style="margin:0 0 14px;color:#293D30;font-size:15px;line-height:1.7;">Thank you for waiting. The SANcha shop is now open — our ceremonial-grade ' +
+    '<strong>IKI</strong> and <strong>YUAN</strong> matcha, in 30g tins, are ready to order with UK delivery.</p>' +
+    '<p style="margin:0 0 24px;color:#293D30;font-size:15px;line-height:1.7;">As one of the first to join us, you\'re first to shop.</p>' +
+    '<p style="margin:0 0 6px;"><a href="' + SITE_URL + '/#tins" ' +
+      'style="display:inline-block;background:#293D30;color:#FFF4D6;text-decoration:none;padding:14px 30px;border-radius:40px;font-size:14px;letter-spacing:.08em;">Shop the matcha</a></p>' +
+    unsub;
+  GmailApp.sendEmail(to, LAUNCH_SUBJECT,
+    hi + '\n\nThank you for waiting. The SANcha shop is now open — our IKI and YUAN matcha (30g tins) are ready to order with UK delivery.\n\n' +
+      'Shop now: ' + SITE_URL + '/#tins\n\n— SANcha Matcha\n\n' +
+      'You joined the SANcha waitlist; reply "unsubscribe" to opt out.',
+    Object.assign({ name: FROM_NAME, replyTo: REPLY_TO, htmlBody: launchHtml_(inner) }, launchFrom_()));
+}
+
+// Minimal HTML escape (Forms.gs has no shared escaper).
+function esc_(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Branded wrapper — mirrors the checkout/back-in-stock emails (dark header with
+// the cream logo, cream card, reply-to footer).
+function launchHtml_(innerHtml) {
+  var LOGO = SITE_URL + '/assets/logo-cream.png';
+  return '' +
+  '<!doctype html><html><body style="margin:0;padding:0;background:#e7ddbe;">' +
+  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e7ddbe;padding:24px 0;">' +
+    '<tr><td align="center">' +
+      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFF4D6;border-radius:14px;overflow:hidden;font-family:Georgia,\'Times New Roman\',serif;">' +
+        '<tr><td align="center" style="background:#293D30;padding:28px 24px;">' +
+          '<img src="' + LOGO + '" alt="SANcha Matcha" width="150" style="display:block;border:0;max-width:150px;height:auto;"></td></tr>' +
+        '<tr><td style="padding:32px 32px 24px;">' + innerHtml + '</td></tr>' +
+        '<tr><td style="padding:20px 32px 28px;border-top:1px solid #e7ddbe;">' +
+          '<p style="margin:0;color:#293D30;font-size:13px;line-height:1.6;">Questions? Just reply to this email and it\'ll reach us at ' + REPLY_TO + '.</p>' +
+          '<p style="margin:12px 0 0;color:#c9b79a;font-size:12px;">VS Partners Ltd, trading as SANcha · 3rd Floor, 86-90 Paul Street, London, EC2A 4NE</p>' +
+        '</td></tr>' +
+      '</table>' +
+    '</td></tr>' +
+  '</table></body></html>';
+}
