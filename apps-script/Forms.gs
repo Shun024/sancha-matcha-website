@@ -275,7 +275,7 @@ function sendLaunchEmail_(to, name) {
   var inner =
     '<p style="margin:0 0 14px;color:#c9b79a;font-size:13px;letter-spacing:.28em;text-transform:uppercase;">The wait is over</p>' +
     '<h1 style="margin:0 0 22px;font-family:' + DISP + ';font-size:52px;line-height:1.05;font-weight:bold;color:#FFF4D6;">' +
-      'We&rsquo;re <span style="color:#6C2C25;">live!</span></h1>' +
+      'We&rsquo;re <span style="color:#FFD9CF;">live!</span></h1>' +
     '<p style="margin:0 0 16px;color:#FFF4D6;font-size:16px;line-height:1.8;">' + esc_(hi) + '</p>' +
     '<p style="margin:0 0 16px;color:#FFF4D6;font-size:16px;line-height:1.8;">Thank you for waiting. The SANcha shop is now open &mdash; our ceremonial-grade ' +
     '<strong style="color:#FFF4D6;">IKI</strong> and <strong style="color:#FFF4D6;">YUAN</strong> matcha, in 30g tins, are ready to order with UK delivery.</p>' +
