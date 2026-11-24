@@ -1,6 +1,6 @@
 # SANcha — Launch-Day Runbook
 
-**Target launch: 23 November 2026.** This is the exact go-live sequence, in order,
+**Target launch: 25 November 2026, 11:00am.** This is the exact go-live sequence, in order,
 with the gotchas we hit during the build. Work top to bottom. Nothing here is
 destructive until **Step 4 (the merge)** — everything before is prep you can do early.
 
