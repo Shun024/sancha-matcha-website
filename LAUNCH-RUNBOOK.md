@@ -120,9 +120,23 @@ domain** (`sanchamatcha.co.uk`), not the github.io preview:
       **0 → >0** → the "back in stock" email sends (it lands in Gmail **Promotions** — that's
       expected for promotional mail; it is delivered, not spam).
 
-## 8. Announce 🎉
+## 8. Announce 🎉  **[CONTACT@ Apps Script]**
 
-- [ ] Social posts / newsletter go out once Steps 5–7 are green.
+Only once Steps 5–7 are green (the shop is live and a real order has succeeded) —
+the email links to the live shop, so sending early points people at a dead page.
+
+- [ ] **Waitlist launch blast** (forms project, running as contact@):
+  - [ ] Confirm the latest `Forms.gs` is pasted in.
+  - [ ] Run **`previewLaunchBlast`** → one test to the script owner. Check the design
+        AND the execution log line `(from: contact@sanchamatcha.co.uk)`.
+  - [ ] Run **`sendLaunchBlast`** → emails the Waitlist tab (stamps "Launch Sent", so
+        re-running is safe; skips no-consent; ~contact@ sender; Gmail daily cap applies —
+        re-run next day if the list is large).
+- [ ] Social posts go out.
+
+> Rollback (if the live site is wrong): `git checkout main` then revert the go-live
+> merge and `git push origin main`. A checkout problem alone does NOT need a rollback —
+> set the product's **stock to 0** in the sheet to take it offline.
 
 ---
 
