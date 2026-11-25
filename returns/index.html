@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Returns — SANcha</title>
+<meta name="description" content="Request a return or exchange for your SANcha order.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#293D30">
+<link rel="canonical" href="https://sanchamatcha.co.uk/returns/">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="apple-touch-icon" href="../assets/favicon.png">
+<style>
+  @font-face{font-family:'SuperWaffles';font-style:normal;font-weight:400 700;font-display:swap;src:url(../assets/fonts/superwaffles.woff2) format('woff2')}
+  @font-face{font-family:'Fredoka';font-style:normal;font-weight:400 700;font-display:swap;src:url(../assets/fonts/fredoka-latin.woff2) format('woff2')}
+  @font-face{font-family:'Bitter';font-style:normal;font-weight:400 700;font-display:swap;src:url(../assets/fonts/bitter-latin.woff2) format('woff2')}
+  :root{--forest:#1e2b22;--matcha-deep:#293D30;--cream:#FFF4D6;--paper:#FFF4D6;--charcoal:#293D30;--line:#e7ddbe;--muted:#6b6550}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Bitter',serif;background:var(--paper);color:var(--charcoal);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:680px;margin:0 auto;padding:0 28px}
+  header{border-bottom:1px solid var(--line);padding:22px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between}
+  header a.brand{font-family:'SuperWaffles','Fredoka',sans-serif;font-size:24px;color:var(--forest);text-decoration:none;letter-spacing:.02em}
+  header a.back{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--matcha-deep);text-decoration:none}
+  header a.back:hover{color:var(--forest)}
+  main{padding:56px 0 80px}
+  h1{font-family:'SuperWaffles','Fredoka',sans-serif;font-weight:500;font-size:clamp(34px,5vw,50px);color:var(--forest);line-height:1.05}
+  p.intro{margin:16px 0 8px;font-size:16px;color:#4f4f47}
+  form{position:relative;display:flex;flex-direction:column;gap:14px;margin-top:28px}
+  label{font-size:13px;letter-spacing:.04em;color:var(--muted);margin-bottom:-6px}
+  input,textarea{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:var(--charcoal);font-family:'Bitter',serif;font-size:15px;outline:none;width:100%}
+  input:focus,textarea:focus{border-color:var(--matcha-deep)}
+  textarea{resize:vertical;min-height:100px}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+  button{margin-top:6px;background:var(--matcha-deep);color:var(--cream);border:0;border-radius:14px;padding:16px 20px;font-family:'Bitter',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:.3s;align-self:flex-start;min-width:220px}
+  button:hover{background:var(--forest)}
+  .form-msg{font-size:15px;color:var(--matcha-deep);margin-top:4px}
+  input[type=file]{padding:11px 13px;font-size:14px;cursor:pointer}
+  input[type=file]::file-selector-button{font-family:'Bitter',serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--matcha-deep);color:var(--cream);border:0;border-radius:9px;padding:9px 14px;margin-right:12px;cursor:pointer}
+  .file-help{font-size:13px;color:var(--muted);margin:-6px 0 0}
+  .file-list{font-size:13px;color:var(--charcoal);margin:-4px 0 0;display:flex;flex-direction:column;gap:4px}
+  .file-list span{display:flex;align-items:center;gap:8px}
+  .file-list .bad{color:#9a3024}
+  .file-rm{background:none;border:0;color:#9a9a90;font-size:16px;line-height:1;cursor:pointer;padding:0 2px;min-width:auto;margin:0}
+  .file-rm:hover{color:#9a3024;background:none}
+  .file-err{font-size:14px;color:#9a3024;margin:-4px 0 0}
+  .note{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);margin-top:26px}
+  footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--muted)}
+  footer a{color:var(--matcha-deep);text-decoration:none;margin-right:18px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="brand" href="/">SANcha</a>
+  <a class="back" href="/">&larr; Back to site</a>
+</div></header>
+
+<main><div class="wrap">
+  <h1>Returns &amp; exchanges</h1>
+  <p class="intro">We accept returns <strong>only for goods that arrive faulty or damaged</strong>. To process your request, please attach clear <strong>photos and/or a short video</strong> showing the fault or damage. Our team will be in touch with the next steps. Full details are in our <a href="/terms/">Terms of Sale</a>.</p>
+
+  <form onsubmit="return handleReturn(event)" novalidate>
+    <label for="r-order">Order number</label>
+    <input id="r-order" name="Order number" placeholder="e.g. SANCHA-12345" required>
+    <label for="r-name">Full name</label>
+    <input id="r-name" name="Name" autocomplete="name" placeholder="Your name" required>
+    <label for="r-email">Email</label>
+    <input id="r-email" type="email" name="Email" autocomplete="email" placeholder="you@example.com" required>
+    <label for="r-items">Item(s) you'd like to return</label>
+    <input id="r-items" name="Items" placeholder="e.g. 1 × IKI 30g" required>
+    <label for="r-reason">What's wrong with it?</label>
+    <textarea id="r-reason" name="Reason" placeholder="Describe the fault or damage" required></textarea>
+    <label for="r-evidence">Photos / videos of the fault or damage</label>
+    <input id="r-evidence" type="file" accept="image/*,video/*" multiple required>
+    <p class="file-help">Required — returns are only accepted for faulty or damaged goods. Attach clear photos and/or a short video clip. Up to 5 files, max 20&nbsp;MB each (please keep videos short).</p>
+    <div class="file-list" id="r-filelist" hidden></div>
+    <input type="text" name="company_hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button type="submit">Submit return request</button>
+    <p class="form-msg" hidden></p>
+  </form>
+
+  <div class="note">We aim to respond to return requests within 1–2 working days. Please keep your items and their original packaging until you hear from us.</div>
+</div></main>
+
+<footer><div class="wrap">
+  <a href="/">Home</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/returns/">Returns</a>
+  <span>&copy; 2026 SANcha &middot; London</span>
+</div></footer>
+
+<script>
+  // Returns request -> forms Apps Script (same endpoint as the site forms), source=returns-request.
+  var FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwtkNq6TlNUQs-lNE_40Q0Ikm03GZuTHOYd8octUnMnZIvsY9-M4DyPOtzooybksyvpoA/exec";
+  var MAX_FILES = 5, MAX_EACH = 20 * 1024 * 1024, MAX_TOTAL = 30 * 1024 * 1024;
+
+  // Accumulate files across multiple picks (a file input normally REPLACES its
+  // selection each time). We keep our own list and keep the input in sync so
+  // `required` validation + submit see every file.
+  var fileInput = document.getElementById('r-evidence'), fileList = document.getElementById('r-filelist');
+  var picked = [];
+  function fmtMB(b){ return (b/1048576).toFixed(1) + ' MB'; }
+  function syncInput(){
+    try { var dt = new DataTransfer(); picked.forEach(function(f){ dt.items.add(f); }); fileInput.files = dt.files; }
+    catch(e){ /* very old browser without DataTransfer — submit still uses `picked` */ }
+  }
+  function renderList(){
+    if(!picked.length){ fileList.hidden = true; fileList.innerHTML=''; return; }
+    fileList.hidden = false;
+    fileList.innerHTML = picked.map(function(f,i){
+      var bad = f.size > MAX_EACH;
+      return '<span class="'+(bad?'bad':'')+'">'+ (bad?'⚠ ':'• ') + f.name.replace(/[<>]/g,'') + ' ('+fmtMB(f.size)+')' + (bad?' — too large':'') +
+        ' <button type="button" class="file-rm" data-i="'+i+'" aria-label="Remove '+f.name.replace(/[<>"]/g,'')+'">&times;</button></span>';
+    }).join('');
+  }
+  function addFiles(list){
+    Array.prototype.forEach.call(list, function(f){
+      var dup = picked.some(function(p){ return p.name===f.name && p.size===f.size && p.lastModified===f.lastModified; });
+      if(!dup && picked.length < MAX_FILES) picked.push(f);
+    });
+    syncInput(); renderList();
+  }
+  function resetFiles(){ picked = []; syncInput(); renderList(); }
+  if(fileInput) fileInput.addEventListener('change', function(){ addFiles(fileInput.files); });
+  if(fileList) fileList.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('.file-rm') : null;
+    if(b){ picked.splice(+b.getAttribute('data-i'), 1); syncInput(); renderList(); }
+  });
+
+  function readFile(file){
+    return new Promise(function(res,rej){
+      var fr = new FileReader();
+      fr.onload = function(){ var d = String(fr.result), i = d.indexOf(','); res({ name:file.name, type:file.type||'application/octet-stream', data: i>=0 ? d.slice(i+1) : d }); };
+      fr.onerror = function(){ rej(fr.error); };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  function showErr(msg, btn){ var e=document.querySelector('.file-err'); if(!e){ e=document.createElement('p'); e.className='file-err'; fileList.parentNode.insertBefore(e, fileList.nextSibling); } e.textContent=msg; if(btn){btn.textContent='Submit return request';btn.disabled=false;} }
+
+  function handleReturn(e){
+    e.preventDefault();
+    var f=e.target;
+    if(f.elements['company_hp'] && f.elements['company_hp'].value){return false;}   // honeypot
+    if(!f.checkValidity()){ f.reportValidity(); return false; }
+    var btn=f.querySelector('button[type="submit"]'), msg=f.querySelector('.form-msg');
+    var old=document.querySelector('.file-err'); if(old) old.remove();
+
+    var files = picked;
+    if(!files.length){ showErr('Please attach at least one photo or video of the fault or damage.'); return false; }
+    if(files.length > MAX_FILES){ showErr('Please attach at most '+MAX_FILES+' files.'); return false; }
+    var total=0, i;
+    for(i=0;i<files.length;i++){
+      if(files[i].size > MAX_EACH){ showErr('"'+files[i].name+'" is too large (max 20 MB each). Please attach a smaller or shorter file.'); return false; }
+      total += files[i].size;
+    }
+    if(total > MAX_TOTAL){ showErr('Your files add up to '+fmtMB(total)+' — please keep the total under 30 MB (shorter video clips help).'); return false; }
+
+    var done=function(){ f.reset(); resetFiles(); if(btn){btn.style.display='none';} if(msg){msg.hidden=false;msg.textContent="Thanks — we've received your return request and evidence, and will be in touch within 1–2 working days ✓";} };
+    if(!FORM_ENDPOINT){ done(); return false; }
+
+    if(btn){btn.textContent='Uploading…';btn.disabled=true;}
+    Promise.all(Array.prototype.map.call(files, readFile)).then(function(payloads){
+      var data=new URLSearchParams();
+      Array.prototype.forEach.call(f.elements,function(el){
+        if(!el.name || el.name==='company_hp' || el.type==='file' || !el.value) return;
+        data.append(el.name, el.value);
+      });
+      data.append('source','returns-request');
+      data.append('evidence_json', JSON.stringify(payloads));
+      return fetch(FORM_ENDPOINT,{method:'POST',mode:'no-cors',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data});
+    }).then(done)
+      .catch(function(){ showErr('Something went wrong uploading your files — please try again.', btn); });
+    return false;
+  }
+</script>
+</body>
+</html>

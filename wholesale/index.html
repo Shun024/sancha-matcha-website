@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wholesale — Matcha for Your Menu · SANcha</title>
+<meta name="description" content="SANcha supplies cafés, restaurants and businesses with high-grade matcha powder — consistent, finely milled, ready to scale. Send a wholesale enquiry for pricing and samples.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#293D30">
+<link rel="canonical" href="https://sanchamatcha.co.uk/wholesale/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SANcha">
+<meta property="og:title" content="Wholesale — Matcha for Your Menu · SANcha">
+<meta property="og:description" content="High-grade matcha powder for cafés, restaurants and businesses. Send a wholesale enquiry for pricing and samples.">
+<meta property="og:url" content="https://sanchamatcha.co.uk/wholesale/">
+<meta property="og:image" content="https://sanchamatcha.co.uk/assets/og-image.png">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sanchamatcha.co.uk/assets/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/favicon.png?v=2">
+<link rel="apple-touch-icon" href="/assets/favicon.png?v=2">
+<link rel="preload" href="/assets/fonts/superwaffles.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/bitter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<script>
+/* Palette preview — override brand colours via URL params (harmless with no param). */
+(function () {
+  try {
+    var q = new URLSearchParams(location.search), root = document.documentElement;
+    function hex(v) { v = (v || "").trim().replace(/^#/, ""); return /^[0-9a-fA-F]{3,8}$/.test(v) ? "#" + v : null; }
+    var y = hex(q.get("yellow"));
+    if (y) { root.style.setProperty("--paper", y); root.style.setProperty("--lemon", y); }
+    ["matcha","matcha-deep","forest","cream","paper","charcoal","stone","muted","line","peach","blue","maroon","lemon"]
+      .forEach(function (name) { var c = hex(q.get(name)); if (c) root.style.setProperty("--" + name, c); });
+  } catch (e) {}
+})();
+</script>
+</head>
+<body id="top">
+
+<div id="site-nav"></div>
+
+<main>
+<section class="b2b" id="b2b">
+  <div class="wrap b2b-grid">
+    <div class="b2b-copy">
+      <span class="label">Wholesale · B2B Supply</span>
+      <h2>Matcha for your menu.</h2>
+      <p>We supply cafés, restaurants and businesses with the same high-grade matcha powder we pour ourselves — consistent, finely milled, and ready to scale with you.</p>
+      <p>Tell us a little about your business below and we'll be in touch with pricing and samples.</p>
+    </div>
+    <!-- Fields come from the "WholesaleForm" sheet tab when configured (see SHEET-UPDATES.md);
+         the fields below are the built-in fallback until then. Responses post to the sheet. -->
+    <form class="wholesale-form" id="wholesale-form" onsubmit="return handleWholesale(event)" novalidate>
+      <div id="wholesale-fields" data-sheet-fields>
+        <label class="wf-field"><span class="wf-q">Your name</span><input type="text" name="Your name" required></label>
+        <label class="wf-field"><span class="wf-q">Business name</span><input type="text" name="Business name" required></label>
+        <label class="wf-field"><span class="wf-q">Email</span><input type="email" name="Email" required></label>
+        <label class="wf-field"><span class="wf-q">Phone</span><input type="tel" name="Phone"></label>
+        <label class="wf-field"><span class="wf-q">Business type</span><select name="Business type"><option value="">Select…</option><option>Café</option><option>Restaurant</option><option>Retailer</option><option>Distributor</option><option>Other</option></select></label>
+        <label class="wf-field"><span class="wf-q">Estimated monthly volume</span><input type="text" name="Estimated monthly volume" placeholder="e.g. 2–5 kg"></label>
+        <label class="wf-field"><span class="wf-q">Message</span><textarea name="Message" rows="3" placeholder="Anything else we should know?"></textarea></label>
+      </div>
+      <input type="text" name="company_hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit">Send enquiry</button>
+    </form>
+  </div>
+</section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="/assets/site.js"></script>
+<script src="/assets/site-app.js"></script>
+<script src="https://gateway.sumup.com/gateway/ecom/card/v2/sdk.js"></script>
+<script src="/assets/checkout.js"></script>
+</body>
+</html>
